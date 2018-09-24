@@ -1,44 +1,35 @@
 /*
- * main.c
- *
- *  Created on: 13 Ağu 2018
- *      Author: NS
- *      std : c11
+ ============================================================================
+ Name        : DataStructure4C.c
+ Author      : Enes
+ Version     :
+ Copyright   : -
+ Description : Data Structure for C
+ ============================================================================
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "dataStructure.h"
 
 int main(void)
 {
+	int x = 13;
+	DynamicArray dynamicArray;
+	DataFuncsPointers funcs = {sizeof(int), free, malloc, memcpy, memcmp};
 
+	dtDynamicArrayInit(&dynamicArray, funcs);
 
+	dtDynamicArrayInsert(&dynamicArray, &x); x = 15;
+	dtDynamicArrayInsert(&dynamicArray, &x); x = 45;
+	dtDynamicArrayInsert(&dynamicArray, &x); x = 3;
+	dtDynamicArrayInsert(&dynamicArray, &x);
 
-	/*
-	int x;
-	Tree tree;
-	DataAddress da = {.addres = &x}, za;
-	Strct4DataPointer df = {sizeof(int), clearMem, creatMem, copyMem, equalMem};
+	for(int i = 1; i < 5; i++)
+	{
+		dtDynamicArrayGetFrom(&dynamicArray, &x, i);
+		printf("%d. eleman %d\n", i, x);
+	}
 
-	initTree(&tree, df);
-	creatMem(&za, sizeof(int));
-
-
-Ağac.root = DURUM // root
-
-while
-	Ağac.BF.set[] = OLASILIKLAR(DURUM)
-	DURUM = Ağac.BF.get
-endwhile
-
-BF
-
-
-
-	clearMem(&za);
-	clearTree(&tree);
-*/
-	return 0;
+	return EXIT_SUCCESS;
 }
