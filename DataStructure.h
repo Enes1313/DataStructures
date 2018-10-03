@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <time.h>
+#include <iso646.h>
 
 typedef size_t Type;
 typedef size_t * pType;
@@ -23,46 +24,46 @@ typedef struct _DataFuncsPointers{
 	void (*dataClear)(void *);
 	void * (*dataCreat)(const Type);
 	void * (*dataCopy)(void *, const void *, const Type);
-	int (*dataEqual)(const void *, const void *, const Type);
+	int (*dataEqual)(const void *, const void *, const Type);	// Eþitse return 0
 } DataFuncsPointers;
-/*
-void dtMemClear(void *);
-void * dtMemCreat(const Type);
-void dtMemCopy(void *, const void *, const Type);
-int dtMemEqual(const void *, const void *, const Type);
-*/
+
 // DynamicArray
 
 typedef struct _ItemDA{
-	void * data;
+	void ** Data;
+	Type Count, Capacity;
 } ItemDA;
 
 typedef struct _DynamicArray{
-	ItemDA * ArrayData; //void **
-	Type ArraySize, ArrayCapacity;
+	ItemDA Array;
 	DataFuncsPointers Funcs;
 } DynamicArray;
 
 void dtDynamicArrayInit(DynamicArray *, DataFuncsPointers);
 void dtDynamicArrayClear(DynamicArray *);
-int dtDynamicArrayIsEmpty(const DynamicArray *);
-int dtDynamicArrayGetFrom(DynamicArray *, void *, const Type); // not delete
-int dtDynamicArrayInsert(DynamicArray *, const void *); //sorted
-int dtDynamicArrayPeek(const DynamicArray *, void *);
 
-// Item
-typedef struct _ItemLL{
-	void * data;
-	struct item * next;
-} ItemLL;
+void dtDynamicArraySort(DynamicArray *);
+Type dtDynamicArrayGetCount(const DynamicArray *);
+Type dtDynamicArrayGetCapacity(const DynamicArray *);
+_Bool dtDynamicArrayGetFrom(DynamicArray *, void *, const Type);
+void dtDynamicArrayRemove(DynamicArray *, const void *);
+void dtDynamicArrayRemoveAt(DynamicArray *, const Type);
+_Bool dtDynamicArrayAdd(DynamicArray *, const void *);
+_Bool dtDynamicArrayInsert(DynamicArray *, const void *, const Type);
 
 // LinkedList
-typedef struct linked_list{
-	ItemLL * head, * tail;
-	DataFuncsPointers func;
+
+typedef struct _ItemLL{
+	void * Data;
+	struct _ItemLL * Next;
+} ItemLL;
+
+typedef struct _LinkedList{
+	ItemLL * Head, * Tail;
+	DataFuncsPointers Funcs;
 } LinkedList;
 
-void dtLinkedListInit(LinkedList *, Strct4DataPointer);
+void dtLinkedListInit(LinkedList *, DataFuncsPointers);
 void dtLinkedListClear(LinkedList *);
 int dtLinkedListIsEmpty(const LinkedList *);
 int dtLinkedListGet(LinkedList *, void *); // and delete

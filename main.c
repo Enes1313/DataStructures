@@ -2,34 +2,47 @@
  ============================================================================
  Name        : DataStructure4C.c
  Author      : Enes
- Version     :
+ Version     : -
  Copyright   : -
- Description : Data Structure for C
+ Description : Data Structure for C (Standard : C99)
  ============================================================================
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "dataStructure.h"
 
 int main(void)
 {
-	int x = 13;
 	DynamicArray dynamicArray;
 	DataFuncsPointers funcs = {sizeof(int), free, malloc, memcpy, memcmp};
 
 	dtDynamicArrayInit(&dynamicArray, funcs);
 
-	dtDynamicArrayInsert(&dynamicArray, &x); x = 15;
-	dtDynamicArrayInsert(&dynamicArray, &x); x = 45;
-	dtDynamicArrayInsert(&dynamicArray, &x); x = 3;
-	dtDynamicArrayInsert(&dynamicArray, &x);
+	srand(time(NULL));
 
-	for(int i = 1; i < 5; i++)
+	for(int x, i = 1; i < 5; i++)
+	{
+		printf("DynamicArray'e ekleniyor : %d sayisi eklendi\n", x = rand() % 50);
+		dtDynamicArrayAdd(&dynamicArray, &x);
+	}
+
+	for(int x, i = 1; i < 5; i++)
 	{
 		dtDynamicArrayGetFrom(&dynamicArray, &x, i);
-		printf("%d. eleman %d\n", i, x);
+		printf("DynamicArray'den alýnýyor : %d. eleman %d\n", i, x);
 	}
+
+	printf("DynamicArray'sýralanýyor...\n");
+	dtDynamicArraySort(&dynamicArray);
+
+	for(int x, i = 1; i < 5; i++)
+	{
+		dtDynamicArrayGetFrom(&dynamicArray, &x, i);
+		printf("DynamicArray'den alýnýyor : %d. eleman %d\n", i, x);
+	}
+	dtDynamicArrayClear(&dynamicArray);
 
 	return EXIT_SUCCESS;
 }

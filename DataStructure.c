@@ -7,75 +7,95 @@
 
 #include "dataStructure.h"
 
-// Mem.
-/*
-void dtMemClear(void * data)
-{
-	free(data);
-}
-
-void * dtMemCreat(Type dataSize)
-{
-	return malloc(dataSize);
-}
-
-void dtMemCopy(void * toData, const void * fromData, Type dataSize)
-{
-	memcpy(toData, fromData, dataSize);
-}
-
-int dtMemEqual(const void * data1, const void * data2, Type size) //eþitse 1
-{
-	return !memcmp(data1, data2, size);
-}
-*/
 // DynamicArray
 
 void dtDynamicArrayInit(DynamicArray * dynamicArray, DataFuncsPointers funcs)
 {
 	dynamicArray->Funcs = funcs;
-	dynamicArray->ArraySize = 0;
-	dynamicArray->ArrayCapacity = 4;
-	dynamicArray->ArrayData = (ItemDA *) calloc(dynamicArray->ArrayCapacity, sizeof(ItemDA));
+	dynamicArray->Array.Count = 0;
+	dynamicArray->Array.Capacity = 4;
+	dynamicArray->Array.Data = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
 }
 
 void dtDynamicArrayClear(DynamicArray * dynamicArray)
 {
-	while(!dtDynamicArrayIsEmpty(dynamicArray))
+	while(dtDynamicArrayGetCount(dynamicArray))
 	{
-		dynamicArray->Funcs.dataClear(dynamicArray->ArrayData[--(dynamicArray->ArraySize)].data);
+		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[--(dynamicArray->Array.Count)]);
 	}
-	free(dynamicArray->ArrayData);
 }
 
-int dtDynamicArrayIsEmpty(const DynamicArray * dynamicArray)
+void dtDynamicArraySort(DynamicArray * dynamicArray)
 {
-	if(dynamicArray->ArraySize == 0)
-	{
-		return 1;
-	}
-	return 0;
+
 }
 
-int dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const Type i)
+Type dtDynamicArrayGetCount(const DynamicArray * dynamicArray)
 {
-	if(!dtDynamicArrayIsEmpty(dynamicArray))
+	return dynamicArray->Array.Count;
+}
+
+Type dtDynamicArrayGetCapacity(const DynamicArray * dynamicArray)
+{
+	return dynamicArray->Array.Capacity;
+}
+
+_Bool dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const Type i)
+{
+	if(dtDynamicArrayGetCount(dynamicArray))
 	{
-		if((i != 0) && (i <= dynamicArray->ArraySize))
+		if((i != 0) and (i <= dynamicArray->Array.Count))
 		{
-			dynamicArray->Funcs.dataCopy(data, dynamicArray->ArrayData[i - 1].data, dynamicArray->Funcs.SumSize);
+			dynamicArray->Funcs.dataCopy(data, dynamicArray->Array.Data[i - 1], dynamicArray->Funcs.SumSize);
 			return 1;
 		}
 	}
 	return 0;
 }
 
-int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data)
+void dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data)
 {
-	if((dynamicArray->ArraySize + 1) == dynamicArray->ArrayCapacity)	// Deðiþtirilebilir
+	int i = 0;
+	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+
+	for (; i < cnt; i++)
 	{
-		dynamicArray->ArrayCapacity = dynamicArray->ArraySize + 4;
-		ItemDA * tmp = calloc(dynamicArray->ArrayCapacity, sizeof(ItemDA));
+		if (!dynamicArray->Funcs.dataEqual(data, dynamicArray->Array.Data[i], dynamicArray->Funcs.SumSize))
+		{
+			dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[i]);
+			dynamicArray->Array.Data[i] = NULL;
+			break;
+		}
+	}
+
+	for (; i < cnt; i++)
+	{
+		dynamicArray->Array.Data[i] = dynamicArray->Array.Data[i + 1];
+	}
+
+	dynamicArray->Array.Count--;
+}
+
+void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const Type i)
+{
+	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+	if((!cnt) and (i <= cnt) and (i != 0))
+	{
+		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[i - 1]);
+		for (int j = i; j < cnt; j++)
+		{
+			dynamicArray->Array.Data[j - 1] = dynamicArray->Array.Data[j];
+		}
+		dynamicArray->Array.Count--;
+	}
+}
+
+_Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
+{
+	if((dynamicArray->Array.Count + 1) == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
+	{
+		dynamicArray->Array.Capacity = dynamicArray->Array.Count + 4;
+		void ** tmp = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
 
 		if(tmp == NULL)
 		{
@@ -83,68 +103,110 @@ int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data)
 			return 0;
 		}
 
-		for (Type i = 0; i < dynamicArray->ArraySize; i++)
-			tmp[i].data = dynamicArray->ArrayData[i].data;
+		for (Type i = 0; i < dynamicArray->Array.Count; i++)
+			tmp[i] = dynamicArray->Array.Data[i];
 
-		free(dynamicArray->ArrayData);
-		dynamicArray->ArrayData = tmp;
+		free(dynamicArray->Array.Data);
+		dynamicArray->Array.Data = tmp;
 	}
 
-	dynamicArray->ArrayData[dynamicArray->ArraySize].data = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
-	dynamicArray->Funcs.dataCopy(dynamicArray->ArrayData[dynamicArray->ArraySize].data, data, dynamicArray->Funcs.SumSize);
-	dynamicArray->ArraySize++;
+	dynamicArray->Array.Data[dynamicArray->Array.Count] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
+	dynamicArray->Funcs.dataCopy(dynamicArray->Array.Data[dynamicArray->Array.Count], data, dynamicArray->Funcs.SumSize);
+	dynamicArray->Array.Count++;
 
 	return 1;
 }
-/*
+
+_Bool dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const Type i)
+{
+	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+	if((!cnt) and (i <= cnt) and (i != 0))
+	{
+		if((dynamicArray->Array.Count + 1) == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
+		{
+			dynamicArray->Array.Capacity = dynamicArray->Array.Count + 4;
+			void ** tmp = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
+
+			if(tmp == NULL)
+			{
+				perror("Error: dtDynamicArrayInsert\n");
+				return 0;
+			}
+
+			for (Type i = 0; i < dynamicArray->Array.Count; i++)
+				tmp[i] = dynamicArray->Array.Data[i];
+
+			free(dynamicArray->Array.Data);
+			dynamicArray->Array.Data = tmp;
+		}
+
+		for (int j = cnt - 1; j > i; j--)
+		{
+			dynamicArray->Array.Data[j] = dynamicArray->Array.Data[j - 1];
+		}
+
+		dynamicArray->Array.Data[i] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
+		dynamicArray->Funcs.dataCopy(dynamicArray->Array.Data[i], data, dynamicArray->Funcs.SumSize);
+		dynamicArray->Array.Count++;
+	}
+	return 1;
+}
 // LinkedList
 
-void initLinkedList(LinkedList * pll, Strct4DataPointer df)
+void dtLinkedListInit(LinkedList * linkedList, DataFuncsPointers funcs)
 {
-	pll->func = df;
-	pll->head = NULL;
-	pll->tail = NULL;
+	linkedList->Head = NULL;
+	linkedList->Tail = NULL;
+	linkedList->Funcs = funcs;
 }
 
-void clearLinkedList(LinkedList * pll)
+void dtLinkedListClear(LinkedList * linkedList)
 {
-	while(!isEmptyLinkedList(pll))
+	while(!dtLinkedListIsEmpty(linkedList))
 	{
-		Item tmp = pll->head;
-		pll->head = tmp->next;
-		pll->func.clearData(&(tmp->data));
+		ItemLL * tmp = linkedList->Head;
+
+		linkedList->Head = tmp->Next;
+		linkedList->Funcs.dataClear(tmp->Data);
+
 		free(tmp);
 	}
-	pll->tail = NULL;
+	linkedList->Tail = NULL;
 }
 
-int isEmptyLinkedList(const LinkedList * pll)
+int dtLinkedListIsEmpty(const LinkedList * linkedList)
 {
-	if(pll->head == NULL)
-		return 1;
-	return 0;
-}
-
-int getLL(LinkedList * pll, void * pd)
-{
-	if(!isEmptyLinkedList(pll))
+	if(linkedList->Head == NULL)
 	{
-		Item tmp = pll->head;
-		pll->head = tmp->next;
-		pll->func.copyData(pd, &(tmp->data), pll->func.sum_size);
-		pll->func.clearData(&(tmp->data));
-		free(tmp);
-
-		if(isEmptyLinkedList(pll))
-			pll->tail = NULL;
 		return 1;
 	}
 	return 0;
 }
 
-int insertLL(LinkedList * pll, const void * pd)
+int dtLinkedListGet(LinkedList * linkedList, void * data)
 {
-	Item tmp = (Item) malloc(sizeof(struct item));
+	if(!dtLinkedListIsEmpty(linkedList))
+	{
+		ItemLL * tmp = linkedList->Head;
+
+		linkedList->Head = tmp->Next;
+		linkedList->Funcs.dataCopy(data, tmp->Data, linkedList->Funcs.SumSize);
+		linkedList->Funcs.dataClear(tmp->Data);
+
+		free(tmp);
+
+		if(dtLinkedListIsEmpty(linkedList))
+		{
+			linkedList->Tail = NULL;
+		}
+		return 1;
+	}
+	return 0;
+}
+
+int insertLL(LinkedList * linkedList, const void * data)
+{
+	ItemLL * tmp = (ItemLL *) malloc(sizeof(ItemLL));
 
 	if(tmp == NULL)
 	{
@@ -152,31 +214,31 @@ int insertLL(LinkedList * pll, const void * pd)
 		return 0;
 	}
 
-	tmp->next = NULL;
-	pll->func.creatData(&(tmp->data), pll->func.sum_size);
-	pll->func.copyData(&(tmp->data), pd, pll->func.sum_size);
+	tmp->Next = NULL;
+	tmp->Data = linkedList->Funcs.dataCreat(linkedList->Funcs.SumSize);
+	linkedList->Funcs.dataCopy(tmp->Data, data, linkedList->Funcs.SumSize);
 
-	if(isEmptyLinkedList(pll))
-		pll->head = tmp;
+	if(dtLinkedListIsEmpty(linkedList))
+		linkedList->Head = tmp;
 	else
-		pll->tail->next = tmp;
+		linkedList->Tail->Next = tmp;
 
-	pll->tail = tmp;
+	linkedList->Tail = tmp;
 
 	return 1;
 }
 
-int peekLinkedList(const LinkedList * pll, void * pd)
+int peekLinkedList(const LinkedList * linkedList, void * data)
 {
-	if(!isEmptyLinkedList(pll))
+	if(!dtLinkedListIsEmpty(linkedList))
 	{
-		pll->func.copyData(pd, &(pll->head->data), pll->func.sum_size);
+		linkedList->Funcs.dataCopy(data, &(linkedList->Head->Data), linkedList->Funcs.SumSize);
 		return 1;
 	}
 
 	return 0;
 }
-*/
+
 
 /*
 // Stack
