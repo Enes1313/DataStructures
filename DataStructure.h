@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-#include <time.h>
-#include <iso646.h>
 
 typedef size_t Type;
 typedef size_t * pType;
@@ -24,7 +22,7 @@ typedef struct _DataFuncsPointers{
 	void (*dataClear)(void *);
 	void * (*dataCreat)(const Type);
 	void * (*dataCopy)(void *, const void *, const Type);
-	int (*dataEqual)(const void *, const void *, const Type);	// Eþitse return 0
+	int (*dataEqual)(const void *, const void *, const Type);	// Eþitse return 0 büyükse 1 küçükse -1
 } DataFuncsPointers;
 
 // DynamicArray

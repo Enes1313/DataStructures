@@ -22,13 +22,13 @@ int main(void)
 
 	srand(time(NULL));
 
-	for(int x, i = 1; i < 5; i++)
+	for(int x, i = 1; i < 8; i++)
 	{
 		printf("DynamicArray'e ekleniyor : %d sayisi eklendi\n", x = rand() % 50);
 		dtDynamicArrayAdd(&dynamicArray, &x);
 	}
 
-	for(int x, i = 1; i < 5; i++)
+	for(int x, i = 1; i < 8; i++)
 	{
 		dtDynamicArrayGetFrom(&dynamicArray, &x, i);
 		printf("DynamicArray'den alýnýyor : %d. eleman %d\n", i, x);
@@ -37,7 +37,7 @@ int main(void)
 	printf("DynamicArray'sýralanýyor...\n");
 	dtDynamicArraySort(&dynamicArray);
 
-	for(int x, i = 1; i < 5; i++)
+	for(int x, i = 1; i < 8; i++)
 	{
 		dtDynamicArrayGetFrom(&dynamicArray, &x, i);
 		printf("DynamicArray'den alýnýyor : %d. eleman %d\n", i, x);

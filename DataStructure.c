@@ -21,13 +21,25 @@ void dtDynamicArrayClear(DynamicArray * dynamicArray)
 {
 	while(dtDynamicArrayGetCount(dynamicArray))
 	{
-		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[--(dynamicArray->Array.Count)]);
+		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[--dynamicArray->Array.Count]);
 	}
 }
 
 void dtDynamicArraySort(DynamicArray * dynamicArray)
 {
+	int i, j;
+	void * buf;
+	Type N = dtDynamicArrayGetCount(dynamicArray);
 
+	for(i = 1; i < N; i++)
+	{
+		for(j = i; j > 0 && dynamicArray->Funcs.dataEqual(dynamicArray->Array.Data[j - 1], dynamicArray->Array.Data[j], dynamicArray->Funcs.SumSize) > 0; j--)
+		{
+			buf = dynamicArray->Array.Data[j];
+			dynamicArray->Array.Data[j] = dynamicArray->Array.Data[j - 1];
+			dynamicArray->Array.Data[j - 1] = buf;
+		}
+	}
 }
 
 Type dtDynamicArrayGetCount(const DynamicArray * dynamicArray)
@@ -44,7 +56,7 @@ _Bool dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const Type
 {
 	if(dtDynamicArrayGetCount(dynamicArray))
 	{
-		if((i != 0) and (i <= dynamicArray->Array.Count))
+		if(i != 0 && i <= dynamicArray->Array.Count)
 		{
 			dynamicArray->Funcs.dataCopy(data, dynamicArray->Array.Data[i - 1], dynamicArray->Funcs.SumSize);
 			return 1;
@@ -79,7 +91,7 @@ void dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data)
 void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const Type i)
 {
 	Type cnt = dtDynamicArrayGetCount(dynamicArray);
-	if((!cnt) and (i <= cnt) and (i != 0))
+	if(!cnt && i <= cnt && i != 0)
 	{
 		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[i - 1]);
 		for (int j = i; j < cnt; j++)
@@ -92,7 +104,7 @@ void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const Type i)
 
 _Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 {
-	if((dynamicArray->Array.Count + 1) == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
+	if(dynamicArray->Array.Count + 1 == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
 	{
 		dynamicArray->Array.Capacity = dynamicArray->Array.Count + 4;
 		void ** tmp = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
@@ -104,7 +116,9 @@ _Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 		}
 
 		for (Type i = 0; i < dynamicArray->Array.Count; i++)
+		{
 			tmp[i] = dynamicArray->Array.Data[i];
+		}
 
 		free(dynamicArray->Array.Data);
 		dynamicArray->Array.Data = tmp;
@@ -120,7 +134,8 @@ _Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 _Bool dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const Type i)
 {
 	Type cnt = dtDynamicArrayGetCount(dynamicArray);
-	if((!cnt) and (i <= cnt) and (i != 0))
+
+	if(!cnt && i <= cnt && i != 0)
 	{
 		if((dynamicArray->Array.Count + 1) == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
 		{
