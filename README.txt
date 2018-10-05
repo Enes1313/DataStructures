@@ -6,7 +6,7 @@ DataFuncsPointers funcs = {sizeof(int), free, malloc, memcpy, memcmp};
 
 /* 
  * use this functions (free, malloc, memcpy, memcmp) for simple data as int, char, float, struct s{int x;}.
- * creat functions for complex data model as struct c{int i;char * j;}.
+ * create functions for complex data model as struct c{int i;char * j;}.
  */
  
 dtDynamicArrayInit(&dynamicArray, funcs);
