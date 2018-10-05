@@ -8,11 +8,7 @@
 #ifndef DATASTRUCTURE_H_
 #define DATASTRUCTURE_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stddef.h>
-
 // struct for data-specific operations
 typedef struct _DataFuncsPointers{
 	size_t SumSize;

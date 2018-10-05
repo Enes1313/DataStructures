@@ -4,7 +4,7 @@
  *  Created on: 13 Aðu 2018
  *      Author: enes.aydin
  */
-
+#include <stdlib.h>
 #include "dataStructure.h"
 
 // DynamicArray
@@ -27,13 +27,12 @@ void dtDynamicArrayClear(DynamicArray * dynamicArray)
 
 void dtDynamicArraySort(DynamicArray * dynamicArray)
 {
-	int i, j;
 	void * buf;
-	size_t N = dtDynamicArrayGetCount(dynamicArray);
+	size_t i, j, N = dtDynamicArrayGetCount(dynamicArray);
 
 	for(i = 1; i < N; i++)
 	{
-		for(j = i; j > 0 && dynamicArray->Funcs.dataEqual(dynamicArray->Data[j - 1], dynamicArray->Data[j], dynamicArray->Funcs.SumSize) > 0; j--)
+		for(j = i; 0 < j && dynamicArray->Funcs.dataEqual(dynamicArray->Data[j - 1], dynamicArray->Data[j], dynamicArray->Funcs.SumSize) > 0; j--)
 		{
 			buf = dynamicArray->Data[j];
 			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
@@ -56,7 +55,7 @@ int dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const size_t
 {
 	if(dtDynamicArrayGetCount(dynamicArray))
 	{
-		if(i != 0 && i <= dynamicArray->Count)
+		if(0 != i && i <= dynamicArray->Count)
 		{
 			dynamicArray->Funcs.dataCopy(data, dynamicArray->Data[i - 1], dynamicArray->Funcs.SumSize);
 			return 1;
@@ -67,10 +66,9 @@ int dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const size_t
 
 void dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data)
 {
-	int i = 0;
-	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t i, cnt = dtDynamicArrayGetCount(dynamicArray);
 
-	for (; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 	{
 		if (!dynamicArray->Funcs.dataEqual(data, dynamicArray->Data[i], dynamicArray->Funcs.SumSize))
 		{
@@ -92,7 +90,7 @@ void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const size_t i)
 {
 	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
 
-	if(!cnt && i <= cnt && i != 0)
+	if(!cnt && i <= cnt && 0 != i)
 	{
 		dynamicArray->Funcs.dataClear(dynamicArray->Data[i - 1]);
 		for (int j = i; j < cnt; j++)
@@ -105,18 +103,20 @@ void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const size_t i)
 
 int dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 {
+	size_t i;
+
 	if(dynamicArray->Count + 1 == dynamicArray->Capacity)	// Deðiþtirilebilir
 	{
 		dynamicArray->Capacity = dynamicArray->Count + 4;
 		void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
 
-		if(tmp == NULL)
+		if(NULL == tmp)
 		{
 			perror("Error: dtDynamicArrayInsert\n");
 			return 0;
 		}
 
-		for (size_t i = 0; i < dynamicArray->Count; i++)
+		for (i = 0; i < dynamicArray->Count; i++)
 		{
 			tmp[i] = dynamicArray->Data[i];
 		}
@@ -136,14 +136,14 @@ int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const s
 {
 	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
 
-	if(!cnt && i <= cnt && i != 0)
+	if(!cnt && i <= cnt && 0 != i)
 	{
 		if((dynamicArray->Count + 1) == dynamicArray->Capacity)	// Deðiþtirilebilir
 		{
 			dynamicArray->Capacity = dynamicArray->Count + 4;
 			void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
 
-			if(tmp == NULL)
+			if(NULL == tmp)
 			{
 				perror("Error: dtDynamicArrayInsert\n");
 				return 0;
