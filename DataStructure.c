@@ -12,16 +12,16 @@
 void dtDynamicArrayInit(DynamicArray * dynamicArray, DataFuncsPointers funcs)
 {
 	dynamicArray->Funcs = funcs;
-	dynamicArray->Array.Count = 0;
-	dynamicArray->Array.Capacity = 4;
-	dynamicArray->Array.Data = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
+	dynamicArray->Count = 0;
+	dynamicArray->Capacity = 4;
+	dynamicArray->Data = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
 }
 
 void dtDynamicArrayClear(DynamicArray * dynamicArray)
 {
 	while(dtDynamicArrayGetCount(dynamicArray))
 	{
-		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[--dynamicArray->Array.Count]);
+		dynamicArray->Funcs.dataClear(dynamicArray->Data[--dynamicArray->Count]);
 	}
 }
 
@@ -29,36 +29,36 @@ void dtDynamicArraySort(DynamicArray * dynamicArray)
 {
 	int i, j;
 	void * buf;
-	Type N = dtDynamicArrayGetCount(dynamicArray);
+	size_t N = dtDynamicArrayGetCount(dynamicArray);
 
 	for(i = 1; i < N; i++)
 	{
-		for(j = i; j > 0 && dynamicArray->Funcs.dataEqual(dynamicArray->Array.Data[j - 1], dynamicArray->Array.Data[j], dynamicArray->Funcs.SumSize) > 0; j--)
+		for(j = i; j > 0 && dynamicArray->Funcs.dataEqual(dynamicArray->Data[j - 1], dynamicArray->Data[j], dynamicArray->Funcs.SumSize) > 0; j--)
 		{
-			buf = dynamicArray->Array.Data[j];
-			dynamicArray->Array.Data[j] = dynamicArray->Array.Data[j - 1];
-			dynamicArray->Array.Data[j - 1] = buf;
+			buf = dynamicArray->Data[j];
+			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
+			dynamicArray->Data[j - 1] = buf;
 		}
 	}
 }
 
-Type dtDynamicArrayGetCount(const DynamicArray * dynamicArray)
+size_t dtDynamicArrayGetCount(const DynamicArray * dynamicArray)
 {
-	return dynamicArray->Array.Count;
+	return dynamicArray->Count;
 }
 
-Type dtDynamicArrayGetCapacity(const DynamicArray * dynamicArray)
+size_t dtDynamicArrayGetCapacity(const DynamicArray * dynamicArray)
 {
-	return dynamicArray->Array.Capacity;
+	return dynamicArray->Capacity;
 }
 
-_Bool dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const Type i)
+int dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const size_t i)
 {
 	if(dtDynamicArrayGetCount(dynamicArray))
 	{
-		if(i != 0 && i <= dynamicArray->Array.Count)
+		if(i != 0 && i <= dynamicArray->Count)
 		{
-			dynamicArray->Funcs.dataCopy(data, dynamicArray->Array.Data[i - 1], dynamicArray->Funcs.SumSize);
+			dynamicArray->Funcs.dataCopy(data, dynamicArray->Data[i - 1], dynamicArray->Funcs.SumSize);
 			return 1;
 		}
 	}
@@ -68,46 +68,47 @@ _Bool dtDynamicArrayGetFrom(DynamicArray * dynamicArray, void * data, const Type
 void dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data)
 {
 	int i = 0;
-	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
 
 	for (; i < cnt; i++)
 	{
-		if (!dynamicArray->Funcs.dataEqual(data, dynamicArray->Array.Data[i], dynamicArray->Funcs.SumSize))
+		if (!dynamicArray->Funcs.dataEqual(data, dynamicArray->Data[i], dynamicArray->Funcs.SumSize))
 		{
-			dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[i]);
-			dynamicArray->Array.Data[i] = NULL;
+			dynamicArray->Funcs.dataClear(dynamicArray->Data[i]);
+			dynamicArray->Data[i] = NULL;
 			break;
 		}
 	}
 
 	for (; i < cnt; i++)
 	{
-		dynamicArray->Array.Data[i] = dynamicArray->Array.Data[i + 1];
+		dynamicArray->Data[i] = dynamicArray->Data[i + 1];
 	}
 
-	dynamicArray->Array.Count--;
+	dynamicArray->Count--;
 }
 
-void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const Type i)
+void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const size_t i)
 {
-	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
+
 	if(!cnt && i <= cnt && i != 0)
 	{
-		dynamicArray->Funcs.dataClear(dynamicArray->Array.Data[i - 1]);
+		dynamicArray->Funcs.dataClear(dynamicArray->Data[i - 1]);
 		for (int j = i; j < cnt; j++)
 		{
-			dynamicArray->Array.Data[j - 1] = dynamicArray->Array.Data[j];
+			dynamicArray->Data[j - 1] = dynamicArray->Data[j];
 		}
-		dynamicArray->Array.Count--;
+		dynamicArray->Count--;
 	}
 }
 
-_Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
+int dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 {
-	if(dynamicArray->Array.Count + 1 == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
+	if(dynamicArray->Count + 1 == dynamicArray->Capacity)	// Deðiþtirilebilir
 	{
-		dynamicArray->Array.Capacity = dynamicArray->Array.Count + 4;
-		void ** tmp = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
+		dynamicArray->Capacity = dynamicArray->Count + 4;
+		void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
 
 		if(tmp == NULL)
 		{
@@ -115,32 +116,32 @@ _Bool dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 			return 0;
 		}
 
-		for (Type i = 0; i < dynamicArray->Array.Count; i++)
+		for (size_t i = 0; i < dynamicArray->Count; i++)
 		{
-			tmp[i] = dynamicArray->Array.Data[i];
+			tmp[i] = dynamicArray->Data[i];
 		}
 
-		free(dynamicArray->Array.Data);
-		dynamicArray->Array.Data = tmp;
+		free(dynamicArray->Data);
+		dynamicArray->Data = tmp;
 	}
 
-	dynamicArray->Array.Data[dynamicArray->Array.Count] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
-	dynamicArray->Funcs.dataCopy(dynamicArray->Array.Data[dynamicArray->Array.Count], data, dynamicArray->Funcs.SumSize);
-	dynamicArray->Array.Count++;
+	dynamicArray->Data[dynamicArray->Count] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
+	dynamicArray->Funcs.dataCopy(dynamicArray->Data[dynamicArray->Count], data, dynamicArray->Funcs.SumSize);
+	dynamicArray->Count++;
 
 	return 1;
 }
 
-_Bool dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const Type i)
+int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const size_t i)
 {
-	Type cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
 
 	if(!cnt && i <= cnt && i != 0)
 	{
-		if((dynamicArray->Array.Count + 1) == dynamicArray->Array.Capacity)	// Deðiþtirilebilir
+		if((dynamicArray->Count + 1) == dynamicArray->Capacity)	// Deðiþtirilebilir
 		{
-			dynamicArray->Array.Capacity = dynamicArray->Array.Count + 4;
-			void ** tmp = (void **) calloc(dynamicArray->Array.Capacity, sizeof(void *));
+			dynamicArray->Capacity = dynamicArray->Count + 4;
+			void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
 
 			if(tmp == NULL)
 			{
@@ -148,24 +149,27 @@ _Bool dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const
 				return 0;
 			}
 
-			for (Type i = 0; i < dynamicArray->Array.Count; i++)
-				tmp[i] = dynamicArray->Array.Data[i];
+			for (size_t i = 0; i < dynamicArray->Count; i++)
+			{
+				tmp[i] = dynamicArray->Data[i];
+			}
 
-			free(dynamicArray->Array.Data);
-			dynamicArray->Array.Data = tmp;
+			free(dynamicArray->Data);
+			dynamicArray->Data = tmp;
 		}
 
 		for (int j = cnt - 1; j > i; j--)
 		{
-			dynamicArray->Array.Data[j] = dynamicArray->Array.Data[j - 1];
+			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
 		}
 
-		dynamicArray->Array.Data[i] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
-		dynamicArray->Funcs.dataCopy(dynamicArray->Array.Data[i], data, dynamicArray->Funcs.SumSize);
-		dynamicArray->Array.Count++;
+		dynamicArray->Data[i] = dynamicArray->Funcs.dataCreat(dynamicArray->Funcs.SumSize);
+		dynamicArray->Funcs.dataCopy(dynamicArray->Data[i], data, dynamicArray->Funcs.SumSize);
+		dynamicArray->Count++;
 	}
 	return 1;
 }
+
 // LinkedList
 
 void dtLinkedListInit(LinkedList * linkedList, DataFuncsPointers funcs)
@@ -253,6 +257,77 @@ int peekLinkedList(const LinkedList * linkedList, void * data)
 
 	return 0;
 }
+
+
+/*
+void initTree(Tree * t, Strct4DataPointer df)
+{
+	t->func = df;
+	t->root = NULL;
+}
+void clearTree(Tree * t) // Doðru çalýþýyor mu bak.
+{
+	DataAddress d;
+	LinkedList llist;
+	Strct4DataPointer df1 = {sizeof(Node), clearAdr, creatAdr, copyAdr, equalAdr};
+	if(isEmptyTree(t))								// Aðaç boþsa çýk
+		return;
+	initLinkedList(&llist, df1); 					// Adres tutan linked list
+	Node iter = t->root;							// Aðacýn kök adresini iter e ata
+	d.addres = iter;							// iteri linked liste atamak için datamýza ata
+	insertLL(&llist, &d);							// kök adresini linked liste atadýk
+	t->func.clearData(&((Node) d.addres)->element);
+	while(getLL(&llist, &d))
+	{
+		for (size_t i = 0; i < ((Node) d.addres)->childs.ArraySize; i++)
+		{
+			insertLL(&llist, &(iter->childs.array[i]));
+			t->func.clearData(&((Node) iter->childs.array[i].addres)->element);
+		}
+		free(d.addres);
+	}
+	t->root = NULL;
+	clearLinkedList(&llist);
+}
+int isEmptyTree(const Tree * t)
+{
+	if(t->root == NULL)
+		return 1;
+	return 0;
+}
+*/
+/*
+MyTree initMyTree(int max_level)
+{
+	printf("************************** Agaç yapýmýz **************************\n");
+	printf("* Level:  1, Kendisi %8s, Dgm: %8x, Data: %4d, Cost:    0 *\n", "Root", *((unsigned int *)&(my_tree->root)), (int) my_tree->root->data);
+	setNodes(my_tree->root, max_level, 2); // Doldurma iþlemi soldan saða doðrudur.
+	printf("******************************************************************\n");
+}
+void setNodes(Node node, int level, int step)
+{
+	if (level >= step)
+	{
+		for (int i = 0; i < MAX_NODES; i++)
+		{
+			if (rand() % 2 == 0)
+			{
+				node->subNodes[i] = (Node) malloc(sizeof(struct node));
+				node->subNodes[i]->data = (Data) rand() % 100;
+				node->subNodes[i]->cost = (Data) (rand() % 21) * 10 + 100; // 100 ile 300 arasý
+				printf("* Level: %2d, UstDgm: %8x, Dgm: %8x, Data: %4d, Cost: %4d *\n", step, *((unsigned int *)&node),
+				*((unsigned int *)&node->subNodes[i]), (int) node->subNodes[i]->data, (int) node->subNodes[i]->cost);
+				setNodes(node->subNodes[i], level, step + 1);
+			}
+			else
+				node->subNodes[i] = NULL;
+		}
+	}
+	else
+		for (int j = 0; j < MAX_NODES; j++)
+			node->subNodes[j] = NULL;
+}
+*/
 
 
 /*
@@ -392,72 +467,4 @@ int peekQueue(Queue q, Data * pd)
 	return 0;
 }
 */
-/*
-void initTree(Tree * t, Strct4DataPointer df)
-{
-	t->func = df;
-	t->root = NULL;
-}
-void clearTree(Tree * t) // Doðru çalýþýyor mu bak.
-{
-	DataAddress d;
-	LinkedList llist;
-	Strct4DataPointer df1 = {sizeof(Node), clearAdr, creatAdr, copyAdr, equalAdr};
-	if(isEmptyTree(t))								// Aðaç boþsa çýk
-		return;
-	initLinkedList(&llist, df1); 					// Adres tutan linked list
-	Node iter = t->root;							// Aðacýn kök adresini iter e ata
-	d.addres = iter;							// iteri linked liste atamak için datamýza ata
-	insertLL(&llist, &d);							// kök adresini linked liste atadýk
-	t->func.clearData(&((Node) d.addres)->element);
-	while(getLL(&llist, &d))
-	{
-		for (Type i = 0; i < ((Node) d.addres)->childs.ArraySize; i++)
-		{
-			insertLL(&llist, &(iter->childs.array[i]));
-			t->func.clearData(&((Node) iter->childs.array[i].addres)->element);
-		}
-		free(d.addres);
-	}
-	t->root = NULL;
-	clearLinkedList(&llist);
-}
-int isEmptyTree(const Tree * t)
-{
-	if(t->root == NULL)
-		return 1;
-	return 0;
-}
-*/
-/*
-MyTree initMyTree(int max_level)
-{
-	printf("************************** Agaç yapýmýz **************************\n");
-	printf("* Level:  1, Kendisi %8s, Dgm: %8x, Data: %4d, Cost:    0 *\n", "Root", *((unsigned int *)&(my_tree->root)), (int) my_tree->root->data);
-	setNodes(my_tree->root, max_level, 2); // Doldurma iþlemi soldan saða doðrudur.
-	printf("******************************************************************\n");
-}
-void setNodes(Node node, int level, int step)
-{
-	if (level >= step)
-	{
-		for (int i = 0; i < MAX_NODES; i++)
-		{
-			if (rand() % 2 == 0)
-			{
-				node->subNodes[i] = (Node) malloc(sizeof(struct node));
-				node->subNodes[i]->data = (Data) rand() % 100;
-				node->subNodes[i]->cost = (Data) (rand() % 21) * 10 + 100; // 100 ile 300 arasý
-				printf("* Level: %2d, UstDgm: %8x, Dgm: %8x, Data: %4d, Cost: %4d *\n", step, *((unsigned int *)&node),
-				*((unsigned int *)&node->subNodes[i]), (int) node->subNodes[i]->data, (int) node->subNodes[i]->cost);
-				setNodes(node->subNodes[i], level, step + 1);
-			}
-			else
-				node->subNodes[i] = NULL;
-		}
-	}
-	else
-		for (int j = 0; j < MAX_NODES; j++)
-			node->subNodes[j] = NULL;
-}
-*/
+
