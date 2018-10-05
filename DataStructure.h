@@ -9,16 +9,20 @@
 #define DATASTRUCTURE_H_
 
 #include <stddef.h>
-// struct for data-specific operations
+/*
+ * struct for data-specific operations
+ */
 typedef struct _DataFuncsPointers{
 	size_t SumSize;
 	void (*dataClear)(void *);
 	void * (*dataCreat)(const size_t);
 	void * (*dataCopy)(void *, const void *, const size_t);
-	int (*dataEqual)(const void *, const void *, const size_t);	// Eþitse return 0 büyükse 1 küçükse -1
+	int (*dataEqual)(const void *, const void *, const size_t);	/* Eþitse return 0 büyükse 1 küçükse -1*/
 } DataFuncsPointers;
 
-// DynamicArray
+/*
+ * DynamicArray
+ */
 
 typedef struct _DynamicArray{
 	void ** Data;
@@ -38,7 +42,9 @@ void dtDynamicArrayRemoveAt(DynamicArray *, const size_t);
 int dtDynamicArrayAdd(DynamicArray *, const void *);
 int dtDynamicArrayInsert(DynamicArray *, const void *, const size_t);
 
-// LinkedList
+/*
+ * LinkedList
+ */
 
 typedef struct _ItemLL{
 	void * Data;
@@ -55,8 +61,8 @@ void dtLinkedListInit(LinkedList *, DataFuncsPointers);
 void dtLinkedListClear(LinkedList *);
 
 int dtLinkedListIsEmpty(const LinkedList *);
-int dtLinkedListGet(LinkedList *, void *); // and delete
-int dtLinkedListInsert(LinkedList *, const void *); //sorted
+int dtLinkedListGet(LinkedList *, void *);
+int dtLinkedListInsert(LinkedList *, const void *);
 int dtLinkedListPeek(const LinkedList *, void *);
 
 /*

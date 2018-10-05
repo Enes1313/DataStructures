@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : DataStructure4C.c
+ Name        : DataStructure
  Author      : Enes
  Version     : -
- Copyright   : -
- Description : Data Structure for C (Standard : C99)
+ Copyright   :
+ Description : Data Structures with C (Standard : C90)
  ============================================================================
  */
 

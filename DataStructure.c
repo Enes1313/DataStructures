@@ -4,17 +4,25 @@
  *  Created on: 13 Aðu 2018
  *      Author: enes.aydin
  */
+#include <stdio.h>
 #include <stdlib.h>
 #include "dataStructure.h"
 
-// DynamicArray
+/*
+ * DynamicArray
+ */
 
 void dtDynamicArrayInit(DynamicArray * dynamicArray, DataFuncsPointers funcs)
 {
 	dynamicArray->Funcs = funcs;
 	dynamicArray->Count = 0;
 	dynamicArray->Capacity = 4;
-	dynamicArray->Data = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
+	dynamicArray->Data = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+
+	if (dynamicArray->Data == NULL)
+	{
+		perror("Error: dtDynamicArrayInit\n");
+	}
 }
 
 void dtDynamicArrayClear(DynamicArray * dynamicArray)
@@ -88,12 +96,12 @@ void dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data)
 
 void dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const size_t i)
 {
-	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t j, cnt = dtDynamicArrayGetCount(dynamicArray);
 
 	if(!cnt && i <= cnt && 0 != i)
 	{
 		dynamicArray->Funcs.dataClear(dynamicArray->Data[i - 1]);
-		for (int j = i; j < cnt; j++)
+		for (j = i; j < cnt; j++)
 		{
 			dynamicArray->Data[j - 1] = dynamicArray->Data[j];
 		}
@@ -105,14 +113,14 @@ int dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 {
 	size_t i;
 
-	if(dynamicArray->Count + 1 == dynamicArray->Capacity)	// Deðiþtirilebilir
+	if(dynamicArray->Count + 1 == dynamicArray->Capacity)
 	{
 		dynamicArray->Capacity = dynamicArray->Count + 4;
-		void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
+		void ** tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
 
 		if(NULL == tmp)
 		{
-			perror("Error: dtDynamicArrayInsert\n");
+			perror("Error: dtDynamicArrayAdd\n");
 			return 0;
 		}
 
@@ -134,14 +142,14 @@ int dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data)
 
 int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const size_t i)
 {
-	size_t cnt = dtDynamicArrayGetCount(dynamicArray);
+	size_t j, cnt = dtDynamicArrayGetCount(dynamicArray);
 
 	if(!cnt && i <= cnt && 0 != i)
 	{
-		if((dynamicArray->Count + 1) == dynamicArray->Capacity)	// Deðiþtirilebilir
+		if((dynamicArray->Count + 1) == dynamicArray->Capacity)
 		{
 			dynamicArray->Capacity = dynamicArray->Count + 4;
-			void ** tmp = (void **) calloc(dynamicArray->Capacity, sizeof(void *));
+			void ** tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
 
 			if(NULL == tmp)
 			{
@@ -149,16 +157,16 @@ int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const s
 				return 0;
 			}
 
-			for (size_t i = 0; i < dynamicArray->Count; i++)
+			for (j = 0; j < dynamicArray->Count; j++)
 			{
-				tmp[i] = dynamicArray->Data[i];
+				tmp[j] = dynamicArray->Data[j];
 			}
 
 			free(dynamicArray->Data);
 			dynamicArray->Data = tmp;
 		}
 
-		for (int j = cnt - 1; j > i; j--)
+		for (j = cnt - 1; j > i; j--)
 		{
 			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
 		}
@@ -170,7 +178,9 @@ int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const s
 	return 1;
 }
 
-// LinkedList
+/*
+ * LinkedList
+ */
 
 void dtLinkedListInit(LinkedList * linkedList, DataFuncsPointers funcs)
 {
