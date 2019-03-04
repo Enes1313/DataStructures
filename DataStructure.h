@@ -1,7 +1,7 @@
 /*
  * DataStructure.h
  *
- *  Created on: 13 Aðu 2018
+ *  Created on: 13 AÄŸu 2018
  *      Author: enes.aydin
  */
 
@@ -9,16 +9,18 @@
 #define DATASTRUCTURE_H_
 
 #include <stddef.h>
+
 /*
  * struct for data-specific operations
  */
-typedef struct _DataFuncsPointers{
+
+typedef struct _StructDataInfo{
 	size_t SumSize;
 	void (*dataClear)(void *);
 	void * (*dataCreat)(const size_t);
 	void * (*dataCopy)(void *, const void *, const size_t);
-	int (*dataEqual)(const void *, const void *, const size_t);	/* Eþitse return 0 büyükse 1 küçükse -1*/
-} DataFuncsPointers;
+	int (*dataEqual)(const void *, const void *, const size_t);	/* EÅŸitse 0 bÃ¼yÃ¼kse 1 kÃ¼Ã§Ã¼kse -1*/
+} StructDataInfo;
 
 /*
  * DynamicArray
@@ -27,20 +29,23 @@ typedef struct _DataFuncsPointers{
 typedef struct _DynamicArray{
 	void ** Data;
 	size_t Count, Capacity;
-	DataFuncsPointers Funcs;
+	StructDataInfo Info;
 } DynamicArray;
 
-void dtDynamicArrayInit(DynamicArray *, DataFuncsPointers);
-void dtDynamicArrayClear(DynamicArray *);
+void dtDynamicArrayInit(DynamicArray * dynamicArray, StructDataInfo Info);
+void dtDynamicArrayReset(DynamicArray * dynamicArray);
+void dtDynamicArrayClear(DynamicArray * dynamicArray);
 
-void dtDynamicArraySort(DynamicArray *);
-size_t dtDynamicArrayGetCount(const DynamicArray *);
-size_t dtDynamicArrayGetCapacity(const DynamicArray *);
-int dtDynamicArrayGetFrom(DynamicArray *, void *, const size_t);
-void dtDynamicArrayRemove(DynamicArray *, const void *);
-void dtDynamicArrayRemoveAt(DynamicArray *, const size_t);
-int dtDynamicArrayAdd(DynamicArray *, const void *);
-int dtDynamicArrayInsert(DynamicArray *, const void *, const size_t);
+void dtDynamicArraySort(DynamicArray * dynamicArray);
+
+size_t dtDynamicArrayGetCount(const DynamicArray * dynamicArray);
+size_t dtDynamicArrayGetCapacity(const DynamicArray * dynamicArray);
+
+int dtDynamicArrayAdd(DynamicArray * dynamicArray, const void * data);
+int dtDynamicArrayRemove(DynamicArray * dynamicArray, const void * data);
+int dtDynamicArrayRemoveAt(DynamicArray * dynamicArray, const size_t index);
+int dtDynamicArrayInsert(DynamicArray * dynamicArray, const void * data, const size_t index);
+int dtDynamicArrayGetFrom(const DynamicArray * dynamicArray, void * data, const size_t index);
 
 /*
  * LinkedList
@@ -54,47 +59,44 @@ typedef struct _ItemLL{
 typedef struct _LinkedList{
 	ItemLL * Head;
 	ItemLL * Tail;
-	DataFuncsPointers Funcs;
+	StructDataInfo Funcs;
 } LinkedList;
 
-void dtLinkedListInit(LinkedList *, DataFuncsPointers);
-void dtLinkedListClear(LinkedList *);
+void dtLinkedListInit(LinkedList * linkedList, StructDataInfo Info);
+void dtLinkedListReset(LinkedList * linkedList);
+void dtLinkedListClear(LinkedList * linkedList);
 
-int dtLinkedListIsEmpty(const LinkedList *);
-int dtLinkedListGet(LinkedList *, void *);
-int dtLinkedListInsert(LinkedList *, const void *);
-int dtLinkedListPeek(const LinkedList *, void *);
+void dtLinkedListSort(LinkedList * linkedList);
+
+int dtLinkedListIsEmpty(const LinkedList * linkedList);
+
+int dtLinkedListAdd(LinkedList * linkedList, const void * data);
+int dtLinkedListRemove(LinkedList * linkedList, const void * data);
+int dtLinkedListRemoveAt(LinkedList * linkedList, const size_t index);
+int dtLinkedListInsert(LinkedList * linkedList, const void * data, const size_t index);
+int dtLinkedListGetFrom(const LinkedList * linkedList, void * data, const size_t index);
 
 /*
-// Node
-struct t{
-	Data element;
-	DynamicArray child;
-	DynamicArray sibling;
-};
-size_tdef struct t Mytip;
-// Tree
-struct tree{
-	DynamicArray level;
-	DataFunctions func;
-};
-size_tdef struct tree Tree;
-*/
+ * Tree
+ */
+
+typedef struct _Node{
+	void * Data;
+	DynamicArray childs;
+} Node;
+
+typedef struct _Tree{
+	Node * Root;
+	StructDataInfo Info;
+} Tree;
+
+void dtTreeInit(Tree * tree, StructDataInfo Info);
+void dtTreeReset(Tree * tree);
+void dtTreeClear(Tree * tree);
+
+
 /*
-// Node
-struct node{
-	DataAddress element;
-	DynamicArray childs; //Node0, Node1, Node2, ...,
-};
-size_tdef struct node * Node;
-// Tree
-struct tree{
-	Node root;
-	Node selected;
-	Strct4DataPointer func;
-};
-size_tdef struct tree Tree;
-void initTree(Tree *, Strct4DataPointer);
+
 void clearTree(Tree *);
 int isEmptyTree(const Tree *);
 */
@@ -102,6 +104,8 @@ int isEmptyTree(const Tree *);
 void setNodes(Node, int, int);
 Tree initMyTree(int);
 */
+
+
 
 /*
 // Stack
@@ -127,4 +131,5 @@ int isEmptyQueue(Queue);
 int dequeue(Queue, Data *);
 int enqueue(Queue, Data *);
 int peekQueue(Queue, Data *); */
+
 #endif /* DATASTRUCTURE_H_ */
