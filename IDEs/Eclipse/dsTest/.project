@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>DataStructures</name>
+	<name>dsTest</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -27,12 +27,12 @@
 		<link>
 			<name>DS</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/DS</locationURI>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/DS</locationURI>
 		</link>
 		<link>
 			<name>Test</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-2-PROJECT_LOC%7D/Test</locationURI>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/Test</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
