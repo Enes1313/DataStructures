@@ -31,13 +31,13 @@ int main(void)
 
 void testDynamicArray()
 {
-	int i, x;
+	size_t i, x;
 	eaDSDynamicArray dynamicArray;
 	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
 
 	eaDSDynamicArrayInit(&dynamicArray, info);
 
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	for(i = 1; i < 8; i++)
 	{
@@ -80,7 +80,7 @@ void testLinkedList()
 
 	eaDSLinkedListInit(&linkedList, info);
 
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	for(i = 1; i < 8; i++)
 	{

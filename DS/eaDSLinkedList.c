@@ -111,7 +111,7 @@ int eaDSLinkedListRemove(eaDSLinkedList * linkedList, const void * data)
 
 int eaDSLinkedListRemoveAt(eaDSLinkedList * linkedList, const size_t index)
 {
-	int i;
+	size_t i;
 	ItemLL * iter = linkedList->Head;
 
 	if (0 != index)
@@ -141,7 +141,7 @@ int eaDSLinkedListRemoveAt(eaDSLinkedList * linkedList, const size_t index)
 
 int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const size_t index)
 {
-	int i;
+	size_t i;
 	ItemLL * iter = linkedList->Head, * tmp;
 
 	if (0 != index)
@@ -183,7 +183,7 @@ int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const s
 
 int eaDSLinkedListGetFrom(const eaDSLinkedList * linkedList, void * data, const size_t index)
 {
-	int i;
+	size_t i;
 	ItemLL * iter = linkedList->Head;
 
 	if (0 != index)
