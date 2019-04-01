@@ -41,7 +41,7 @@ void testDynamicArray()
 
 	for(i = 1; i < 8; i++)
 	{
-		printf("DynamicArray'e ekleniyor : %d sayisi eklendi\n", x = rand() % 50);
+		printf("DynamicArray'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
 		eaDSDynamicArrayAdd(&dynamicArray, &x);
 	}
 
@@ -57,7 +57,7 @@ void testDynamicArray()
 	for(i = 1; i <= eaDSDynamicArrayGetCount(&dynamicArray); i++)
 	{
 		eaDSDynamicArrayGetFrom(&dynamicArray, &x, i);
-		printf("DynamicArray'den alınıyor : %d. eleman %d\n", i, x);
+		printf("DynamicArray'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
 	printf("DynamicArray sıralanıyor...\n");
@@ -66,7 +66,7 @@ void testDynamicArray()
 	for(i = 1; i <= eaDSDynamicArrayGetCount(&dynamicArray); i++)
 	{
 		eaDSDynamicArrayGetFrom(&dynamicArray, &x, i);
-		printf("DynamicArray'den alınıyor : %d. eleman %d\n", i, x);
+		printf("DynamicArray'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
 	eaDSDynamicArrayClear(&dynamicArray);
@@ -74,7 +74,7 @@ void testDynamicArray()
 
 void testLinkedList()
 {
-	int i, x;
+	size_t i, x;
 	eaDSLinkedList linkedList;
 	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
 
@@ -84,7 +84,7 @@ void testLinkedList()
 
 	for(i = 1; i < 8; i++)
 	{
-		printf("LinkedList'e ekleniyor : %d sayisi eklendi\n", x = rand() % 50);
+		printf("LinkedList'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
 		eaDSLinkedListAdd(&linkedList, &x);
 	}
 
@@ -99,7 +99,7 @@ void testLinkedList()
 
 	for(i = 1; !eaDSLinkedListGetFrom(&linkedList, &x, i); i++)
 	{
-		printf("LinkedList'den alınıyor : %d. eleman %d\n", i, x);
+		printf("LinkedList'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
 	printf("LinkedList sıralanıyor...\n");
@@ -107,7 +107,7 @@ void testLinkedList()
 
 	for(i = 1; !eaDSLinkedListGetFrom(&linkedList, &x, i); i++)
 	{
-		printf("LinkedList'den alınıyor : %d. eleman %d\n", i, x);
+		printf("LinkedList'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
 	eaDSLinkedListClear(&linkedList);
