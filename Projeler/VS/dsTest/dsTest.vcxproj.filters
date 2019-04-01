@@ -15,42 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ds\eaDSDynamicArray.c">
+    <ClCompile Include="..\..\..\ds\eaDSDynamicArray.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ds\eaDSLinkedList.c">
+    <ClCompile Include="..\..\..\ds\eaDSLinkedList.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ds\eaDSQueue.c">
+    <ClCompile Include="..\..\..\ds\eaDSQueue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ds\eaDSStack.c">
+    <ClCompile Include="..\..\..\ds\eaDSStack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ds\eaDSTree.c">
+    <ClCompile Include="..\..\..\ds\eaDSTree.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\test\main.c">
+    <ClCompile Include="..\..\..\test\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ds\inc\eaDSData.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ds\inc\eaDSDynamicArray.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSDynamicArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ds\inc\eaDSLinkedList.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSLinkedList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ds\inc\eaDSQueue.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ds\inc\eaDSStack.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ds\inc\eaDSTree.h">
+    <ClInclude Include="..\..\..\ds\inc\eaDSTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

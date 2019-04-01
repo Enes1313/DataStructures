@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{4B2E81FD-CAE1-424E-8A37-7587563FF76E}</ProjectGuid>
+    <ProjectGuid>{27E2D97E-216D-4A5B-94F0-176CDE586FD8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -64,7 +64,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\..\DS\inc;$(IncludePath)</IncludePath>
+    <IncludePath>C:\EA\DataStructures\DS\inc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -99,20 +99,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ds\eaDSDynamicArray.c" />
-    <ClCompile Include="..\..\ds\eaDSLinkedList.c" />
-    <ClCompile Include="..\..\ds\eaDSQueue.c" />
-    <ClCompile Include="..\..\ds\eaDSStack.c" />
-    <ClCompile Include="..\..\ds\eaDSTree.c" />
-    <ClCompile Include="..\..\test\main.c" />
+    <ClCompile Include="..\..\..\ds\eaDSDynamicArray.c" />
+    <ClCompile Include="..\..\..\ds\eaDSLinkedList.c" />
+    <ClCompile Include="..\..\..\ds\eaDSQueue.c" />
+    <ClCompile Include="..\..\..\ds\eaDSStack.c" />
+    <ClCompile Include="..\..\..\ds\eaDSTree.c" />
+    <ClCompile Include="..\..\..\test\main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\ds\inc\eaDSData.h" />
-    <ClInclude Include="..\..\ds\inc\eaDSDynamicArray.h" />
-    <ClInclude Include="..\..\ds\inc\eaDSLinkedList.h" />
-    <ClInclude Include="..\..\ds\inc\eaDSQueue.h" />
-    <ClInclude Include="..\..\ds\inc\eaDSStack.h" />
-    <ClInclude Include="..\..\ds\inc\eaDSTree.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSData.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSDynamicArray.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSLinkedList.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSQueue.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSStack.h" />
+    <ClInclude Include="..\..\..\ds\inc\eaDSTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
