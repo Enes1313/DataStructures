@@ -15,16 +15,19 @@
 
 #include "eaDSDynamicArray.h"
 #include "eaDSLinkedList.h"
+#include "eaDSStack.h"
 #include "eaDSTree.h"
 
 void testDynamicArray();
 void testLinkedList();
+void testStack();
 void testTree();
 
 int main(void)
 {
 	//testDynamicArray();
-	testLinkedList();
+	//testLinkedList();
+	testStack();
 	//testTree();
 	getchar();
 	return EXIT_SUCCESS;
@@ -112,6 +115,31 @@ void testLinkedList()
 	}
 
 	eaDSLinkedListClear(&linkedList);
+}
+
+void testStack()
+{
+	size_t i, x;
+	eaDSStack stack;
+	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+
+	eaDSStackInit(&stack, info);
+
+	srand((unsigned int)time(NULL));
+
+	for (i = 1; i < 8; i++)
+	{
+		printf("Stack'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
+		eaDSStackPush(&stack, &x);
+	}
+
+	while (eaDSStackGetCount(&stack))
+	{
+		eaDSStackPop(&stack, &x);
+		printf("Stack'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+	}
+
+	eaDSStackClear(&stack);
 }
 
 void testTree()

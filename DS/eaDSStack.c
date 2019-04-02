@@ -9,72 +9,108 @@
 #include <stdlib.h>
 #include "eaDSStack.h"
 
-// Stack
 /*
-Stack createStack()
+ * Stack
+ */
+
+void eaDSStackInit(eaDSStack * stack, StructDataInfo info)
 {
-	Stack s = (Stack) calloc(1, sizeof(struct stack));
-	if(s == NULL)
+	stack->Info = info;
+	stack->Count = 0;
+	stack->Capacity = 4;
+	stack->Data = (void **)malloc(stack->Capacity * sizeof(void *));
+
+	if (stack->Data == NULL)
 	{
-		perror("Error: createStack");
-		return NULL;
+		perror("Error: eaDSStackInit\n");
 	}
-	return s;
 }
-void clearStack(Stack s)
+
+void eaDSStackReset(eaDSStack * stack)
 {
-	while(!isEmptyStack(s))
+	while (eaDSStackGetCount(stack))
 	{
-		Item tmp = s->top;
-		s->top = tmp->next;
-		tmp->data.clearData(&(tmp->data));
-		free(tmp);
+		stack->Info.dataClear(stack->Data[--stack->Count]);
 	}
-	free(s);
+
+	stack->Capacity = 4;
 }
-int isEmptyStack(Stack s)
+
+void eaDSStackClear(eaDSStack * stack)
 {
-	if(s->top == NULL)
-		return 1;
-	return 0;
-}
-int pop(Stack s, Data * pd)
-{
-	if(!isEmptyStack(s))
+	eaDSStackReset(stack);
+
+	if (stack->Data != NULL)
 	{
-		Item tmp = s->top;
-		s->top = tmp->next;
-		tmp->data.copyData(pd, &(tmp->data));
-		tmp->data.clearData(&(tmp->data));
-		free(tmp);
-		return 1;
+		free(stack->Data);
 	}
-	return 0;
 }
-int push(Stack s, Data * pd)
+
+size_t eaDSStackGetCount(const eaDSStack * stack)
 {
-	Item tmp = (Item) malloc(sizeof(struct item));
-	if(tmp == NULL)
-	{
-		perror("Error: push");
-		return 0;
-	}
-	tmp->data.creatData(&(tmp->data));
-	tmp->data.copyData(&(tmp->data), pd);
-	if(isEmptyStack(s))
-		tmp->next = NULL;
-	else
-		tmp->next = s->top;
-	s->top = tmp;
-	return 1;
+	return stack->Count;
 }
-int peekStack(Stack s, Data * pd)
+
+size_t eaDSStackGetCapacity(const eaDSStack * stack)
 {
-	if(!isEmptyStack(s))
-	{
-		pd->copyData(pd, &(s->top->data));
-		return 1;
-	}
-	return 0;
+	return stack->Capacity;
 }
-*/
+
+int eaDSStackPop(eaDSStack * stack, const void * data)
+{
+	size_t cnt = eaDSStackGetCount(stack);
+
+	if (0 < cnt)
+	{
+		stack->Info.dataCopy(data, stack->Data[cnt - 1], stack->Info.SumSize);
+		stack->Info.dataClear(stack->Data[cnt - 1]);
+		stack->Data[cnt - 1] = NULL;
+		stack->Count--;
+
+		return EXIT_SUCCESS;
+	}
+
+	return EXIT_FAILURE;
+}
+
+int eaDSStackPush(eaDSStack * stack, const void * data)
+{
+	size_t i;
+
+	if ((stack->Count + 1) == stack->Capacity)
+	{
+		stack->Capacity = stack->Count + 4;
+		void ** tmp = (void **)malloc(stack->Capacity * sizeof(void *));
+
+		if (NULL == tmp)
+		{
+			perror("Error: eaDSStackPush\n");
+			return EXIT_FAILURE;
+		}
+
+		for (i = 0; i < stack->Count; i++)
+		{
+			tmp[i] = stack->Data[i];
+		}
+
+		free(stack->Data);
+		stack->Data = tmp;
+	}
+
+	stack->Data[stack->Count] = stack->Info.dataCreat(stack->Info.SumSize);
+	stack->Info.dataCopy(stack->Data[stack->Count], data, stack->Info.SumSize);
+	stack->Count++;
+
+	return EXIT_SUCCESS;
+}
+
+int eaDSStackPeekStack(eaDSStack * stack, const void * data)
+{
+	if (eaDSStackGetCount(stack))
+	{
+		stack->Info.dataCopy(data, stack->Data[eaDSStackGetCount(stack) - 1], stack->Info.SumSize);
+		return EXIT_SUCCESS;
+	}
+
+	return EXIT_FAILURE;
+}

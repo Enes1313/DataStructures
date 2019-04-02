@@ -9,18 +9,26 @@
 #define EADSSTACK_H_
 
 #include "eaDSData.h"
-/*
-// Stack
-struct stack{
-	Item top;
-};
-size_tdef struct stack * Stack;
-Stack createStack();
-void clearStack(Stack);
-int isEmptyStack(Stack);
-int pop(Stack, Data *);
-int push(Stack, Data *);
-int peekStack(Stack, Data *);
 
-*/
+/*
+ * Stack
+ */
+
+typedef struct _eaDSStack {
+	void ** Data;
+	size_t Count, Capacity;
+	StructDataInfo Info;
+} eaDSStack;
+
+void eaDSStackInit(eaDSStack * stack, StructDataInfo info);
+void eaDSStackReset(eaDSStack * stack);
+void eaDSStackClear(eaDSStack * stack);
+
+size_t eaDSStackGetCount(const eaDSStack * stack);
+size_t eaDSStackGetCapacity(const eaDSStack * stack);
+
+int eaDSStackPop(eaDSStack * stack, const void * data);
+int eaDSStackPush(eaDSStack * stack, const void * data);
+int eaDSStackPeekStack(eaDSStack * stack, const void * data);
+
 #endif /* EADSSTACK_H_ */
