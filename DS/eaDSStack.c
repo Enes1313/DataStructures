@@ -56,7 +56,7 @@ size_t eaDSStackGetCapacity(const eaDSStack * stack)
 	return stack->Capacity;
 }
 
-int eaDSStackPop(eaDSStack * stack, const void * data)
+int eaDSStackPop(eaDSStack * stack, void * data)
 {
 	size_t cnt = eaDSStackGetCount(stack);
 
@@ -104,7 +104,7 @@ int eaDSStackPush(eaDSStack * stack, const void * data)
 	return EXIT_SUCCESS;
 }
 
-int eaDSStackPeekStack(eaDSStack * stack, const void * data)
+int eaDSStackPeekStack(eaDSStack * stack, void * data)
 {
 	if (eaDSStackGetCount(stack))
 	{
