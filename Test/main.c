@@ -26,6 +26,7 @@ int main(void)
 	//testDynamicArray();
 	testLinkedList();
 	//testTree();
+	getchar();
 	return EXIT_SUCCESS;
 }
 
