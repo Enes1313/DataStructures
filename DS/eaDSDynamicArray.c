@@ -123,6 +123,7 @@ int eaDSDynamicArrayRemove(eaDSDynamicArray * dynamicArray, const void * data)
 			return EXIT_SUCCESS;
 		}
 	}
+
 	return EXIT_FAILURE;
 }
 
@@ -140,6 +141,7 @@ int eaDSDynamicArrayRemoveAt(eaDSDynamicArray * dynamicArray, const size_t index
 		dynamicArray->Count--;
 		return EXIT_SUCCESS;
 	}
+
 	return EXIT_FAILURE;
 }
 

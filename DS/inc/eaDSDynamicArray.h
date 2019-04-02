@@ -9,6 +9,7 @@
 #define EADSDYNAMICARRAY_H
 
 #include "eaDSData.h"
+
 /*
  * DynamicArray
  */
@@ -19,7 +20,7 @@ typedef struct _eaDSDynamicArray{
 	StructDataInfo Info;
 } eaDSDynamicArray;
 
-void eaDSDynamicArrayInit(eaDSDynamicArray * dynamicArray, StructDataInfo Info);
+void eaDSDynamicArrayInit(eaDSDynamicArray * dynamicArray, StructDataInfo info);
 void eaDSDynamicArrayReset(eaDSDynamicArray * dynamicArray);
 void eaDSDynamicArrayClear(eaDSDynamicArray * dynamicArray);
 
