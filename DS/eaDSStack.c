@@ -104,7 +104,7 @@ int eaDSStackPush(eaDSStack * stack, const void * data)
 	return EXIT_SUCCESS;
 }
 
-int eaDSStackPeekStack(eaDSStack * stack, void * data)
+int eaDSStackPeekStack(const eaDSStack * stack, void * data)
 {
 	if (eaDSStackGetCount(stack))
 	{

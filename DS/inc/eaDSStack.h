@@ -29,6 +29,6 @@ size_t eaDSStackGetCapacity(const eaDSStack * stack);
 
 int eaDSStackPop(eaDSStack * stack, void * data);
 int eaDSStackPush(eaDSStack * stack, const void * data);
-int eaDSStackPeekStack(eaDSStack * stack, void * data);
+int eaDSStackPeekStack(const eaDSStack * stack, void * data);
 
 #endif /* EADSSTACK_H_ */
