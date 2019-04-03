@@ -148,26 +148,26 @@ void testStack()
 void testQueue()
 {
 	size_t i, x;
-	eaDSQueue stack;
+	eaDSQueue queue;
 	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp };
 
-	eaDSQueueInit(&stack, info);
+	eaDSQueueInit(&queue, info);
 
 	srand((unsigned int)time(NULL));
 
 	for (i = 1; i < 8; i++)
 	{
 		printf("Queue'ye ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
-		eaDSQueueEnqueue(&stack, &x);
+		eaDSQueueEnqueue(&queue, &x);
 	}
 
-	for (i = 1; !eaDSQueueIsEmpty(&stack); i++)
+	for (i = 1; !eaDSQueueIsEmpty(&queue); i++)
 	{
-		eaDSQueueDequeue(&stack, &x);
+		eaDSQueueDequeue(&queue, &x);
 		printf("Queue'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
-	eaDSStackClear(&stack);
+	eaDSQueueClear(&queue);
 }
 
 void testTree()
