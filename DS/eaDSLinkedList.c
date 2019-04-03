@@ -13,11 +13,11 @@
  * LinkedList
  */
 
-void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo funcs)
+void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo info)
 {
 	linkedList->Head = NULL;
 	linkedList->Tail = NULL;
-	linkedList->Funcs = funcs;
+	linkedList->Info = info;
 }
 
 void eaDSLinkedListReset(eaDSLinkedList * linkedList)
@@ -27,10 +27,11 @@ void eaDSLinkedListReset(eaDSLinkedList * linkedList)
 		ItemLL * tmp = linkedList->Head;
 
 		linkedList->Head = tmp->Next;
-		linkedList->Funcs.dataClear(tmp->Data);
+		linkedList->Info.dataClear(tmp->Data);
 
 		free(tmp);
 	}
+
 	linkedList->Tail = NULL;
 }
 
@@ -50,6 +51,7 @@ int eaDSLinkedListIsEmpty(const eaDSLinkedList * linkedList)
 	{
 		return 1;
 	}
+
 	return 0;
 }
 
@@ -59,13 +61,13 @@ int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data)
 
 	if((tmp = (ItemLL *) malloc(sizeof(ItemLL))) == NULL)
 	{
-		perror("Error: eaDSLinkedListInsert\n");
+		perror("Error: eaDSLinkedListAdd\n");
 		return EXIT_FAILURE;
 	}
 
 	tmp->Next = NULL;
-	tmp->Data = linkedList->Funcs.dataCreat(linkedList->Funcs.SumSize);
-	linkedList->Funcs.dataCopy(tmp->Data, data, linkedList->Funcs.SumSize);
+	tmp->Data = linkedList->Info.dataCreat(linkedList->Info.SumSize);
+	linkedList->Info.dataCopy(tmp->Data, data, linkedList->Info.SumSize);
 
 	if (iter == NULL)
 	{
@@ -73,12 +75,7 @@ int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data)
 	}
 	else
 	{
-		while (iter->Next != NULL)
-		{
-			iter = iter->Next;
-		}
-
-		iter->Next = tmp;
+		linkedList->Tail->Next = tmp;
 	}
 
 	linkedList->Tail = tmp;
@@ -88,21 +85,34 @@ int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data)
 
 int eaDSLinkedListRemove(eaDSLinkedList * linkedList, const void * data)
 {
-	int i;
 	ItemLL * iter = linkedList->Head;
 
-	for (i = 1; 0 != linkedList->Funcs.dataEqual(data, iter->Data, linkedList->Funcs.SumSize); i++)
+	while (0 != linkedList->Info.dataEqual(data, iter->Data, linkedList->Info.SumSize))
 	{
-		if (iter->Next == NULL)
+		if (iter->Next == linkedList->Tail)
 		{
-			return EXIT_FAILURE;
+			if (0 == linkedList->Info.dataEqual(data, iter->Next->Data, linkedList->Info.SumSize))
+			{
+				linkedList->Info.dataClear(iter->Next->Data);
+				free(iter->Next);
+				iter->Next = NULL;
+				linkedList->Tail = iter;
+
+				return EXIT_SUCCESS;
+			}
+			else
+			{
+				return EXIT_FAILURE;
+			}
 		}
+
 		iter = iter->Next;
 	}
 
-	linkedList->Funcs.dataClear(iter->Data);
-	iter->Data = iter->Next->Data;
+	linkedList->Info.dataClear(iter->Data);
+
 	void * p = iter->Next->Next;
+	iter->Data = iter->Next->Data;
 	free(iter->Next);
 	iter->Next = p;
 
@@ -118,14 +128,25 @@ int eaDSLinkedListRemoveAt(eaDSLinkedList * linkedList, const size_t index)
 	{
 		for (i = 1; i < index; i++)
 		{
+			if ((iter->Next == linkedList->Tail) && ((i + 1) == index))
+			{
+				linkedList->Info.dataClear(iter->Next->Data);
+				free(iter->Next);
+				iter->Next = NULL;
+				linkedList->Tail = iter;
+
+				return EXIT_SUCCESS;
+			}
+
 			if (iter->Next == NULL)
 			{
 				return EXIT_FAILURE;
 			}
+
 			iter = iter->Next;
 		}
 
-		linkedList->Funcs.dataClear(iter->Data);
+		linkedList->Info.dataClear(iter->Data);
 		iter->Data = iter->Next->Data;
 		void * p = iter->Next->Next;
 		free(iter->Next);
@@ -154,7 +175,7 @@ int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const s
 
 		for (i = 1; i < index; i++)
 		{
-			if ((iter->Next == NULL) && ((i + 1) != index))
+			if (iter->Next == NULL)
 			{
 				return EXIT_FAILURE;
 			}
@@ -165,8 +186,8 @@ int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const s
 		tmp->Next = iter->Next;
 		iter->Next = tmp;
 
-		iter->Data = linkedList->Funcs.dataCreat(linkedList->Funcs.SumSize);
-		linkedList->Funcs.dataCopy(iter->Data, data, linkedList->Funcs.SumSize);
+		iter->Data = linkedList->Info.dataCreat(linkedList->Info.SumSize);
+		linkedList->Info.dataCopy(iter->Data, data, linkedList->Info.SumSize);
 
 		if(tmp->Next == NULL)
 		{
@@ -197,7 +218,7 @@ int eaDSLinkedListGetFrom(const eaDSLinkedList * linkedList, void * data, const 
 			iter = iter->Next;
 		}
 
-		linkedList->Funcs.dataCopy(data, iter->Data, linkedList->Funcs.SumSize);
+		linkedList->Info.dataCopy(data, iter->Data, linkedList->Info.SumSize);
 	}
 	else
 	{

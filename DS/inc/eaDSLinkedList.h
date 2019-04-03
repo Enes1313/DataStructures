@@ -22,10 +22,10 @@ typedef struct _ItemLL{
 typedef struct _eaDSLinkedList{
 	ItemLL * Head;
 	ItemLL * Tail;
-	StructDataInfo Funcs;
+	StructDataInfo Info;
 } eaDSLinkedList;
 
-void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo Info);
+void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo info);
 void eaDSLinkedListReset(eaDSLinkedList * linkedList);
 void eaDSLinkedListClear(eaDSLinkedList * linkedList);
 
