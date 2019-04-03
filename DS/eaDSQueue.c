@@ -9,73 +9,105 @@
 #include <stdlib.h>
 #include "eaDSQueue.h"
 
-//Queue
 /*
-Queue createQueue()
+ * Queue
+ */
+
+void eaDSQueueInit(eaDSQueue * queue, StructDataInfo info)
 {
-	Queue q = (Queue) calloc(1, sizeof(struct queue));
-	if(q == NULL)
-	{
-		perror("Error: createQueue");
-		return NULL;
-	}
-	return q;
+	queue->Front = NULL;
+	queue->Rear = NULL;
+	queue->Info = info;
 }
-void clearQueue(Queue q)
+
+void eaDSQueueReset(eaDSQueue * queue)
 {
-	while(q->front != NULL)
+	while (!eaDSQueueIsEmpty(queue))
 	{
-		Item tmp = q->front;
-		q->front = tmp->next;
-		tmp->data.clearData(&(tmp->data));
+		ItemQue * tmp = queue->Front;
+
+		queue->Front = tmp->Next;
+		queue->Info.dataClear(tmp->Data);
+
 		free(tmp);
 	}
-	free(q);
+	queue->Front = NULL;
 }
-int isEmptyQueue(Queue q)
+
+void eaDSQueueClear(eaDSQueue * queue)
 {
-	if(q->front == NULL)
-		return 1;
-	return 0;
+	eaDSQueueReset(queue);
 }
-int dequeue(Queue q, Data * pd)
+
+int eaDSQueueIsEmpty(const eaDSQueue * queue)
 {
-	if(!isEmptyQueue(q))
+	if (queue->Front == NULL)
 	{
-		Item tmp = q->front;
-		q->front = tmp->next;
-		tmp->data.copyData(pd, &(tmp->data));
-		tmp->data.clearData(&(tmp->data));
-		free(tmp);
 		return 1;
 	}
+
 	return 0;
 }
-int enqueue(Queue q, Data * pd)
+
+int eaDSQueueDequeue(eaDSQueue * queue, void * data)
 {
-	Item tmp = (Item) malloc(sizeof(struct item));
-	if(tmp == NULL)
+	if (queue->Front == NULL)
 	{
-		perror("Error: enqueue");
-		return 0;
+		return EXIT_FAILURE;
 	}
-	tmp->data.creatData(&(tmp->data));
-	tmp->data.copyData(&(tmp->data), pd);
-	tmp->next = NULL;
-	if(isEmptyQueue(q))
-		q->front = tmp;
+
+	queue->Info.dataCopy(data, queue->Front->Data, queue->Info.SumSize);
+	queue->Info.dataClear(queue->Front->Data);
+
+	void * p = queue->Front;
+	queue->Front = queue->Front->Next;
+	free(p);
+
+	if (queue->Front == NULL)
+	{
+		queue->Rear = NULL;
+	}
+
+	return EXIT_SUCCESS;
+}
+
+int eaDSQueueEnqueue(eaDSQueue * queue, const void * data)
+{
+	ItemQue * iter = queue->Front, *tmp;
+
+	if ((tmp = (ItemQue *)malloc(sizeof(ItemQue))) == NULL)
+	{
+		perror("Error: eaDSQueueEnqueue\n");
+		return EXIT_FAILURE;
+	}
+
+	tmp->Next = NULL;
+	tmp->Data = queue->Info.dataCreat(queue->Info.SumSize);
+	queue->Info.dataCopy(tmp->Data, data, queue->Info.SumSize);
+
+	if (iter == NULL)
+	{
+		queue->Front = tmp;
+	}
 	else
-		q->rear->next = tmp;
-	q->rear = tmp;
-	return 1;
-}
-int peekQueue(Queue q, Data * pd)
-{
-	if(!isEmptyQueue(q))
 	{
-		pd->copyData(pd, &(q->front->data));
-		return 1;
+		queue->Rear->Next = tmp;
 	}
-	return 0;
+
+	queue->Rear = tmp;
+	
+	return EXIT_SUCCESS;
 }
-*/
+
+int eaDSQueuePeekQueue(const eaDSQueue * queue, void * data)
+{
+	if (queue->Front == NULL)
+	{
+		return EXIT_FAILURE;
+	}
+
+	queue->Info.dataCopy(data, queue->Front->Data, queue->Info.SumSize);
+
+	return EXIT_SUCCESS;
+}
+

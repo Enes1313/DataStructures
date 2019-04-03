@@ -9,18 +9,30 @@
 #define EADSQUEUE_H_
 
 #include "eaDSData.h"
+
 /*
-// Queue
-struct queue{
-	Item front;
-	Item rear;
-};
-size_tdef struct queue * Queue;
-Queue createQueue();
-void clearQueue(Queue);
-int isEmptyQueue(Queue);
-int dequeue(Queue, Data *);
-int enqueue(Queue, Data *);
-int peekQueue(Queue, Data *);
-*/
+ * Queue
+ */
+
+typedef struct _ItemQue {
+	void * Data;
+	struct _ItemQue * Next;
+} ItemQue;
+
+typedef struct _eaDSQueue {
+	ItemQue * Front;
+	ItemQue * Rear;
+	StructDataInfo Info;
+} eaDSQueue;
+
+void eaDSQueueInit(eaDSQueue * queue, StructDataInfo info);
+void eaDSQueueReset(eaDSQueue * queue);
+void eaDSQueueClear(eaDSQueue * queue);
+
+int eaDSQueueIsEmpty(const eaDSQueue * queue);
+
+int eaDSQueueDequeue(eaDSQueue * queue, void * data);
+int eaDSQueueEnqueue(eaDSQueue * queue, const void * data);
+int eaDSQueuePeekQueue(const eaDSQueue * queue, void * data);
+
 #endif /* EADSQUEUE_H_ */

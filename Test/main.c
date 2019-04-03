@@ -16,18 +16,21 @@
 #include "eaDSDynamicArray.h"
 #include "eaDSLinkedList.h"
 #include "eaDSStack.h"
+#include "eaDSQueue.h"
 #include "eaDSTree.h"
 
 void testDynamicArray();
 void testLinkedList();
 void testStack();
+void testQueue();
 void testTree();
 
 int main(void)
 {
 	//testDynamicArray();
 	//testLinkedList();
-	testStack();
+	//testStack();
+	testQueue();
 	//testTree();
 	getchar();
 	return EXIT_SUCCESS;
@@ -136,7 +139,32 @@ void testStack()
 	while (eaDSStackGetCount(&stack))
 	{
 		eaDSStackPop(&stack, &x);
-		printf("Stack'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		printf("Stack'den alınıyor : %d. eleman %d\n", (int)--i, (int)x);
+	}
+
+	eaDSStackClear(&stack);
+}
+
+void testQueue()
+{
+	size_t i, x;
+	eaDSQueue stack;
+	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp };
+
+	eaDSQueueInit(&stack, info);
+
+	srand((unsigned int)time(NULL));
+
+	for (i = 1; i < 8; i++)
+	{
+		printf("Queue'ye ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
+		eaDSQueueEnqueue(&stack, &x);
+	}
+
+	for (i = 1; !eaDSQueueIsEmpty(&stack); i++)
+	{
+		eaDSQueueDequeue(&stack, &x);
+		printf("Queue'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
 	}
 
 	eaDSStackClear(&stack);
