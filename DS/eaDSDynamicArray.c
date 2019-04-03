@@ -32,8 +32,6 @@ void eaDSDynamicArrayReset(eaDSDynamicArray * dynamicArray)
 	{
 		dynamicArray->Info.dataClear(dynamicArray->Data[--dynamicArray->Count]);
 	}
-
-	dynamicArray->Capacity = 4;
 }
 
 void eaDSDynamicArrayClear(eaDSDynamicArray * dynamicArray)

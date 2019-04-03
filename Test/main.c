@@ -27,10 +27,10 @@ void testTree();
 
 int main(void)
 {
-	//testDynamicArray();
+	testDynamicArray();
 	//testLinkedList();
 	//testStack();
-	testQueue();
+	//testQueue();
 	//testTree();
 	getchar();
 	return EXIT_SUCCESS;
