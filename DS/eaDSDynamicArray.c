@@ -171,7 +171,7 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray * dynamicArray, const void * data, c
 			dynamicArray->Data = tmp;
 		}
 
-		for (j = cnt; j >= index - 1; j--)
+		for (j = cnt; j > index - 1; j--)
 		{
 			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
 		}
