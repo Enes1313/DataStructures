@@ -1,42 +1,169 @@
-/*
- * eaDSLinkedList.h
- *
- *  Created on: 31 03 2019
- *      Author: Enes AYDIN
- */
+/********************************************************************************
+* DESCRIPTION : It is a handly/fastly/amazing implementation of Linked List.
+* NOTES       : None
+* STANDARD    : C90 and up
+* Author      : Enes AYDIN
+********************************************************************************/
 
 #ifndef EADSLINKEDLIST_H_
 #define EADSLINKEDLIST_H_
 
 #include "eaDSData.h"
 
-/*
- * LinkedList
- */
+/********************************************************************************
+* DESCRIPTION : The data type used for a linked list.
+* NOTES       : Define "eaDSLinkedList lL;" or "eaDSLinkedList lL = NULL;".
+********************************************************************************/
+typedef struct _eaDSLinkedList * eaDSLinkedList;
 
-typedef struct _ItemLL{
-	void * Data;
-	struct _ItemLL * Next;
-} ItemLL;
+/********************************************************************************
+* DESCRIPTION : Initialize the linked list with the given structure.
+* INPUTS      :
+*               PARAMETERS :
+*                            info -> A struct which about infos for data.
+*                                    (size, clear, creat, copy, equal)
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address from eaDSLinkedList type or NULL.
+* NOTES       : If "info" will be NULL, It will use default settings.
+*               {sizeof(int), free, malloc, memcpy, memcmp}
+********************************************************************************/
+eaDSLinkedList eaDSLinkedListInit(eaDSDataInfo * info);
 
-typedef struct _eaDSLinkedList{
-	ItemLL * Head;
-	ItemLL * Tail;
-	StructDataInfo Info;
-} eaDSLinkedList;
+/********************************************************************************
+* DESCRIPTION : Reset the linked list. Context of linked list is deleted.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : This function uses clear function given in info struct.
+********************************************************************************/
+void eaDSLinkedListReset(eaDSLinkedList linkedList);
 
-void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo info);
-void eaDSLinkedListReset(eaDSLinkedList * linkedList);
-void eaDSLinkedListClear(eaDSLinkedList * linkedList);
+/********************************************************************************
+* DESCRIPTION : Clear the linked list. The address must not be used later.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : This function uses clear function given in info struct.
+********************************************************************************/
+void eaDSLinkedListClear(eaDSLinkedList linkedList);
 
-void eaDSLinkedListSort(eaDSLinkedList * linkedList);
+/********************************************************************************
+* DESCRIPTION : Sorting operation of the dynamic array.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : TODO
+********************************************************************************/
+void eaDSLinkedListSort(eaDSLinkedList linkedList);
 
-int eaDSLinkedListIsEmpty(const eaDSLinkedList * linkedList);
+/********************************************************************************
+* DESCRIPTION : If linked list is empty, 1 returns
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : 0 or 1
+* NOTES       : If "linkedList" is NULL, the function returns 1.
+********************************************************************************/
+int eaDSLinkedListIsEmpty(const eaDSLinkedList linkedList);
 
-int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data);
-int eaDSLinkedListRemove(eaDSLinkedList * linkedList, const void * data);
-int eaDSLinkedListRemoveAt(eaDSLinkedList * linkedList, const size_t index);
-int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const size_t index);
-int eaDSLinkedListGetFrom(const eaDSLinkedList * linkedList, void * data, const size_t index);
+/********************************************************************************
+* DESCRIPTION : Data is added to linked list.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            data -> Data address to add to the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
+* NOTES       : This function uses creat and copy functions given in info struct.
+********************************************************************************/
+int eaDSLinkedListAdd(eaDSLinkedList linkedList, const void * data);
+
+/********************************************************************************
+* DESCRIPTION : Data is removed from linked list.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            data -> Data address to remove from the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : This function uses free function given in info struct.
+********************************************************************************/
+void eaDSLinkedListRemove(eaDSLinkedList linkedList, const void * data);
+
+/********************************************************************************
+* DESCRIPTION : Data is removed from index of linked list.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            index -> Index of any data in the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : This function uses free function given in info struct.
+********************************************************************************/
+void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index);
+
+/********************************************************************************
+* DESCRIPTION : "data" param is inserted to index of linked list.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            data -> Address to insert to the linked list.
+*                            index -> Index in the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
+* NOTES       : This function uses creat and copy functions given in info struct.
+********************************************************************************/
+int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const size_t index);
+
+/********************************************************************************
+* DESCRIPTION : Data in linked list is taken to "data" param.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            data -> Address to copy from the linked list.
+*                            index -> Index in the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS :
+*                            data -> It is Data in index of the linked list.
+*               GLOBALS    : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
+* NOTES       : This function uses copy function given in info struct.
+********************************************************************************/
+int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const size_t index);
 
 #endif /* EADSLINKEDLIST_H_ */

@@ -16,15 +16,16 @@
 
 typedef struct _Node_Tree{
 	void * Data;
-	eaDSDynamicArray childs;
+	void * Parent;
+	/*eaDSDynamicArray Children;*/
 } Node_Tree;
 
 typedef struct _eaDSTree{
 	Node_Tree * Root;
-	StructDataInfo Info;
+	eaDSDataInfo Info;
 } eaDSTree;
 
-void eaDSTreeInit(eaDSTree * tree, StructDataInfo Info);
+void eaDSTreeInit(eaDSTree * tree, eaDSDataInfo info);
 void eaDSTreeReset(eaDSTree * tree);
 void eaDSTreeClear(eaDSTree * tree);
 

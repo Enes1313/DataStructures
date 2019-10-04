@@ -1,12 +1,9 @@
-/*
- ============================================================================
- Name        : main.c
- Author      : Enes AYDIN
- Version     :
- Copyright   : Copyright dediğin nedir ki gülüm?
- Description : Data Structures with C
- ============================================================================
- */
+/********************************************************************************
+* DESCRIPTION : It is test program for data structures.
+* NOTES       : None
+* STANDARD    : C90 and up
+* Author      : Enes AYDIN
+********************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,12 +24,16 @@ void testTree();
 
 int main(void)
 {
+	srand((unsigned int)time(NULL));
+
 	testDynamicArray();
-	//testLinkedList();
-	//testStack();
-	//testQueue();
-	//testTree();
-	getchar();
+	testLinkedList();
+	testStack();
+	testQueue();
+	/*
+	 * testTree();
+	 */
+
 	return EXIT_SUCCESS;
 }
 
@@ -40,140 +41,316 @@ void testDynamicArray()
 {
 	size_t i, x;
 	eaDSDynamicArray dynamicArray;
-	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	/*
+	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 */
 
-	eaDSDynamicArrayInit(&dynamicArray, info);
+	puts("********************************************");
+	puts("Dinamik Array");
+	puts("********************************************");
 
-	srand((unsigned int)time(NULL));
-
-	for(i = 1; i < 8; i++)
+	if (NULL == (dynamicArray = eaDSDynamicArrayInit(NULL))) /* &info */
 	{
-		printf("DynamicArray'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
-		eaDSDynamicArrayAdd(&dynamicArray, &x);
+		return;
+	}
+
+	for(i = 0; i < 13; i++)
+	{
+		x = rand() % 50;
+
+		if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
+		{
+			printf("DynamicArray'e eleman eklendi : %d \n", (int)x);
+		}
+		else
+		{
+			puts("DynamicArray'e eleman eklenemedi!");
+		}
 	}
 
 	x = 50;
-	eaDSDynamicArrayInsert(&dynamicArray, &x, 3);
+
+	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(dynamicArray, &x, 2))
+	{
+		printf("DynamicArray'in 3. sirasina eleman eklendi : %d\n", (int)x);
+	}
+	else
+	{
+		puts("DynamicArray'in 3. sirasina eleman eklenemedi!");
+	}
 	x = 51;
-	eaDSDynamicArrayInsert(&dynamicArray, &x, 6);
-	x = 50;
-	eaDSDynamicArrayRemove(&dynamicArray, &x);
-
-	eaDSDynamicArrayRemoveAt(&dynamicArray, 2);
-
-	for(i = 1; i <= eaDSDynamicArrayGetCount(&dynamicArray); i++)
+/*
+	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(dynamicArray, &x, 6))
 	{
-		eaDSDynamicArrayGetFrom(&dynamicArray, &x, i);
-		printf("DynamicArray'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		printf("DynamicArray'in 6. sirasina eleman eklendi : %d\n", (int)x);
+	}
+	else
+	{
+		puts("DynamicArray'in 6. sirasina eleman eklenemedi!");
+	}*/
+
+	x = 10;
+
+	printf("DynamicArray'den siliniyor : %d\n", (int)x);
+	eaDSDynamicArrayRemove(dynamicArray, &x);
+
+	printf("DynamicArray'den 2. eleman atiliyor!\n");
+	eaDSDynamicArrayRemoveAt(dynamicArray, 1);
+
+	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
+	{
+		if(EXIT_SUCCESS == eaDSDynamicArrayGetFrom(dynamicArray, &x, i))
+		{
+			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+		}
+		else
+		{
+			printf("DynamicArray'den %d. eleman alma basarisiz\n", (int)i + 1);
+		}
 	}
 
-	printf("DynamicArray sıralanıyor...\n");
-	eaDSDynamicArraySort(&dynamicArray);
+	printf("DynamicArray siralaniyor...\n");
+	eaDSDynamicArraySort(dynamicArray);
 
-	for(i = 1; i <= eaDSDynamicArrayGetCount(&dynamicArray); i++)
+	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
 	{
-		eaDSDynamicArrayGetFrom(&dynamicArray, &x, i);
-		printf("DynamicArray'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		if(EXIT_SUCCESS == eaDSDynamicArrayGetFrom(dynamicArray, &x, i))
+		{
+			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+		}
+		else
+		{
+			printf("DynamicArray'den %d. eleman alma basarisiz\n", (int)i + 1);
+		}
 	}
 
-	eaDSDynamicArrayClear(&dynamicArray);
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+
+	printf("DynamicArray resetleniyor.\n");
+	eaDSDynamicArrayReset(dynamicArray);
+
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+
+	x = rand() % 50;
+
+	if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
+	{
+		printf("DynamicArray'e eleman eklendi : %d\n", (int)x);
+	}
+	else
+	{
+		puts("DynamicArray'e eleman eklenemedi!");
+	}
+
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+
+	printf("DynamicArray siliniyor.\n");
+	eaDSDynamicArrayClear(dynamicArray);
+
+	puts("********************************************");
+	puts("Dinamik Array");
+	puts("********************************************");
 }
 
 void testLinkedList()
 {
 	size_t i, x;
 	eaDSLinkedList linkedList;
-	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	/*
+	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 */
 
-	eaDSLinkedListInit(&linkedList, info);
+	puts("********************************************");
+	puts("Linked List");
+	puts("********************************************");
 
-	srand((unsigned int)time(NULL));
-
-	for(i = 1; i < 8; i++)
+	if (NULL == (linkedList = eaDSLinkedListInit(NULL))) /* &info */
 	{
-		printf("LinkedList'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
-		eaDSLinkedListAdd(&linkedList, &x);
+		return;
 	}
 
-	x = 50;
-	eaDSLinkedListInsert(&linkedList, &x, 3);
-	x = 51;
-	eaDSLinkedListInsert(&linkedList, &x, 6);
-	x = 50;
-	eaDSLinkedListRemove(&linkedList, &x);
-
-	eaDSLinkedListRemoveAt(&linkedList, 2);
-
-	for(i = 1; !eaDSLinkedListGetFrom(&linkedList, &x, i); i++)
+	for(i = 0; i < 13; i++)
 	{
-		printf("LinkedList'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		x = rand() % 50;
+
+		if(EXIT_SUCCESS == eaDSLinkedListAdd(linkedList, &x))
+		{
+			printf("LinkedList'e eleman eklendi : %d \n", (int)x);
+		}
+		else
+		{
+			puts("LinkedList'e eleman eklenemedi!");
+		}
 	}
 
-	printf("LinkedList sıralanıyor...\n");
-	eaDSLinkedListSort(&linkedList);
+	x = 10;
 
-	for(i = 1; !eaDSLinkedListGetFrom(&linkedList, &x, i); i++)
+	printf("LinkedList'den siliniyor : %d\n", (int)x);
+	eaDSLinkedListRemove(linkedList, &x);
+
+	printf("LinkedList'den 12. eleman atiliyor!\n");
+	eaDSLinkedListRemoveAt(linkedList, 11);
+
+	for(i = 0; EXIT_SUCCESS == eaDSLinkedListGetFrom(linkedList, &x, i); i++)
 	{
-		printf("LinkedList'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		printf("LinkedList'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+	}
+	/*
+	printf("LinkedList siralaniyor...\n");
+	eaDSLinkedListSort(linkedList);
+
+	for(i = 0; EXIT_SUCCESS == eaDSLinkedListGetFrom(linkedList, &x, i); i++)
+	{
+		printf("LinkedList'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+	}
+	*/
+
+	printf("LinkedList resetleniyor.\n");
+	eaDSLinkedListReset(linkedList);
+
+	x = rand() % 50;
+
+	if(EXIT_SUCCESS == eaDSLinkedListAdd(linkedList, &x))
+	{
+		printf("LinkedList'e eleman eklendi : %d\n", (int)x);
+	}
+	else
+	{
+		puts("LinkedList'e eleman eklenemedi!");
 	}
 
-	eaDSLinkedListClear(&linkedList);
+	printf("LinkedList siliniyor.\n");
+	eaDSLinkedListClear(linkedList);
+
+	puts("********************************************");
+	puts("Linked List");
+	puts("********************************************");
 }
 
 void testStack()
 {
 	size_t i, x;
 	eaDSStack stack;
-	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	/*
+	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 */
 
-	eaDSStackInit(&stack, info);
+	puts("********************************************");
+	puts("Stack");
+	puts("********************************************");
 
-	srand((unsigned int)time(NULL));
-
-	for (i = 1; i < 8; i++)
+	if (NULL == (stack = eaDSStackInit(NULL))) /* &info */
 	{
-		printf("Stack'e ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
-		eaDSStackPush(&stack, &x);
+		return;
 	}
 
-	while (eaDSStackGetCount(&stack))
+	for(i = 0; i < 13; i++)
 	{
-		eaDSStackPop(&stack, &x);
-		printf("Stack'den alınıyor : %d. eleman %d\n", (int)--i, (int)x);
+		x = rand() % 50;
+
+		if(EXIT_SUCCESS == eaDSStackPush(stack, &x))
+		{
+			printf("Stack'e eleman eklendi : %d \n", (int)x);
+		}
+		else
+		{
+			puts("Stack'e eleman eklenemedi!");
+		}
 	}
 
-	eaDSStackClear(&stack);
+	printf("Stack eleman sayisi : %d.\n", (int)eaDSStackGetCount(stack));
+
+	for(i = 0; eaDSStackGetCount(stack); i++)
+	{
+		if(EXIT_SUCCESS == eaDSStackPop(stack, &x))
+		{
+			printf("Stack'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+		}
+		else
+		{
+			printf("Stack'den %d. eleman alma basarisiz\n", (int)i + 1);
+		}
+	}
+
+	printf("Stack eleman sayisi : %d.\n", (int)eaDSStackGetCount(stack));
+
+	printf("Stack resetleniyor.\n");
+	eaDSStackReset(stack);
+
+	printf("Stack eleman sayisi : %d.\n", (int)eaDSStackGetCount(stack));
+
+	x = rand() % 50;
+
+	if(EXIT_SUCCESS == eaDSStackPush(stack, &x))
+	{
+		printf("Stack'e eleman eklendi : %d\n", (int)x);
+	}
+	else
+	{
+		puts("Stack'e eleman eklenemedi!");
+	}
+
+	printf("Stack eleman sayisi : %d.\n", (int)eaDSStackGetCount(stack));
+
+	printf("Stack siliniyor.\n");
+	eaDSStackClear(stack);
+
+	puts("********************************************");
+	puts("Stack");
+	puts("********************************************");
 }
 
 void testQueue()
 {
 	size_t i, x;
-	eaDSQueue queue;
-	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp };
+	eaDSQueue queue = NULL;
+	/*
+	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp };
+	 */
 
-	eaDSQueueInit(&queue, info);
-
-	srand((unsigned int)time(NULL));
-
-	for (i = 1; i < 8; i++)
+	if (NULL == (queue = eaDSQueueInit(NULL))) /* &info */
 	{
-		printf("Queue'ye ekleniyor : %d sayisi eklendi\n", (int)(x = rand() % 50));
-		eaDSQueueEnqueue(&queue, &x);
+		return;
 	}
 
-	for (i = 1; !eaDSQueueIsEmpty(&queue); i++)
+	for(i = 0; i < 13; i++)
 	{
-		eaDSQueueDequeue(&queue, &x);
-		printf("Queue'den alınıyor : %d. eleman %d\n", (int)i, (int)x);
+		x = rand() % 50;
+
+		if(EXIT_SUCCESS == eaDSQueueEnqueue(queue, &x))
+		{
+			printf("Queue'e eleman eklendi : %d \n", (int)x);
+		}
+		else
+		{
+			puts("Queue'e eleman eklenemedi!");
+		}
 	}
 
-	eaDSQueueClear(&queue);
+	for(i = 0; !eaDSQueueIsEmpty(queue); i++)
+	{
+		if(EXIT_SUCCESS == eaDSQueueDequeue(queue, &x))
+		{
+			printf("Queue'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+		}
+		else
+		{
+			printf("Queue'den %d. eleman alma basarisiz\n", (int)i + 1);
+		}
+	}
+
+	printf("Queue siliniyor.\n");
+	eaDSQueueClear(queue);
+
+	puts("********************************************");
+	puts("Queue");
+	puts("********************************************");
 }
 
 void testTree()
 {
 	eaDSTree tree;
-	StructDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
 
 	eaDSTreeInit(&tree, info);
 	/*

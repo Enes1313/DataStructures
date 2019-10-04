@@ -1,31 +1,54 @@
-/*
- * eaDSLinkedList.c
- *
- *  Created on: 31 03 2019
- *      Author: Enes AYDIN
- */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "eaDSLinkedList.h"
 
-/*
- * LinkedList
- */
+typedef struct _ItemLL{
+	void * Data;
+	struct _ItemLL * Next;
+} ItemLL;
 
-void eaDSLinkedListInit(eaDSLinkedList * linkedList, StructDataInfo info)
+struct _eaDSLinkedList{
+	ItemLL * Head;
+	ItemLL * Tail;
+	eaDSDataInfo Info;
+};
+
+eaDSLinkedList eaDSLinkedListInit(eaDSDataInfo * info)
 {
-	linkedList->Head = NULL;
-	linkedList->Tail = NULL;
-	linkedList->Info = info;
+	eaDSLinkedList linkedList;
+
+	linkedList = (eaDSLinkedList) malloc(sizeof(struct _eaDSLinkedList));
+
+	if (NULL == linkedList)
+	{
+		EA_ERROR(__func__);
+	}
+	else
+	{
+		linkedList->Head = NULL;
+		linkedList->Tail = NULL;
+
+		if (NULL == info)
+		{
+			linkedList->Info = (eaDSDataInfo){sizeof(int), free, malloc, memcpy, memcmp};
+		}
+		else
+		{
+			linkedList->Info = *info;
+		}
+	}
+
+	return linkedList;
 }
 
-void eaDSLinkedListReset(eaDSLinkedList * linkedList)
+void eaDSLinkedListReset(eaDSLinkedList linkedList)
 {
-	while(!eaDSLinkedListIsEmpty(linkedList))
+	while(NULL != linkedList->Head)
 	{
-		ItemLL * tmp = linkedList->Head;
+		ItemLL * tmp;
 
+		tmp = linkedList->Head;
 		linkedList->Head = tmp->Next;
 		linkedList->Info.dataClear(tmp->Data);
 
@@ -35,19 +58,20 @@ void eaDSLinkedListReset(eaDSLinkedList * linkedList)
 	linkedList->Tail = NULL;
 }
 
-void eaDSLinkedListClear(eaDSLinkedList * linkedList)
+void eaDSLinkedListClear(eaDSLinkedList linkedList)
 {
 	eaDSLinkedListReset(linkedList);
+	free(linkedList);
 }
 
-void eaDSLinkedListSort(eaDSLinkedList * linkedList)
+void eaDSLinkedListSort(eaDSLinkedList linkedList)
 {
-	//TODO:
+	/*TODO:*/
 }
 
-int eaDSLinkedListIsEmpty(const eaDSLinkedList * linkedList)
+int eaDSLinkedListIsEmpty(const eaDSLinkedList linkedList)
 {
-	if(linkedList->Head == NULL)
+	if(NULL == linkedList->Head)
 	{
 		return 1;
 	}
@@ -55,21 +79,32 @@ int eaDSLinkedListIsEmpty(const eaDSLinkedList * linkedList)
 	return 0;
 }
 
-int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data)
+int eaDSLinkedListAdd(eaDSLinkedList linkedList, const void * data)
 {
-	ItemLL * iter = linkedList->Head, * tmp;
+	ItemLL * iter, * tmp;
 
-	if((tmp = (ItemLL *) malloc(sizeof(ItemLL))) == NULL)
+	iter = linkedList->Head;
+
+	if(NULL == (tmp = (ItemLL *) malloc(sizeof(ItemLL))))
 	{
-		perror("Error: eaDSLinkedListAdd\n");
+		EA_ERROR(__func__);
+
 		return EXIT_FAILURE;
 	}
 
-	tmp->Next = NULL;
 	tmp->Data = linkedList->Info.dataCreat(linkedList->Info.SumSize);
+
+	if (NULL == tmp->Data)
+	{
+		free(tmp);
+		EA_ERROR(__func__);
+
+		return EXIT_FAILURE;
+	}
+
 	linkedList->Info.dataCopy(tmp->Data, data, linkedList->Info.SumSize);
 
-	if (iter == NULL)
+	if (NULL == iter)
 	{
 		linkedList->Head = tmp;
 	}
@@ -78,32 +113,49 @@ int eaDSLinkedListAdd(eaDSLinkedList * linkedList, const void * data)
 		linkedList->Tail->Next = tmp;
 	}
 
+	tmp->Next = NULL;
 	linkedList->Tail = tmp;
 
 	return EXIT_SUCCESS;
 }
 
-int eaDSLinkedListRemove(eaDSLinkedList * linkedList, const void * data)
+void eaDSLinkedListRemove(eaDSLinkedList linkedList, const void * data)
 {
-	ItemLL * iter = linkedList->Head;
+	ItemLL * iter, * p;
+
+	if (NULL == linkedList->Head)
+	{
+		return;
+	}
+
+	iter = linkedList->Head;
+
+	if (iter == linkedList->Tail)
+	{
+		if (!linkedList->Info.dataEqual(data, iter->Data, linkedList->Info.SumSize))
+		{
+			linkedList->Info.dataClear(iter->Data);
+			free(iter);
+			linkedList->Head = NULL;
+			linkedList->Tail = NULL;
+		}
+
+		return;
+	}
 
 	while (0 != linkedList->Info.dataEqual(data, iter->Data, linkedList->Info.SumSize))
 	{
 		if (iter->Next == linkedList->Tail)
 		{
-			if (0 == linkedList->Info.dataEqual(data, iter->Next->Data, linkedList->Info.SumSize))
+			if (!linkedList->Info.dataEqual(data, iter->Next->Data, linkedList->Info.SumSize))
 			{
 				linkedList->Info.dataClear(iter->Next->Data);
 				free(iter->Next);
 				iter->Next = NULL;
 				linkedList->Tail = iter;
+			}
 
-				return EXIT_SUCCESS;
-			}
-			else
-			{
-				return EXIT_FAILURE;
-			}
+			return;
 		}
 
 		iter = iter->Next;
@@ -111,120 +163,140 @@ int eaDSLinkedListRemove(eaDSLinkedList * linkedList, const void * data)
 
 	linkedList->Info.dataClear(iter->Data);
 
-	void * p = iter->Next->Next;
+	p = iter->Next->Next;
 	iter->Data = iter->Next->Data;
+
 	free(iter->Next);
 	iter->Next = p;
-
-	return EXIT_SUCCESS;
 }
 
-int eaDSLinkedListRemoveAt(eaDSLinkedList * linkedList, const size_t index)
+void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index)
 {
+	void * p;
 	size_t i;
-	ItemLL * iter = linkedList->Head;
+	ItemLL * iter;
 
-	if (0 != index)
+	if (NULL == linkedList->Head)
 	{
-		for (i = 1; i < index; i++)
+		return;
+	}
+
+	iter = linkedList->Head;
+
+	for (i = 0; i < index; i++)
+	{
+		if ((iter->Next == linkedList->Tail) && ((i + 1) == index))
 		{
-			if ((iter->Next == linkedList->Tail) && ((i + 1) == index))
-			{
-				linkedList->Info.dataClear(iter->Next->Data);
-				free(iter->Next);
-				iter->Next = NULL;
-				linkedList->Tail = iter;
+			linkedList->Info.dataClear(iter->Next->Data);
+			free(iter->Next);
+			iter->Next = NULL;
+			linkedList->Tail = iter;
 
-				return EXIT_SUCCESS;
-			}
-
-			if (iter->Next == NULL)
-			{
-				return EXIT_FAILURE;
-			}
-
-			iter = iter->Next;
+			return;
 		}
 
-		linkedList->Info.dataClear(iter->Data);
-		iter->Data = iter->Next->Data;
-		void * p = iter->Next->Next;
-		free(iter->Next);
-		iter->Next = p;
+		if (iter->Next == NULL)
+		{
+			if (0 == index)
+			{
+				linkedList->Info.dataClear(iter->Data);
+				free(iter);
+				linkedList->Head = NULL;
+				linkedList->Tail = NULL;
+			}
+
+			return;
+		}
+
+		iter = iter->Next;
 	}
-	else
+
+	linkedList->Info.dataClear(iter->Data);
+
+	p = iter->Next->Next;
+	iter->Data = iter->Next->Data;
+
+	free(iter->Next);
+	iter->Next = p;
+}
+
+int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const size_t index)
+{
+	size_t i;
+	ItemLL * iter, * tmp, * p;
+
+	if((tmp = (ItemLL *) malloc(sizeof(ItemLL))) == NULL)
 	{
+		EA_ERROR(__func__);
+
 		return EXIT_FAILURE;
 	}
 
-	return EXIT_SUCCESS;
-}
-
-int eaDSLinkedListInsert(eaDSLinkedList * linkedList, const void * data, const size_t index)
-{
-	size_t i;
-	ItemLL * iter = linkedList->Head, * tmp;
-
-	if (0 != index)
+	if((p = linkedList->Info.dataCreat(linkedList->Info.SumSize)) == NULL)
 	{
-		if((tmp = (ItemLL *) malloc(sizeof(ItemLL))) == NULL)
+		free(tmp);
+		EA_ERROR(__func__);
+
+		return EXIT_FAILURE;
+	}
+
+	iter = linkedList->Head;
+
+	for (i = 0; i < index; i++)
+	{
+		if (iter == NULL)
 		{
-			perror("Error: eaDSLinkedListInsert\n");
 			return EXIT_FAILURE;
 		}
+		iter = iter->Next;
+	}
 
-		for (i = 1; i < index; i++)
+	if (0 == index || NULL == iter)
+	{
+		tmp->Next = iter;
+		iter = tmp;
+
+		if (0 == index)
 		{
-			if (iter->Next == NULL)
-			{
-				return EXIT_FAILURE;
-			}
-			iter = iter->Next;
+			linkedList->Head = tmp;
 		}
-
+	}
+	else
+	{
 		tmp->Data = iter->Data;
 		tmp->Next = iter->Next;
 		iter->Next = tmp;
-
-		iter->Data = linkedList->Info.dataCreat(linkedList->Info.SumSize);
-		linkedList->Info.dataCopy(iter->Data, data, linkedList->Info.SumSize);
-
-		if(tmp->Next == NULL)
-		{
-			linkedList->Tail = tmp;
-		}
 	}
-	else
+
+	iter->Data = p;
+	linkedList->Info.dataCopy(iter->Data, data, linkedList->Info.SumSize);
+
+	if (iter->Next == NULL)
 	{
-		return EXIT_FAILURE;
+		linkedList->Tail = iter;
 	}
 
 	return EXIT_SUCCESS;
 }
 
-int eaDSLinkedListGetFrom(const eaDSLinkedList * linkedList, void * data, const size_t index)
+int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const size_t index)
 {
-	size_t i;
-	ItemLL * iter = linkedList->Head;
+	size_t i = 0;
+	ItemLL * iter;
 
-	if (0 != index)
+	iter = linkedList->Head;
+
+	while (NULL != iter)
 	{
-		for (i = 1; i < index; i++)
+		if (index == i++)
 		{
-			if (iter->Next == NULL)
-			{
-				return EXIT_FAILURE;
-			}
-			iter = iter->Next;
+			linkedList->Info.dataCopy(data, iter->Data, linkedList->Info.SumSize);
+
+			return EXIT_SUCCESS;
 		}
 
-		linkedList->Info.dataCopy(data, iter->Data, linkedList->Info.SumSize);
-	}
-	else
-	{
-		return EXIT_FAILURE;
+		iter = iter->Next;
 	}
 
-	return EXIT_SUCCESS;
+	return EXIT_FAILURE;
 }
-

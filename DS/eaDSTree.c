@@ -1,19 +1,9 @@
-/*
- * eaDSTree.c
- *
- *  Created on: 31 03 2019
- *      Author: Enes AYDIN
- */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "eaDSTree.h"
 
-/*
- * Tree
- */
-
-void eaDSTreeInit(eaDSTree * tree, StructDataInfo Info)
+void eaDSTreeInit(eaDSTree * tree, eaDSDataInfo Info)
 {
 	tree->Root = NULL;
 	tree->Info = Info;
@@ -21,12 +11,12 @@ void eaDSTreeInit(eaDSTree * tree, StructDataInfo Info)
 
 void eaDSTreeReset(eaDSTree * tree)
 {
-	//TODO:
+	/*TODO:*/
 }
 
 void eaDSTreeClear(eaDSTree * tree)
 {
-	//TODO:
+	/*TODO:*/
 }
 
 

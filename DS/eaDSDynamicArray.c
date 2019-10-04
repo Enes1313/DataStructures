@@ -1,53 +1,106 @@
-/*
- * eaDSDynamicArray.c
- *
- *  Created on: 31 03 2019
- *      Author: Enes AYDIN
- */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "eaDSDynamicArray.h"
 
-/*
- * DynamicArray
- */
+struct _eaDSDynamicArray{
+	void ** Data;
+	size_t Count, Capacity;
+	eaDSDataInfo Info;
+};
 
-void eaDSDynamicArrayInit(eaDSDynamicArray * dynamicArray, StructDataInfo info)
+eaDSDynamicArray eaDSDynamicArrayInit(eaDSDataInfo * info)
 {
-	dynamicArray->Info = info;
-	dynamicArray->Count = 0;
-	dynamicArray->Capacity = 4;
-	dynamicArray->Data = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+	eaDSDynamicArray dynamicArray;
 
-	if (dynamicArray->Data == NULL)
+	dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
+
+	if (NULL == dynamicArray)
 	{
-		perror("Error: eaDSDynamicArrayInit\n");
+		EA_ERROR(__func__);
+	}
+	else
+	{
+		dynamicArray->Count = 0;
+		dynamicArray->Capacity = 4;
+		dynamicArray->Data = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+
+		if (NULL == dynamicArray->Data)
+		{
+			EA_ERROR(__func__);
+		}
+
+		if (NULL == info)
+		{
+			dynamicArray->Info = (eaDSDataInfo){sizeof(int), free, malloc, memcpy, memcmp};
+		}
+		else
+		{
+			dynamicArray->Info = *info;
+		}
+	}
+
+	return dynamicArray;
+}
+
+void eaDSDynamicArrayReset(eaDSDynamicArray dynamicArray)
+{
+	if (NULL != dynamicArray->Data)
+	{
+		while(dynamicArray->Count)
+		{
+			dynamicArray->Info.dataClear(dynamicArray->Data[--dynamicArray->Count]);
+		}
+
+		if (4 < dynamicArray->Capacity)
+		{
+			free(dynamicArray->Data);
+
+			dynamicArray->Capacity = 4;
+			dynamicArray->Data = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+
+			if (NULL == dynamicArray->Data)
+			{
+				EA_ERROR(__func__);
+			}
+		}
+	}
+	else
+	{
+		EA_INFO("In %s, context of DA is NULL\n", __func__);
+		dynamicArray->Data = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+
+		if (NULL == dynamicArray->Data)
+		{
+			EA_ERROR(__func__);
+		}
 	}
 }
 
-void eaDSDynamicArrayReset(eaDSDynamicArray * dynamicArray)
+void eaDSDynamicArrayClear(eaDSDynamicArray dynamicArray)
 {
-	while(eaDSDynamicArrayGetCount(dynamicArray))
+	if (NULL != dynamicArray->Data)
 	{
-		dynamicArray->Info.dataClear(dynamicArray->Data[--dynamicArray->Count]);
-	}
-}
-
-void eaDSDynamicArrayClear(eaDSDynamicArray * dynamicArray)
-{
-	eaDSDynamicArrayReset(dynamicArray);
-
-	if (dynamicArray->Data != NULL)
-	{
+		while(dynamicArray->Count)
+		{
+			dynamicArray->Info.dataClear(dynamicArray->Data[--dynamicArray->Count]);
+		}
 		free(dynamicArray->Data);
 	}
+	else
+	{
+		EA_INFO("In %s, context of DA is NULL\n", __func__);
+	}
+
+	free(dynamicArray);
 }
 
-void eaDSDynamicArraySort(eaDSDynamicArray * dynamicArray)
+void eaDSDynamicArraySort(eaDSDynamicArray dynamicArray)
 {
 	void * buf;
-	size_t i, j, N = eaDSDynamicArrayGetCount(dynamicArray);
+	size_t i, j, N;
+
+	N = dynamicArray->Count;
 
 	for(i = 1; i < N; i++)
 	{
@@ -60,28 +113,39 @@ void eaDSDynamicArraySort(eaDSDynamicArray * dynamicArray)
 	}
 }
 
-size_t eaDSDynamicArrayGetCount(const eaDSDynamicArray * dynamicArray)
+size_t eaDSDynamicArrayGetCount(const eaDSDynamicArray dynamicArray)
 {
 	return dynamicArray->Count;
 }
 
-size_t eaDSDynamicArrayGetCapacity(const eaDSDynamicArray * dynamicArray)
+size_t eaDSDynamicArrayGetCapacity(const eaDSDynamicArray dynamicArray)
 {
 	return dynamicArray->Capacity;
 }
 
-int eaDSDynamicArrayAdd(eaDSDynamicArray * dynamicArray, const void * data)
+int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 {
 	size_t i;
 
-	if((dynamicArray->Count + 1) == dynamicArray->Capacity)
+	if (NULL == dynamicArray->Data)
 	{
-		dynamicArray->Capacity = dynamicArray->Count + 4;
-		void ** tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+		EA_INFO("In %s, context of DA is NULL\n", __func__);
+
+		return EXIT_FAILURE;
+	}
+
+	if(dynamicArray->Count == dynamicArray->Capacity)
+	{
+		void ** tmp;
+
+		dynamicArray->Capacity += 4;
+		tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
 
 		if(NULL == tmp)
 		{
-			perror("Error: eaDSDynamicArrayAdd\n");
+			EA_ERROR(__func__);
+			dynamicArray->Capacity -= 4;
+
 			return EXIT_FAILURE;
 		}
 
@@ -95,15 +159,25 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray * dynamicArray, const void * data)
 	}
 
 	dynamicArray->Data[dynamicArray->Count] = dynamicArray->Info.dataCreat(dynamicArray->Info.SumSize);
+
+	if (NULL == dynamicArray->Data[dynamicArray->Count])
+	{
+		EA_ERROR(__func__);
+
+		return EXIT_FAILURE;
+	}
+
 	dynamicArray->Info.dataCopy(dynamicArray->Data[dynamicArray->Count], data, dynamicArray->Info.SumSize);
 	dynamicArray->Count++;
 
 	return EXIT_SUCCESS;
 }
 
-int eaDSDynamicArrayRemove(eaDSDynamicArray * dynamicArray, const void * data)
+void eaDSDynamicArrayRemove(eaDSDynamicArray dynamicArray, const void * data)
 {
-	size_t i, cnt = eaDSDynamicArrayGetCount(dynamicArray);
+	size_t i, cnt;
+
+	cnt = dynamicArray->Count;
 
 	for (i = 0; i < cnt; i++)
 	{
@@ -117,46 +191,58 @@ int eaDSDynamicArrayRemove(eaDSDynamicArray * dynamicArray, const void * data)
 			{
 				dynamicArray->Data[i] = dynamicArray->Data[i + 1];
 			}
-
-			return EXIT_SUCCESS;
 		}
 	}
-
-	return EXIT_FAILURE;
 }
 
-int eaDSDynamicArrayRemoveAt(eaDSDynamicArray * dynamicArray, const size_t index)
+void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
 {
-	size_t j, cnt = eaDSDynamicArrayGetCount(dynamicArray);
+	size_t j, cnt;
 
-	if((cnt != 0) && (index <= cnt) && (0 != index))
+	cnt = dynamicArray->Count;
+
+	if(cnt && (index < cnt))
 	{
-		dynamicArray->Info.dataClear(dynamicArray->Data[index - 1]);
-		for (j = index; j < cnt; j++)
+		dynamicArray->Info.dataClear(dynamicArray->Data[index]);
+
+		for (j = index; j < cnt - 1; j++)
 		{
-			dynamicArray->Data[j - 1] = dynamicArray->Data[j];
+			dynamicArray->Data[j] = dynamicArray->Data[j + 1];
 		}
+
 		dynamicArray->Count--;
-		return EXIT_SUCCESS;
 	}
-
-	return EXIT_FAILURE;
 }
 
-int eaDSDynamicArrayInsert(eaDSDynamicArray * dynamicArray, const void * data, const size_t index)
+int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index)
 {
-	size_t j, cnt = eaDSDynamicArrayGetCount(dynamicArray);
+	size_t j, cnt;
 
-	if((cnt != 0) && (index <= cnt) && (0 != index))
+	if (NULL == dynamicArray->Data)
 	{
-		if((dynamicArray->Count + 1) == dynamicArray->Capacity)
+		EA_INFO("In %s, context of DA is NULL\n", __func__);
+
+		return EXIT_FAILURE;
+	}
+
+	cnt = dynamicArray->Count;
+
+	if(index <= cnt)
+	{
+		void * add;
+
+		if(dynamicArray->Count == dynamicArray->Capacity)
 		{
-			dynamicArray->Capacity = dynamicArray->Count + 4;
-			void ** tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+			void ** tmp;
+
+			dynamicArray->Capacity += 4;
+			tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
 
 			if(NULL == tmp)
 			{
-				perror("Error: eaDSDynamicArrayInsert\n");
+				EA_ERROR(__func__);
+				dynamicArray->Capacity -= 4;
+
 				return EXIT_FAILURE;
 			}
 
@@ -169,26 +255,36 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray * dynamicArray, const void * data, c
 			dynamicArray->Data = tmp;
 		}
 
-		for (j = cnt; j > index - 1; j--)
+		if (NULL == (add = dynamicArray->Info.dataCreat(dynamicArray->Info.SumSize)))
 		{
-			dynamicArray->Data[j] = dynamicArray->Data[j - 1];
+			EA_ERROR(__func__);
+
+			return EXIT_FAILURE;
 		}
 
-		dynamicArray->Data[index - 1] = dynamicArray->Info.dataCreat(dynamicArray->Info.SumSize);
-		dynamicArray->Info.dataCopy(dynamicArray->Data[index - 1], data, dynamicArray->Info.SumSize);
-		dynamicArray->Count++;
-	}
-	return EXIT_SUCCESS;
-}
+		for (j = cnt - 1; j >= index; j--)
+		{
+			dynamicArray->Data[j + 1] = dynamicArray->Data[j];
+		}
 
-int eaDSDynamicArrayGetFrom(const eaDSDynamicArray * dynamicArray, void * data, const size_t index)
-{
-	if((0 != index) && (index <= eaDSDynamicArrayGetCount(dynamicArray)))
-	{
-		dynamicArray->Info.dataCopy(data, dynamicArray->Data[index - 1], dynamicArray->Info.SumSize);
+		dynamicArray->Data[index] = add;
+		dynamicArray->Info.dataCopy(dynamicArray->Data[index], data, dynamicArray->Info.SumSize);
+		dynamicArray->Count++;
+
 		return EXIT_SUCCESS;
 	}
 
 	return EXIT_FAILURE;
 }
 
+int eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, void * data, const size_t index)
+{
+	if(index < dynamicArray->Count)
+	{
+		dynamicArray->Info.dataCopy(data, dynamicArray->Data[index], dynamicArray->Info.SumSize);
+
+		return EXIT_SUCCESS;
+	}
+
+	return EXIT_FAILURE;
+}
