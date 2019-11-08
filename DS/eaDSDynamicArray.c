@@ -262,9 +262,13 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 			return EXIT_FAILURE;
 		}
 
-		for (j = cnt - 1; j >= index; j--)
+		if (cnt)
 		{
-			dynamicArray->Data[j + 1] = dynamicArray->Data[j];
+			for (j = cnt - 1; j >= index; j--)
+			{
+				dynamicArray->Data[j + 1] = dynamicArray->Data[j];
+				if (!j) break;
+			}
 		}
 
 		dynamicArray->Data[index] = add;
