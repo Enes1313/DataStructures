@@ -166,4 +166,19 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 ********************************************************************************/
 int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const size_t index);
 
+/********************************************************************************
+* DESCRIPTION : Address of data in linked list is return.
+* INPUTS      :
+*               PARAMETERS :
+*                            linkedList -> Address of a linked list.
+*                            index -> Index in the linked list.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address of data or NULL
+* NOTES       : None
+********************************************************************************/
+void * eaDSLinkedListGetAddressFrom(const eaDSLinkedList linkedList, const size_t index);
+
 #endif /* EADSLINKEDLIST_H_ */

@@ -299,3 +299,23 @@ int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const si
 
 	return EXIT_FAILURE;
 }
+
+void * eaDSLinkedListGetAddressFrom(const eaDSLinkedList linkedList, const size_t index)
+{
+	size_t i = 0;
+	ItemLL * iter;
+
+	iter = linkedList->Head;
+
+	while (NULL != iter)
+	{
+		if (index == i++)
+		{
+			return iter->Data;
+		}
+
+		iter = iter->Next;
+	}
+
+	return NULL;
+}
