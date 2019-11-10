@@ -291,3 +291,13 @@ int eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, void * data, co
 
 	return EXIT_FAILURE;
 }
+
+void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, const size_t index)
+{
+	if(index < dynamicArray->Count)
+	{
+		return dynamicArray->Data[index];
+	}
+
+	return NULL;
+}

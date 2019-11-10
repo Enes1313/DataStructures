@@ -181,4 +181,19 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 ********************************************************************************/
 int eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, void * data, const size_t index);
 
+/********************************************************************************
+* DESCRIPTION : Address of data in dynamic array is return.
+* INPUTS      :
+*               PARAMETERS :
+*                            dynamicArray -> Address of a dynamic array.
+*                            index -> Index in the dynamic array.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address of data or NULL
+* NOTES       : None
+********************************************************************************/
+void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, const size_t index);
+
 #endif /* EADSDYNAMICARRAY_H */
