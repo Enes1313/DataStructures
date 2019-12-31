@@ -213,6 +213,25 @@ void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
 	}
 }
 
+void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const size_t index)
+{
+	size_t cnt;
+
+	cnt = dynamicArray->Count;
+
+	if(cnt && (index < cnt))
+	{
+		dynamicArray->Info.dataClear(dynamicArray->Data[index]);
+
+		if (cnt - 1)
+		{
+			dynamicArray->Data[index] = dynamicArray->Data[cnt - 1];
+		}
+
+		dynamicArray->Count--;
+	}
+}
+
 int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index)
 {
 	size_t j, cnt;

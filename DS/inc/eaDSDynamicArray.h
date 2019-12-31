@@ -149,6 +149,22 @@ void eaDSDynamicArrayRemove(eaDSDynamicArray dynamicArray, const void * data);
 void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index);
 
 /********************************************************************************
+* DESCRIPTION : Data is removed from index of dynamic array.
+*
+* INPUTS      :
+*               PARAMETERS :
+*                            dynamicArray -> Address of a dynamic array.
+*                            index -> Index of any data in the dynamic array.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : As eaDSDynamicArrayRemoveAt funciton and last item is copied.
+********************************************************************************/
+void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const size_t index);
+
+/********************************************************************************
 * DESCRIPTION : "data" param is inserted to index of dynamic array.
 * INPUTS      :
 *               PARAMETERS :
