@@ -11,14 +11,14 @@ DS klasörü Veri yapıları başlık ve kaynak kodlarını içerir. Test klasö
 *   "Project Explorer" alanında sağ tıklayıp import deyin.
 *   Çıkan pencerede "General" yapısının altından "Existing Projects into Workspace" yazısına tıklayın ve "Next" butonuna tıklayın.
 *   "Select root directory:" yazısının karşısından "Browse" butonuna basın ve repoyu indirdiğiniz yere gelin.
-*   "DataStructures" klasörünün altından "Projeler/Eclipse/dsTest" dizinine girin ve "Klasör Seç" butonuna tıklayın.
+*   "DataStructures" klasörünün altından "Projects/Eclipse/dsTest" dizinine girin ve "Klasör Seç" butonuna tıklayın.
 *   "Finish" butonuna basın. "Project Explorer" alanında projeyi genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
 
 ## Visual Studio
 
 *   "File" sekmesinden "Open" yolunun içinden "Project/Solution..." yazısına tıklayın.
 *   Açılan pencereden repoyu indirdiğiniz yere gelin.
-*   "DataStructures" klasörünün altından "Projeler/VS/dsTest" dizinine girin ve "Aç" butonuna tıklayın.
+*   "DataStructures" klasörünün altından "Projects/VS/dsTest" dizinine girin ve "Aç" butonuna tıklayın.
 *   "Solution Explorer" alanında projeyi genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
 
 ## Makefile
