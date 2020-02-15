@@ -2,10 +2,10 @@
 #include <string.h>
 #include "eaDSTree.h"
 
-void eaDSTreeInit(eaDSTree * tree, eaDSDataInfo Info)
+void eaDSTreeInit(eaDSTree * tree, eaDSInfosForData Infos)
 {
 	tree->Root = NULL;
-	tree->Info = Info;
+	tree->Infos = Infos;
 }
 
 void eaDSTreeReset(eaDSTree * tree)

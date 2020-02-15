@@ -42,14 +42,14 @@ void testDynamicArray()
 	size_t i, x;
 	eaDSDynamicArray dynamicArray;
 	/*
-	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
 	 */
 
 	puts("********************************************");
 	puts("Dinamik Array");
 	puts("********************************************");
 
-	if (NULL == (dynamicArray = eaDSDynamicArrayInit(NULL))) /* &info */
+	if (NULL == (dynamicArray = eaDSDynamicArrayInit(NULL))) /* &infos */
 	{
 		return;
 	}
@@ -157,14 +157,14 @@ void testLinkedList()
 	size_t i, x;
 	eaDSLinkedList linkedList;
 	/*
-	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
 	 */
 
 	puts("********************************************");
 	puts("Linked List");
 	puts("********************************************");
 
-	if (NULL == (linkedList = eaDSLinkedListInit(NULL))) /* &info */
+	if (NULL == (linkedList = eaDSLinkedListInit(NULL))) /* &infos */
 	{
 		return;
 	}
@@ -232,14 +232,14 @@ void testStack()
 	size_t i, x;
 	eaDSStack stack;
 	/*
-	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
 	 */
 
 	puts("********************************************");
 	puts("Stack");
 	puts("********************************************");
 
-	if (NULL == (stack = eaDSStackInit(NULL))) /* &info */
+	if (NULL == (stack = eaDSStackInit(NULL))) /* &infos */
 	{
 		return;
 	}
@@ -305,10 +305,10 @@ void testQueue()
 	size_t i, x;
 	eaDSQueue queue = NULL;
 	/*
-	 * eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp };
+	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp };
 	 */
 
-	if (NULL == (queue = eaDSQueueInit(NULL))) /* &info */
+	if (NULL == (queue = eaDSQueueInit(NULL))) /* &infos */
 	{
 		return;
 	}
@@ -350,9 +350,9 @@ void testQueue()
 void testTree()
 {
 	eaDSTree tree;
-	eaDSDataInfo info = {sizeof(int), free, malloc, memcpy, memcmp};
+	eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
 
-	eaDSTreeInit(&tree, info);
+	eaDSTreeInit(&tree, infos);
 	/*
 	 *
 	 */

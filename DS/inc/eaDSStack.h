@@ -31,7 +31,25 @@ typedef struct _eaDSStack * eaDSStack;
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSStack eaDSStackInit(eaDSDataInfo * info);
+eaDSStack eaDSStackInit(eaDSInfosForData * infos);
+
+/********************************************************************************
+* DESCRIPTION : Initialize the stack with the given structure.
+* INPUTS      :
+*               PARAMETERS :
+*                            info -> A struct which about infos for data.
+*                                    (size, clear, creat, copy, equal)
+*                            expFactor -> Increase value of memory area.
+*                            startingCapacity -> Value of the starting capacity.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address from eaDSDynamicArray type or NULL.
+* NOTES       : If "info" will be NULL, It will use default settings.
+*               {sizeof(int), free, malloc, memcpy, memcmp}
+********************************************************************************/
+eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the stack. Context of stack is deleted.
@@ -42,10 +60,10 @@ eaDSStack eaDSStackInit(eaDSDataInfo * info);
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
 * NOTES       : This function uses clear function given in info struct.
 ********************************************************************************/
-void eaDSStackReset(eaDSStack stack);
+int eaDSStackReset(eaDSStack stack);
 
 /********************************************************************************
 * DESCRIPTION : Clear the stack. The address must not be used later.
@@ -133,5 +151,19 @@ int eaDSStackPush(eaDSStack stack, const void * data);
 * NOTES       : This function uses copy function given in info struct.
 ********************************************************************************/
 int eaDSStackPeekStack(const eaDSStack stack, void * data);
+
+/********************************************************************************
+* DESCRIPTION : Address of data in peek of stack is return.
+* INPUTS      :
+*               PARAMETERS :
+*                            stack -> Address of a stack.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address of data or NULL
+* NOTES       : None
+********************************************************************************/
+void * eaDSStackPeekStackGetAddress(const eaDSStack stack);
 
 #endif /* EADSSTACK_H_ */

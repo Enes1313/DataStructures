@@ -22,10 +22,10 @@ typedef struct _Node_Tree{
 
 typedef struct _eaDSTree{
 	Node_Tree * Root;
-	eaDSDataInfo Info;
+	eaDSInfosForData Infos;
 } eaDSTree;
 
-void eaDSTreeInit(eaDSTree * tree, eaDSDataInfo info);
+void eaDSTreeInit(eaDSTree * tree, eaDSInfosForData infos);
 void eaDSTreeReset(eaDSTree * tree);
 void eaDSTreeClear(eaDSTree * tree);
 

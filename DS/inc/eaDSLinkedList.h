@@ -30,7 +30,7 @@ typedef struct _eaDSLinkedList * eaDSLinkedList;
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSLinkedList eaDSLinkedListInit(eaDSDataInfo * info);
+eaDSLinkedList eaDSLinkedListInit(eaDSInfosForData * infos);
 
 /********************************************************************************
 * DESCRIPTION : Reset the linked list. Context of linked list is deleted.

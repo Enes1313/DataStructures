@@ -30,7 +30,7 @@ typedef struct _eaDSQueue * eaDSQueue;
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSQueue eaDSQueueInit(eaDSDataInfo * info);
+eaDSQueue eaDSQueueInit(eaDSInfosForData * infos);
 
 /********************************************************************************
 * DESCRIPTION : Reset the queue. Context of queue is deleted.

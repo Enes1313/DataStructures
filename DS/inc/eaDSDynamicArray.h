@@ -31,7 +31,25 @@ typedef struct _eaDSDynamicArray * eaDSDynamicArray;
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSDynamicArray eaDSDynamicArrayInit(eaDSDataInfo * info);
+eaDSDynamicArray eaDSDynamicArrayInit(eaDSInfosForData * info);
+
+/********************************************************************************
+* DESCRIPTION : Initialize the dynamic array with the given details for DA.
+* INPUTS      :
+*               PARAMETERS :
+*                            info -> A struct which about infos for data.
+*                                    (size, clear, creat, copy, equal)
+*                            expFactor -> Increase value of memory area.
+*                            startingCapacity -> Value of the starting capacity.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address from eaDSDynamicArray type or NULL.
+* NOTES       : If "info" will be NULL, It will use default settings.
+*               {sizeof(int), free, malloc, memcpy, memcmp}
+********************************************************************************/
+eaDSDynamicArray eaDSDynamicArrayInitWithDetails(eaDSInfosForData * infos, unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the dynamic array. Context of dynamic array is deleted.
@@ -42,10 +60,10 @@ eaDSDynamicArray eaDSDynamicArrayInit(eaDSDataInfo * info);
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
 * NOTES       : This function uses clear function given in info struct.
 ********************************************************************************/
-void eaDSDynamicArrayReset(eaDSDynamicArray dynamicArray);
+int eaDSDynamicArrayReset(eaDSDynamicArray dynamicArray);
 
 /********************************************************************************
 * DESCRIPTION : Clear the dynamic array. The address must not be used later.
@@ -119,7 +137,23 @@ size_t eaDSDynamicArrayGetCapacity(const eaDSDynamicArray dynamicArray);
 int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data);
 
 /********************************************************************************
-* DESCRIPTION : Data is removed from dynamic array.
+* DESCRIPTION : "data" param is inserted to index of dynamic array.
+* INPUTS      :
+*               PARAMETERS :
+*                            dynamicArray -> Address of a dynamic array.
+*                            data -> Address of data for the dynamic array.
+*                            index -> Index in the dynamic array.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
+* NOTES       : This function uses creat and copy functions given in info struct.
+********************************************************************************/
+int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index);
+
+/********************************************************************************
+* DESCRIPTION : "data" in DA is removed from dynamic array.
 * INPUTS      :
 *               PARAMETERS :
 *                            dynamicArray -> Address of a dynamic array.
@@ -132,6 +166,21 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data);
 * NOTES       : This function uses free function given in info struct.
 ********************************************************************************/
 void eaDSDynamicArrayRemove(eaDSDynamicArray dynamicArray, const void * data);
+
+/********************************************************************************
+* DESCRIPTION : All "data" in DA is removed from dynamic array.
+* INPUTS      :
+*               PARAMETERS :
+*                            dynamicArray -> Address of a dynamic array.
+*                            data -> Address to remove from the dynamic array.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : None
+* NOTES       : This function uses free function given in info struct.
+********************************************************************************/
+void eaDSDynamicArrayRemoveAll(eaDSDynamicArray dynamicArray, const void * data);
 
 /********************************************************************************
 * DESCRIPTION : Data is removed from index of dynamic array.
@@ -163,22 +212,6 @@ void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
 * NOTES       : As eaDSDynamicArrayRemoveAt funciton and last item is copied.
 ********************************************************************************/
 void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const size_t index);
-
-/********************************************************************************
-* DESCRIPTION : "data" param is inserted to index of dynamic array.
-* INPUTS      :
-*               PARAMETERS :
-*                            dynamicArray -> Address of a dynamic array.
-*                            data -> Address of data for the dynamic array.
-*                            index -> Index in the dynamic array.
-*               GLOBALS    : None
-* OUTPUTS     :
-*               PARAMETERS : None
-*               GLOBALS    : None
-*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
-********************************************************************************/
-int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Data in dynamic array is taken to "data" param.

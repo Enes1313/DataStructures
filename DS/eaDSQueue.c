@@ -10,10 +10,10 @@ typedef struct _ItemQue {
 struct _eaDSQueue {
 	ItemQue * Front;
 	ItemQue * Rear;
-	eaDSDataInfo Info;
+	eaDSInfosForData Infos;
 };
 
-eaDSQueue eaDSQueueInit(eaDSDataInfo * info)
+eaDSQueue eaDSQueueInit(eaDSInfosForData * infos)
 {
 	eaDSQueue queue;
 
@@ -21,20 +21,20 @@ eaDSQueue eaDSQueueInit(eaDSDataInfo * info)
 
 	if (NULL == queue)
 	{
-		EA_ERROR(__func__);
+		perror(__func__);
 	}
 	else
 	{
 		queue->Front = NULL;
 		queue->Rear = NULL;
 
-		if (NULL == info)
+		if (NULL == infos)
 		{
-			queue->Info = (eaDSDataInfo){sizeof(int), free, malloc, memcpy, memcmp};
+			queue->Infos = (eaDSInfosForData){sizeof(int), free, malloc, memcpy, memcmp};
 		}
 		else
 		{
-			queue->Info = *info;
+			queue->Infos = *infos;
 		}
 	}
 
@@ -49,7 +49,7 @@ void eaDSQueueReset(eaDSQueue queue)
 
 		tmp = queue->Front;
 		queue->Front = tmp->Next;
-		queue->Info.dataClear(tmp->Data);
+		queue->Infos.dataClear(tmp->Data);
 
 		free(tmp);
 	}
@@ -82,8 +82,8 @@ int eaDSQueueDequeue(eaDSQueue queue, void * data)
 		return EXIT_FAILURE;
 	}
 
-	queue->Info.dataCopy(data, queue->Front->Data, queue->Info.SumSize);
-	queue->Info.dataClear(queue->Front->Data);
+	queue->Infos.dataCopy(data, queue->Front->Data, queue->Infos.SumSize);
+	queue->Infos.dataClear(queue->Front->Data);
 
 	p = queue->Front;
 	queue->Front = queue->Front->Next;
@@ -103,13 +103,13 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 
 	if ((tmp = (ItemQue *)malloc(sizeof(ItemQue))) == NULL)
 	{
-		EA_ERROR(__func__);
+		perror(__func__);
 		return EXIT_FAILURE;
 	}
 
 	tmp->Next = NULL;
-	tmp->Data = queue->Info.dataCreat(queue->Info.SumSize);
-	queue->Info.dataCopy(tmp->Data, data, queue->Info.SumSize);
+	tmp->Data = queue->Infos.dataCreate(queue->Infos.SumSize);
+	queue->Infos.dataCopy(tmp->Data, data, queue->Infos.SumSize);
 
 	if (queue->Front == NULL)
 	{
@@ -132,7 +132,7 @@ int eaDSQueuePeekQueue(const eaDSQueue queue, void * data)
 		return EXIT_FAILURE;
 	}
 
-	queue->Info.dataCopy(data, queue->Front->Data, queue->Info.SumSize);
+	queue->Infos.dataCopy(data, queue->Front->Data, queue->Infos.SumSize);
 
 	return EXIT_SUCCESS;
 }
