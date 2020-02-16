@@ -4,22 +4,24 @@
 
 ## Kullanım
 
-DS klasörü Veri yapıları başlık ve kaynak kodlarını içerir. Test klasöründe veri yapılarını test eden fonksiyonlar yer almaktadır. 
+DS klasörü veri yapıları kütüphanesinin başlık ve kaynak kodlarını içerir. "Test" klasöründe veri yapılarını test eden fonksiyonlar yer almaktadır. "Simulation" klasöründe dinamik dizi kullanılarak bir simülasyon problemi çözülmüştür. "Projects" klasörü IDE'ler için "Test" ve "Simulation" projelerinin özel dosyalarını içermektedir.
 
 ## Eclipse C/C++
 
 *   "Project Explorer" alanında sağ tıklayıp import deyin.
 *   Çıkan pencerede "General" yapısının altından "Existing Projects into Workspace" yazısına tıklayın ve "Next" butonuna tıklayın.
 *   "Select root directory:" yazısının karşısından "Browse" butonuna basın ve repoyu indirdiğiniz yere gelin.
-*   "DataStructures" klasörünün altından "Projects/Eclipse/dsTest" dizinine girin ve "Klasör Seç" butonuna tıklayın.
-*   "Finish" butonuna basın. "Project Explorer" alanında projeyi genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
+*   "DataStructures" klasörünün altından "Projects/Eclipse/dsTest" dizinini seçin.
+*   "Finish" butonuna basın. "Project Explorer" alanında bu "dsTest" projesini genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
+*   Aynı adımları "Projects/Eclipse/dsSimulation" dizini için yaparsanız "dsSimulation" projesini inceleyebilirsiniz.
 
 ## Visual Studio
 
 *   "File" sekmesinden "Open" yolunun içinden "Project/Solution..." yazısına tıklayın.
 *   Açılan pencereden repoyu indirdiğiniz yere gelin.
 *   "DataStructures" klasörünün altından "Projects/VS/dsTest" dizinine girin ve "Aç" butonuna tıklayın.
-*   "Solution Explorer" alanında projeyi genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
+*   "Solution Explorer" alanında bu "dsTest" projesini genişletip inceleyebilirsiniz, derleyip gözlemleyebilirsiniz.
+*   Aynı adımları "Projects/Eclipse/dsSimulation" dizini için yaparsanız "dsSimulation" projesini inceleyebilirsiniz.
 
 ## Makefile
 
