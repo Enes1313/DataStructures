@@ -2,9 +2,12 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e87374258dba4b6589867331cdd35658)](https://www.codacy.com/manual/Enes1313/DataStructures?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Enes1313/DataStructures&amp;utm_campaign=Badge_Grade)
 
-## Kullanım
+## Klasörler
 
-DS klasörü veri yapıları kütüphanesinin başlık ve kaynak kodlarını içerir. "Test" klasöründe veri yapılarını test eden fonksiyonlar yer almaktadır. "Simulation" klasöründe dinamik dizi kullanılarak bir simülasyon problemi çözülmüştür. "Projects" klasörü IDE'ler için "Test" ve "Simulation" projelerinin özel dosyalarını içermektedir.
+*   "DS" klasörü veri yapıları kütüphanesinin başlık ve kaynak kodlarını içerir. 
+*   "Test" klasöründe veri yapılarını test eden fonksiyonlar yer almaktadır. 
+*   "Simulation" klasöründe dinamik dizi kullanılarak bir simülasyon problemi çözülmüştür. 
+*   "Projects" klasörü IDE'ler için "Test" ve "Simulation" projelerinin özel dosyalarını içermektedir.
 
 ## Eclipse C/C++
 
