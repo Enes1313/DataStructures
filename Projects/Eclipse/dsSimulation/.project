@@ -27,12 +27,12 @@
 		<link>
 			<name>DS</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/DS</locationURI>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/DS</locationURI>
 		</link>
 		<link>
 			<name>Simulation</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/Simulation</locationURI>
+			<locationURI>$%7BPARENT-3-PROJECT_LOC%7D/Simulation</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

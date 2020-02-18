@@ -10,17 +10,17 @@
 #include <string.h>
 #include <time.h>
 
+#include "eaDSCircularBuffer.h"
 #include "eaDSDynamicArray.h"
 #include "eaDSLinkedList.h"
-#include "eaDSStack.h"
 #include "eaDSQueue.h"
-#include "eaDSTree.h"
+#include "eaDSStack.h"
 
+void testCircularBuffer();
 void testDynamicArray();
 void testLinkedList();
 void testStack();
 void testQueue();
-void testTree();
 
 int main(void)
 {
@@ -28,35 +28,56 @@ int main(void)
 
 	testDynamicArray();
 	testLinkedList();
-	testStack();
 	testQueue();
-	/*
-	 * testTree();
-	 */
+	testStack();
+	testCircularBuffer();
 
 	return EXIT_SUCCESS;
+}
+
+void * intCreate(size_t size)
+{
+	return malloc(sizeof(int) * size);
+}
+
+void * intCopy(void * a1, const void * a2)
+{
+	return memcpy(a1, a2, sizeof(int));
+}
+
+int intCompare(const void * a1, const void * a2)
+{
+	return memcmp(a1, a2, sizeof(int));
+}
+
+void intClear(void * a)
+{
+	free(a);
+}
+
+void testCircularBuffer()
+{
+
 }
 
 void testDynamicArray()
 {
 	size_t i, x;
 	eaDSDynamicArray dynamicArray;
-	/*
-	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
-	 */
 
 	puts("********************************************");
 	puts("Dinamik Array");
 	puts("********************************************");
 
-	if (NULL == (dynamicArray = eaDSDynamicArrayInit(NULL))) /* &infos */
+	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreate, intCopy, intCompare, intClear)))
 	{
+		puts("dynamicArray olusmadi!");
 		return;
 	}
 
 	for(i = 0; i < 13; i++)
 	{
-		x = rand() % 50;
+		x = (unsigned int) rand() % 50;
 
 		if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
 		{
@@ -131,7 +152,7 @@ void testDynamicArray()
 
 	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
 
-	x = rand() % 50;
+	x = (unsigned int) rand() % 50;
 
 	if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
 	{
@@ -156,22 +177,20 @@ void testLinkedList()
 {
 	size_t i, x;
 	eaDSLinkedList linkedList;
-	/*
-	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
-	 */
 
 	puts("********************************************");
 	puts("Linked List");
 	puts("********************************************");
 
-	if (NULL == (linkedList = eaDSLinkedListInit(NULL))) /* &infos */
+	if (NULL == (linkedList = eaDSLinkedListInit(intCreate, intCopy, intCompare, intClear)))
 	{
+		puts("linkedList olusmadi!");
 		return;
 	}
 
 	for(i = 0; i < 13; i++)
 	{
-		x = rand() % 50;
+		x = (unsigned int) rand() % 50;
 
 		if(EXIT_SUCCESS == eaDSLinkedListAdd(linkedList, &x))
 		{
@@ -208,7 +227,7 @@ void testLinkedList()
 	printf("LinkedList resetleniyor.\n");
 	eaDSLinkedListReset(linkedList);
 
-	x = rand() % 50;
+	x = (unsigned int) rand() % 50;
 
 	if(EXIT_SUCCESS == eaDSLinkedListAdd(linkedList, &x))
 	{
@@ -231,22 +250,20 @@ void testStack()
 {
 	size_t i, x;
 	eaDSStack stack;
-	/*
-	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
-	 */
 
 	puts("********************************************");
 	puts("Stack");
 	puts("********************************************");
 
-	if (NULL == (stack = eaDSStackInit(NULL))) /* &infos */
+	if (NULL == (stack = eaDSStackInit(intCreate, intCopy, intCompare, intClear)))
 	{
+		puts("stack olusmadi!");
 		return;
 	}
 
 	for(i = 0; i < 13; i++)
 	{
-		x = rand() % 50;
+		x = (unsigned int) rand() % 50;
 
 		if(EXIT_SUCCESS == eaDSStackPush(stack, &x))
 		{
@@ -279,7 +296,7 @@ void testStack()
 
 	printf("Stack eleman sayisi : %d.\n", (int)eaDSStackGetCount(stack));
 
-	x = rand() % 50;
+	x = (unsigned int) rand() % 50;
 
 	if(EXIT_SUCCESS == eaDSStackPush(stack, &x))
 	{
@@ -304,18 +321,16 @@ void testQueue()
 {
 	size_t i, x;
 	eaDSQueue queue = NULL;
-	/*
-	 * eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp };
-	 */
 
-	if (NULL == (queue = eaDSQueueInit(NULL))) /* &infos */
+	if (NULL == (queue = eaDSQueueInit(intCreate, intCopy, intCompare, intClear)))
 	{
+		puts("queue olusmadi!");
 		return;
 	}
 
 	for(i = 0; i < 13; i++)
 	{
-		x = rand() % 50;
+		x = (unsigned int) rand() % 50;
 
 		if(EXIT_SUCCESS == eaDSQueueEnqueue(queue, &x))
 		{
@@ -346,16 +361,3 @@ void testQueue()
 	puts("Queue");
 	puts("********************************************");
 }
-
-void testTree()
-{
-	eaDSTree tree;
-	eaDSInfosForData infos = {sizeof(int), free, malloc, memcpy, memcmp};
-
-	eaDSTreeInit(&tree, infos);
-	/*
-	 *
-	 */
-	eaDSTreeClear(&tree);
-}
-

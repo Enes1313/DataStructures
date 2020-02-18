@@ -67,8 +67,6 @@
 #include <time.h>
 #include <windows.h>
 
-#include "eaDSStack.h"
-#include "eaDSQueue.h"
 #include "eaDSDynamicArray.h"
 
 #define HOURLY_LOG										1		/* hours */
@@ -93,25 +91,47 @@ const int NEW_BOX = 60 * 60 * 1000 / HOURLY_PERFORMENCE;
 const int TOTAL_SIMULATION_TIME = SIMULATION_DAYS * 24 * 60 * 60 * 1000;
 const int DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE = LENGTH_OF_CONVEYOR / (COUNT_LOCATIONS / COUNT_LOCATIONS_SAME_LINE);
 
-int dataEqualForBox(const void * p1, const void * p2, const size_t i);
 void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
 void debugFreeExit(const char * msg, eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
+
+void * boxCreate(size_t size)
+{
+	return malloc(sizeof(Box) * size);
+}
+
+void * boxCopy(void * a1, const void * a2)
+{
+	return memcpy(a1, a2, sizeof(Box));
+}
+
+int boxCompare(const void * p1, const void * p2)
+{
+	if (((Box *)p1)->id == ((Box *)p2)->id)
+	{
+		return 0;
+	}
+	return (((Box *)p1)->id > ((Box *)p2)->id) * 2 - 1;
+}
+
+void boxClear(void * a)
+{
+	free(a);
+}
 
 int main()
 {
 	int i, j, control_mem = 1;
 	eaDSDynamicArray dynamicArray1;
 	eaDSDynamicArray dynamicArray2[COUNT_LOCATIONS];
-	eaDSInfosForData infos = {sizeof(Box), free, malloc, memcpy, dataEqualForBox}; /* dataEqualForBox bu projede kullanılmıyor */
 
-	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(&infos)))
+	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreate, boxCopy, boxCompare, boxClear)))
 	{
 		control_mem = 0;
 	}
 
 	for (i = 0; i < COUNT_LOCATIONS; i++)
 	{
-		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(&infos)))
+		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreate, boxCopy, boxCompare, boxClear)))
 		{
 			control_mem = 0;
 			break;
@@ -222,15 +242,6 @@ int main()
 	getchar();
 
 	return EXIT_SUCCESS;
-}
-
-int dataEqualForBox(const void * p1, const void * p2, const size_t i)
-{
-	if (((Box *)p1)->id == ((Box *)p2)->id)
-	{
-		return 0;
-	}
-	return (((Box *)p1)->id > ((Box *)p2)->id) * 2 - 1;
 }
 
 void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2)
