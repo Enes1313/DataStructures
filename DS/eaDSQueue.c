@@ -10,10 +10,13 @@ typedef struct _ItemQue {
 struct _eaDSQueue {
 	ItemQue * Front;
 	ItemQue * Rear;
-	eaDSInfosForData Infos;
+	void * (*dataCreate)(size_t);
+	void * (*dataCopy)(void *, const void *);
+	int (*dataCompare)(const void *, const void *);
+	void (*dataClear)(void *);
 };
 
-eaDSQueue eaDSQueueInit(eaDSInfosForData * infos)
+eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
 	eaDSQueue queue;
 
@@ -21,21 +24,16 @@ eaDSQueue eaDSQueueInit(eaDSInfosForData * infos)
 
 	if (NULL == queue)
 	{
-		perror(__func__);
+		perror(NULL);
 	}
 	else
 	{
 		queue->Front = NULL;
 		queue->Rear = NULL;
-
-		if (NULL == infos)
-		{
-			queue->Infos = (eaDSInfosForData){sizeof(int), free, malloc, memcpy, memcmp};
-		}
-		else
-		{
-			queue->Infos = *infos;
-		}
+		queue->dataCreate = dataCreate;
+		queue->dataCopy = dataCopy;
+		queue->dataCompare = dataCompare;
+		queue->dataClear = dataClear;
 	}
 
 	return queue;
@@ -49,7 +47,7 @@ void eaDSQueueReset(eaDSQueue queue)
 
 		tmp = queue->Front;
 		queue->Front = tmp->Next;
-		queue->Infos.dataClear(tmp->Data);
+		queue->dataClear(tmp->Data);
 
 		free(tmp);
 	}
@@ -82,8 +80,8 @@ int eaDSQueueDequeue(eaDSQueue queue, void * data)
 		return EXIT_FAILURE;
 	}
 
-	queue->Infos.dataCopy(data, queue->Front->Data, queue->Infos.SumSize);
-	queue->Infos.dataClear(queue->Front->Data);
+	queue->dataCopy(data, queue->Front->Data);
+	queue->dataClear(queue->Front->Data);
 
 	p = queue->Front;
 	queue->Front = queue->Front->Next;
@@ -103,13 +101,13 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 
 	if ((tmp = (ItemQue *)malloc(sizeof(ItemQue))) == NULL)
 	{
-		perror(__func__);
+		perror(NULL);
 		return EXIT_FAILURE;
 	}
 
 	tmp->Next = NULL;
-	tmp->Data = queue->Infos.dataCreate(queue->Infos.SumSize);
-	queue->Infos.dataCopy(tmp->Data, data, queue->Infos.SumSize);
+	tmp->Data = queue->dataCreate(1);
+	queue->dataCopy(tmp->Data, data);
 
 	if (queue->Front == NULL)
 	{
@@ -132,7 +130,7 @@ int eaDSQueuePeekQueue(const eaDSQueue queue, void * data)
 		return EXIT_FAILURE;
 	}
 
-	queue->Infos.dataCopy(data, queue->Front->Data, queue->Infos.SumSize);
+	queue->dataCopy(data, queue->Front->Data);
 
 	return EXIT_SUCCESS;
 }

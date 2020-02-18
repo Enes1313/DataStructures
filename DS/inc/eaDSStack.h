@@ -9,7 +9,7 @@
 #ifndef EADSSTACK_H_
 #define EADSSTACK_H_
 
-#include "eaDSData.h"
+#include <stddef.h>
 
 /********************************************************************************
 * DESCRIPTION : The data type used for a stack.
@@ -21,17 +21,19 @@ typedef struct _eaDSStack * eaDSStack;
 * DESCRIPTION : Initialize the stack with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            info -> A struct which about infos for data.
-*                                    (size, clear, creat, copy, equal)
+*                            dataCreate -> Data-specific memory alloc. function
+*                            dataCopy -> Data-specific copy function
+*                            dataCompare -> Data-specific compare function
+*                            dataClear -> Data-specific clear function
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSDynamicArray type or NULL.
-* NOTES       : If "info" will be NULL, It will use default settings.
-*               {sizeof(int), free, malloc, memcpy, memcmp}
+* NOTES       : All parameters except "dataCompare" are used in library.
+* 				"dataCompare" can be used in the future.
 ********************************************************************************/
-eaDSStack eaDSStackInit(eaDSInfosForData * infos);
+eaDSStack eaDSStackInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Initialize the stack with the given structure.
@@ -49,7 +51,7 @@ eaDSStack eaDSStackInit(eaDSInfosForData * infos);
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expFactor, unsigned short startingCapacity);
+eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the stack. Context of stack is deleted.

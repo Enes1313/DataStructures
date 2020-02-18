@@ -9,7 +9,7 @@
 #ifndef EADSDYNAMICARRAY_H
 #define EADSDYNAMICARRAY_H
 
-#include "eaDSData.h"
+#include <stddef.h>
 
 /********************************************************************************
 * DESCRIPTION : The data type used for a dynamic array.
@@ -21,17 +21,18 @@ typedef struct _eaDSDynamicArray * eaDSDynamicArray;
 * DESCRIPTION : Initialize the dynamic array with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            info -> A struct which about infos for data.
-*                                    (size, clear, creat, copy, equal)
+*                            dataCreate -> Data-specific memory alloc. function
+*                            dataCopy -> Data-specific copy function
+*                            dataCompare -> Data-specific compare function
+*                            dataClear -> Data-specific clear function
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSDynamicArray type or NULL.
-* NOTES       : If "info" will be NULL, It will use default settings.
-*               {sizeof(int), free, malloc, memcpy, memcmp}
+* NOTES       : All parameters are used in library.
 ********************************************************************************/
-eaDSDynamicArray eaDSDynamicArrayInit(eaDSInfosForData * info);
+eaDSDynamicArray eaDSDynamicArrayInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Initialize the dynamic array with the given details for DA.
@@ -49,7 +50,7 @@ eaDSDynamicArray eaDSDynamicArrayInit(eaDSInfosForData * info);
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSDynamicArray eaDSDynamicArrayInitWithDetails(eaDSInfosForData * infos, unsigned short expFactor, unsigned short startingCapacity);
+eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataEqual)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the dynamic array. Context of dynamic array is deleted.

@@ -8,7 +8,7 @@
 #ifndef EADSQUEUE_H_
 #define EADSQUEUE_H_
 
-#include "eaDSData.h"
+#include <stddef.h>
 
 /********************************************************************************
 * DESCRIPTION : The data type used for a queue.
@@ -20,17 +20,19 @@ typedef struct _eaDSQueue * eaDSQueue;
 * DESCRIPTION : Initialize the queue with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            info -> A struct which about infos for data.
-*                                    (size, clear, creat, copy, equal)
+*                            dataCreate -> Data-specific memory alloc. function
+*                            dataCopy -> Data-specific copy function
+*                            dataCompare -> Data-specific compare function
+*                            dataClear -> Data-specific clear function
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSLinkedList type or NULL.
-* NOTES       : If "info" will be NULL, It will use default settings.
-*               {sizeof(int), free, malloc, memcpy, memcmp}
+* NOTES       : All parameters except "dataCompare" are used in library.
+* 				"dataCompare" can be used in the future.
 ********************************************************************************/
-eaDSQueue eaDSQueueInit(eaDSInfosForData * infos);
+eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Reset the queue. Context of queue is deleted.

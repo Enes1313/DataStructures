@@ -9,15 +9,18 @@ struct _eaDSStack {
 	void ** Data;
 	size_t Count, Capacity;
 	unsigned short ExpFactor, StartingCapacity;
-	eaDSInfosForData Infos;
+	void * (*dataCreate)(size_t);
+	void * (*dataCopy)(void *, const void *);
+	int (*dataCompare)(const void *, const void *);
+	void (*dataClear)(void *);
 };
 
-eaDSStack eaDSStackInit(eaDSInfosForData * infos)
+eaDSStack eaDSStackInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
-	return eaDSStackInitWithDetails(infos, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
+	return eaDSStackInitWithDetails(dataCreate, dataCopy, dataCompare, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
 }
 
-eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expFactor, unsigned short startingCapacity)
+eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
 {
 	eaDSStack stack;
 
@@ -25,7 +28,7 @@ eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expF
 
 	if (NULL == stack)
 	{
-		perror(__func__);
+		perror(NULL);
 	}
 	else
 	{
@@ -34,7 +37,7 @@ eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expF
 
 		if (NULL == stack->Data)
 		{
-			perror(__func__);
+			perror(NULL);
 			free(stack);
 			stack = NULL;
 		}
@@ -43,15 +46,10 @@ eaDSStack eaDSStackInitWithDetails(eaDSInfosForData * infos, unsigned short expF
 			stack->Count = 0;
 			stack->Capacity = stack->StartingCapacity;
 			stack->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-
-			if (NULL == infos)
-			{
-				stack->Infos = (eaDSInfosForData){sizeof(int), free, malloc, memcpy, memcmp};
-			}
-			else
-			{
-				stack->Infos = *infos;
-			}
+			stack->dataCreate = dataCreate;
+			stack->dataCopy = dataCopy;
+			stack->dataCompare = dataCompare;
+			stack->dataClear = dataClear;
 		}
 	}
 
@@ -66,7 +64,7 @@ int eaDSStackReset(eaDSStack stack)
 
 		if (NULL == stack->Data)
 		{
-			perror(__func__);
+			perror(NULL);
 
 			return EXIT_FAILURE;
 		}
@@ -75,7 +73,7 @@ int eaDSStackReset(eaDSStack stack)
 	{
 		while (stack->Count)
 		{
-			stack->Infos.dataClear(stack->Data[--stack->Count]);
+			stack->dataClear(stack->Data[--stack->Count]);
 		}
 
 		if (stack->StartingCapacity < stack->Capacity)
@@ -85,7 +83,7 @@ int eaDSStackReset(eaDSStack stack)
 
 			if (NULL == stack->Data)
 			{
-				perror(__func__);
+				perror(NULL);
 
 				return EXIT_FAILURE;
 			}
@@ -103,7 +101,7 @@ void eaDSStackClear(eaDSStack stack)
 	{
 		while(stack->Count)
 		{
-			stack->Infos.dataClear(stack->Data[--stack->Count]);
+			stack->dataClear(stack->Data[--stack->Count]);
 		}
 
 		free(stack->Data);
@@ -127,8 +125,8 @@ int eaDSStackPop(eaDSStack stack, void * data)
 	if (stack->Count)
 	{
 		stack->Count--;
-		stack->Infos.dataCopy(data, stack->Data[stack->Count], stack->Infos.SumSize);
-		stack->Infos.dataClear(stack->Data[stack->Count]);
+		stack->dataCopy(data, stack->Data[stack->Count]);
+		stack->dataClear(stack->Data[stack->Count]);
 
 		return EXIT_SUCCESS;
 	}
@@ -148,7 +146,7 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 
 		if (NULL == tmp)
 		{
-			perror(__func__);
+			perror(NULL);
 			stack->Capacity /= stack->ExpFactor;
 
 			return EXIT_FAILURE;
@@ -163,16 +161,16 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 		stack->Data = tmp;
 	}
 
-	stack->Data[stack->Count] = stack->Infos.dataCreate(stack->Infos.SumSize);
+	stack->Data[stack->Count] = stack->dataCreate(1);
 
 	if (NULL == stack->Data[stack->Count])
 	{
-		perror(__func__);
+		perror(NULL);
 
 		return EXIT_FAILURE;
 	}
 
-	stack->Infos.dataCopy(stack->Data[stack->Count], data, stack->Infos.SumSize);
+	stack->dataCopy(stack->Data[stack->Count], data);
 	stack->Count++;
 
 	return EXIT_SUCCESS;
@@ -182,7 +180,7 @@ int eaDSStackPeekStack(const eaDSStack stack, void * data)
 {
 	if (stack->Count)
 	{
-		stack->Infos.dataCopy(data, stack->Data[stack->Count - 1], stack->Infos.SumSize);
+		stack->dataCopy(data, stack->Data[stack->Count - 1]);
 
 		return EXIT_SUCCESS;
 	}

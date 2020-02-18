@@ -8,7 +8,7 @@
 #ifndef EADSLINKEDLIST_H_
 #define EADSLINKEDLIST_H_
 
-#include "eaDSData.h"
+#include <stddef.h>
 
 /********************************************************************************
 * DESCRIPTION : The data type used for a linked list.
@@ -20,17 +20,18 @@ typedef struct _eaDSLinkedList * eaDSLinkedList;
 * DESCRIPTION : Initialize the linked list with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            info -> A struct which about infos for data.
-*                                    (size, clear, creat, copy, equal)
+*                            dataCreate -> Data-specific memory alloc. function
+*                            dataCopy -> Data-specific copy function
+*                            dataCompare -> Data-specific compare function
+*                            dataClear -> Data-specific clear function
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSLinkedList type or NULL.
-* NOTES       : If "info" will be NULL, It will use default settings.
-*               {sizeof(int), free, malloc, memcpy, memcmp}
+* NOTES       : All parameters are used in library.
 ********************************************************************************/
-eaDSLinkedList eaDSLinkedListInit(eaDSInfosForData * infos);
+eaDSLinkedList eaDSLinkedListInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Reset the linked list. Context of linked list is deleted.
