@@ -26,17 +26,14 @@
     <ClCompile Include="..\..\..\DS\eaDSStack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\DS\eaDSTree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Test\main.c">
       <Filter>Test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\DS\eaDSCircularBuffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\DS\inc\eaDSData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\DS\inc\eaDSDynamicArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -49,7 +46,7 @@
     <ClInclude Include="..\..\..\DS\inc\eaDSStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\DS\inc\eaDSTree.h">
+    <ClInclude Include="..\..\..\DS\inc\eaDSCircularBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
