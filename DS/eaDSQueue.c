@@ -10,13 +10,11 @@ typedef struct _ItemQue {
 struct _eaDSQueue {
 	ItemQue * Front;
 	ItemQue * Rear;
-	void * (*dataCreate)(size_t);
-	void * (*dataCopy)(void *, const void *);
-	int (*dataCompare)(const void *, const void *);
+	void * (*dataCreateAndCopy)(const void *);
 	void (*dataClear)(void *);
 };
 
-eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
+eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *))
 {
 	eaDSQueue queue;
 
@@ -30,9 +28,7 @@ eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *,
 	{
 		queue->Front = NULL;
 		queue->Rear = NULL;
-		queue->dataCreate = dataCreate;
-		queue->dataCopy = dataCopy;
-		queue->dataCompare = dataCompare;
+		queue->dataCreateAndCopy = dataCreateAndCopy;
 		queue->dataClear = dataClear;
 	}
 
@@ -71,16 +67,22 @@ int eaDSQueueIsEmpty(const eaDSQueue queue)
 	return 0;
 }
 
-int eaDSQueueDequeue(eaDSQueue queue, void * data)
+void * eaDSQueueDequeue(eaDSQueue queue)
 {
-	void * p;
+	void * p, * data;
 
 	if (NULL == queue->Front)
 	{
-		return EXIT_FAILURE;
+		return NULL;
 	}
 
-	queue->dataCopy(data, queue->Front->Data);
+	data = queue->dataCreateAndCopy(queue->Front->Data);
+
+	if (NULL == data)
+	{
+		perror(NULL);
+	}
+
 	queue->dataClear(queue->Front->Data);
 
 	p = queue->Front;
@@ -92,7 +94,7 @@ int eaDSQueueDequeue(eaDSQueue queue, void * data)
 		queue->Rear = NULL;
 	}
 
-	return EXIT_SUCCESS;
+	return data;
 }
 
 int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
@@ -106,8 +108,15 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 	}
 
 	tmp->Next = NULL;
-	tmp->Data = queue->dataCreate(1);
-	queue->dataCopy(tmp->Data, data);
+	tmp->Data = queue->dataCreateAndCopy(data);
+
+	if (NULL == tmp->Data)
+	{
+		free(tmp);
+		perror(NULL);
+
+		return EXIT_FAILURE;
+	}
 
 	if (queue->Front == NULL)
 	{
@@ -123,15 +132,33 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 	return EXIT_SUCCESS;
 }
 
-int eaDSQueuePeekQueue(const eaDSQueue queue, void * data)
+void * eaDSQueuePeekValue(const eaDSQueue queue)
+{
+	void * data;
+
+	data = NULL;
+
+	if (queue->Front == NULL)
+	{
+		return NULL;
+	}
+
+	data = queue->dataCreateAndCopy(queue->Front->Data);
+
+	if (NULL == data)
+	{
+		perror(NULL);
+	}
+
+	return data;
+}
+
+void * eaDSQueuePeekAddress(const eaDSQueue queue)
 {
 	if (queue->Front == NULL)
 	{
-		return EXIT_FAILURE;
+		return NULL;
 	}
 
-	queue->dataCopy(data, queue->Front->Data);
-
-	return EXIT_SUCCESS;
+	return queue->Front->Data;
 }
-

@@ -21,7 +21,6 @@ typedef struct _eaDSStack * eaDSStack;
 * DESCRIPTION : Initialize the stack with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            dataCreate -> Data-specific memory alloc. function
 *                            dataCopy -> Data-specific copy function
 *                            dataCompare -> Data-specific compare function
 *                            dataClear -> Data-specific clear function
@@ -33,14 +32,15 @@ typedef struct _eaDSStack * eaDSStack;
 * NOTES       : All parameters except "dataCompare" are used in library.
 * 				"dataCompare" can be used in the future.
 ********************************************************************************/
-eaDSStack eaDSStackInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
+eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Initialize the stack with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            info -> A struct which about infos for data.
-*                                    (size, clear, creat, copy, equal)
+*                            dataCopy -> Data-specific copy function
+*                            dataCompare -> Data-specific compare function
+*                            dataClear -> Data-specific clear function
 *                            expFactor -> Increase value of memory area.
 *                            startingCapacity -> Value of the starting capacity.
 *               GLOBALS    : None
@@ -51,7 +51,7 @@ eaDSStack eaDSStackInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *,
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
+eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the stack. Context of stack is deleted.
@@ -63,7 +63,7 @@ eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCo
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 int eaDSStackReset(eaDSStack stack);
 
@@ -77,7 +77,7 @@ int eaDSStackReset(eaDSStack stack);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSStackClear(eaDSStack stack);
 
@@ -114,15 +114,15 @@ size_t eaDSStackGetCapacity(const eaDSStack stack);
 * INPUTS      :
 *               PARAMETERS :
 *                            stack -> Address of a stack.
-*                            data -> Address of data to copy from the stack.
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses free and copy functions given in info struct.
+*               RETURN     : Address of data or NULL
+* NOTES       : This function uses free and copy functions passed to init func.
+* 				You have to free the value returned from the function.
 ********************************************************************************/
-int eaDSStackPop(eaDSStack stack, void * data);
+void * eaDSStackPop(eaDSStack stack);
 
 /********************************************************************************
 * DESCRIPTION : Data is pushed to end of stack.
@@ -135,7 +135,7 @@ int eaDSStackPop(eaDSStack stack, void * data);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses createandcopy functions passed to init func.
 ********************************************************************************/
 int eaDSStackPush(eaDSStack stack, const void * data);
 
@@ -144,15 +144,15 @@ int eaDSStackPush(eaDSStack stack, const void * data);
 * INPUTS      :
 *               PARAMETERS :
 *                            stack -> Address of a stack.
-*                            data -> Address of data to copy from the stack.
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses copy function given in info struct.
+*               RETURN     : Address of data or NULL
+* NOTES       : This function uses copy function passed to init func.
+* 				You have to free the value returned from the function.
 ********************************************************************************/
-int eaDSStackPeekStack(const eaDSStack stack, void * data);
+void * eaDSStackPeekValue(const eaDSStack stack, void * data);
 
 /********************************************************************************
 * DESCRIPTION : Address of data in peek of stack is return.
@@ -166,6 +166,6 @@ int eaDSStackPeekStack(const eaDSStack stack, void * data);
 *               RETURN     : Address of data or NULL
 * NOTES       : None
 ********************************************************************************/
-void * eaDSStackPeekStackGetAddress(const eaDSStack stack);
+void * eaDSStackPeekAddress(const eaDSStack stack);
 
 #endif /* EADSSTACK_H_ */

@@ -20,7 +20,6 @@ typedef struct _eaDSQueue * eaDSQueue;
 * DESCRIPTION : Initialize the queue with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            dataCreate -> Data-specific memory alloc. function
 *                            dataCopy -> Data-specific copy function
 *                            dataCompare -> Data-specific compare function
 *                            dataClear -> Data-specific clear function
@@ -29,10 +28,9 @@ typedef struct _eaDSQueue * eaDSQueue;
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSLinkedList type or NULL.
-* NOTES       : All parameters except "dataCompare" are used in library.
-* 				"dataCompare" can be used in the future.
+* NOTES       : All parameters are used in library.
 ********************************************************************************/
-eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
+eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Reset the queue. Context of queue is deleted.
@@ -44,7 +42,7 @@ eaDSQueue eaDSQueueInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *,
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSQueueReset(eaDSQueue queue);
 
@@ -58,7 +56,7 @@ void eaDSQueueReset(eaDSQueue queue);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSQueueClear(eaDSQueue queue);
 
@@ -81,15 +79,14 @@ int eaDSQueueIsEmpty(const eaDSQueue queue);
 * INPUTS      :
 *               PARAMETERS :
 *                            queue -> Address of a queue.
-*                            data -> Data address to remove from the queue.
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : None
-* NOTES       : This function uses free function given in info struct.
+*               RETURN     : Address of data or NULL
+* NOTES       : This function uses free function passed to init func.
 ********************************************************************************/
-int eaDSQueueDequeue(eaDSQueue queue, void * data);
+void * eaDSQueueDequeue(eaDSQueue queue);
 
 /********************************************************************************
 * DESCRIPTION : Data is added to queue.
@@ -102,7 +99,7 @@ int eaDSQueueDequeue(eaDSQueue queue, void * data);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses createandcopy functions passed to init func.
 ********************************************************************************/
 int eaDSQueueEnqueue(eaDSQueue queue, const void * data);
 
@@ -111,16 +108,28 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data);
 * INPUTS      :
 *               PARAMETERS :
 *                            queue -> Address of a queue.
-*                            data -> Address to copy from the queue.
-*                            index -> Index in the queue.
 *               GLOBALS    : None
 * OUTPUTS     :
-*               PARAMETERS :
-*                            data -> It is Data in index of the queue.
+*               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses copy function given in info struct.
+*               RETURN     : Address of data or NULL
+* NOTES       : This function uses createandcopy function passed to init func.
+* 				You have to free the value returned from the function.
 ********************************************************************************/
-int eaDSQueuePeekQueue(const eaDSQueue queue, void * data);
+void * eaDSQueuePeekValue(const eaDSQueue queue);
+
+/********************************************************************************
+* DESCRIPTION : Data in queue is taken to "data" param.
+* INPUTS      :
+*               PARAMETERS :
+*                            queue -> Address of a queue.
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : Address of data or NULL
+* NOTES       : None
+********************************************************************************/
+void * eaDSQueuePeekAddress(const eaDSQueue queue);
 
 #endif /* EADSQUEUE_H_ */

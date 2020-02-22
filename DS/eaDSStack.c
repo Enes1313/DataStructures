@@ -9,18 +9,17 @@ struct _eaDSStack {
 	void ** Data;
 	size_t Count, Capacity;
 	unsigned short ExpFactor, StartingCapacity;
-	void * (*dataCreate)(size_t);
-	void * (*dataCopy)(void *, const void *);
+	void * (*dataCreateAndCopy)(const void *);
 	int (*dataCompare)(const void *, const void *);
 	void (*dataClear)(void *);
 };
 
-eaDSStack eaDSStackInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
+eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *))
 {
-	return eaDSStackInitWithDetails(dataCreate, dataCopy, dataCompare, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
+	return eaDSStackInitWithDetails(dataCreateAndCopy, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
 }
 
-eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
+eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
 {
 	eaDSStack stack;
 
@@ -46,9 +45,7 @@ eaDSStack eaDSStackInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCo
 			stack->Count = 0;
 			stack->Capacity = stack->StartingCapacity;
 			stack->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-			stack->dataCreate = dataCreate;
-			stack->dataCopy = dataCopy;
-			stack->dataCompare = dataCompare;
+			stack->dataCreateAndCopy = dataCreateAndCopy;
 			stack->dataClear = dataClear;
 		}
 	}
@@ -120,22 +117,40 @@ size_t eaDSStackGetCapacity(const eaDSStack stack)
 	return stack->Capacity;
 }
 
-int eaDSStackPop(eaDSStack stack, void * data)
+void * eaDSStackPop(eaDSStack stack)
 {
+	void * data;
+
+	data = NULL;
+
 	if (stack->Count)
 	{
-		stack->Count--;
-		stack->dataCopy(data, stack->Data[stack->Count]);
-		stack->dataClear(stack->Data[stack->Count]);
+		data = stack->dataCreateAndCopy(stack->Data[stack->Count - 1]);
 
-		return EXIT_SUCCESS;
+		if (data != NULL)
+		{
+			stack->dataClear(stack->Data[--stack->Count]);
+		}
+		else
+		{
+			perror(NULL);
+		}
 	}
 
-	return EXIT_FAILURE;
+	return data;
 }
 
 int eaDSStackPush(eaDSStack stack, const void * data)
 {
+	void * item;
+
+	if (NULL == (item = stack->dataCreateAndCopy(data)))
+	{
+		perror(NULL);
+
+		return EXIT_FAILURE;
+	}
+
 	if (stack->Count == stack->Capacity)
 	{
 		size_t i;
@@ -161,31 +176,29 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 		stack->Data = tmp;
 	}
 
-	stack->Data[stack->Count] = stack->dataCreate(1);
-
-	if (NULL == stack->Data[stack->Count])
-	{
-		perror(NULL);
-
-		return EXIT_FAILURE;
-	}
-
-	stack->dataCopy(stack->Data[stack->Count], data);
+	stack->Data[stack->Count] = item;
 	stack->Count++;
 
 	return EXIT_SUCCESS;
 }
 
-int eaDSStackPeekStack(const eaDSStack stack, void * data)
+void * eaDSStackPeekStack(const eaDSStack stack)
 {
+	void * data;
+
+	data = NULL;
+
 	if (stack->Count)
 	{
-		stack->dataCopy(data, stack->Data[stack->Count - 1]);
+		data = stack->dataCreateAndCopy(stack->Data[stack->Count - 1]);
 
-		return EXIT_SUCCESS;
+		if (NULL == data)
+		{
+			perror(NULL);
+		}
 	}
 
-	return EXIT_FAILURE;
+	return data;
 }
 
 void * eaDSStackPeekStackGetAddress(const eaDSStack stack)
