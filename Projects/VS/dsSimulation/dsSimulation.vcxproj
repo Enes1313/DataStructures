@@ -116,19 +116,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\DS\inc\eaDSData.h" />
+    <ClInclude Include="..\..\..\DS\inc\eaDSCircularBuffer.h" />
     <ClInclude Include="..\..\..\DS\inc\eaDSDynamicArray.h" />
     <ClInclude Include="..\..\..\DS\inc\eaDSLinkedList.h" />
     <ClInclude Include="..\..\..\DS\inc\eaDSQueue.h" />
     <ClInclude Include="..\..\..\DS\inc\eaDSStack.h" />
-    <ClInclude Include="..\..\..\DS\inc\eaDSTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\DS\eaDSCircularBuffer.c" />
     <ClCompile Include="..\..\..\DS\eaDSDynamicArray.c" />
     <ClCompile Include="..\..\..\DS\eaDSLinkedList.c" />
     <ClCompile Include="..\..\..\DS\eaDSQueue.c" />
     <ClCompile Include="..\..\..\DS\eaDSStack.c" />
-    <ClCompile Include="..\..\..\DS\eaDSTree.c" />
     <ClCompile Include="..\..\..\Simulation\main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
