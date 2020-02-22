@@ -10,13 +10,12 @@ typedef struct _ItemLL{
 struct _eaDSLinkedList{
 	ItemLL * Head;
 	ItemLL * Tail;
-	void * (*dataCreate)(size_t);
-	void * (*dataCopy)(void *, const void *);
+	void * (*dataCreateAndCopy)(const void *);
 	int (*dataCompare)(const void *, const void *);
 	void (*dataClear)(void *);
 };
 
-eaDSLinkedList eaDSLinkedListInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
+eaDSLinkedList eaDSLinkedListInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
 	eaDSLinkedList linkedList;
 
@@ -30,8 +29,7 @@ eaDSLinkedList eaDSLinkedListInit(void * (*dataCreate)(size_t), void * (*dataCop
 	{
 		linkedList->Head = NULL;
 		linkedList->Tail = NULL;
-		linkedList->dataCreate = dataCreate;
-		linkedList->dataCopy = dataCopy;
+		linkedList->dataCreateAndCopy = dataCreateAndCopy;
 		linkedList->dataCompare = dataCompare;
 		linkedList->dataClear = dataClear;
 	}
@@ -89,17 +87,13 @@ int eaDSLinkedListAdd(eaDSLinkedList linkedList, const void * data)
 		return EXIT_FAILURE;
 	}
 
-	tmp->Data = linkedList->dataCreate(1);
-
-	if (NULL == tmp->Data)
+	if (NULL == (tmp->Data = linkedList->dataCreateAndCopy(data)))
 	{
 		free(tmp);
 		perror(NULL);
 
 		return EXIT_FAILURE;
 	}
-
-	linkedList->dataCopy(tmp->Data, data);
 
 	if (NULL == iter)
 	{
@@ -220,7 +214,8 @@ void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index)
 int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const size_t index)
 {
 	size_t i;
-	ItemLL * iter, * tmp, * p;
+	void * p;
+	ItemLL * iter, * tmp;
 
 	if((tmp = (ItemLL *) malloc(sizeof(ItemLL))) == NULL)
 	{
@@ -229,7 +224,7 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 		return EXIT_FAILURE;
 	}
 
-	if((p = linkedList->dataCreate(1)) == NULL)
+	if (NULL == (p = linkedList->dataCreateAndCopy(data)))
 	{
 		free(tmp);
 		perror(NULL);
@@ -266,7 +261,6 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 	}
 
 	iter->Data = p;
-	linkedList->dataCopy(iter->Data, data);
 
 	if (iter->Next == NULL)
 	{
@@ -276,27 +270,32 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 	return EXIT_SUCCESS;
 }
 
-int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const size_t index)
+void * eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, const size_t index)
 {
 	size_t i;
+	void * data;
 	ItemLL * iter;
 
 	i = 0;
+	data = NULL;
 	iter = linkedList->Head;
 
 	while (NULL != iter)
 	{
 		if (index == i++)
 		{
-			linkedList->dataCopy(data, iter->Data);
+			if (NULL == (data = linkedList->dataCreateAndCopy(iter->Data)))
+			{
+				perror(NULL);
+			}
 
-			return EXIT_SUCCESS;
+			break;
 		}
 
 		iter = iter->Next;
 	}
 
-	return EXIT_FAILURE;
+	return data;
 }
 
 void * eaDSLinkedListGetAddressFrom(const eaDSLinkedList linkedList, const size_t index)

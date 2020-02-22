@@ -20,7 +20,6 @@ typedef struct _eaDSLinkedList * eaDSLinkedList;
 * DESCRIPTION : Initialize the linked list with the given structure.
 * INPUTS      :
 *               PARAMETERS :
-*                            dataCreate -> Data-specific memory alloc. function
 *                            dataCopy -> Data-specific copy function
 *                            dataCompare -> Data-specific compare function
 *                            dataClear -> Data-specific clear function
@@ -31,7 +30,7 @@ typedef struct _eaDSLinkedList * eaDSLinkedList;
 *               RETURN     : Address from eaDSLinkedList type or NULL.
 * NOTES       : All parameters are used in library.
 ********************************************************************************/
-eaDSLinkedList eaDSLinkedListInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
+eaDSLinkedList eaDSLinkedListInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Reset the linked list. Context of linked list is deleted.
@@ -43,7 +42,7 @@ eaDSLinkedList eaDSLinkedListInit(void * (*dataCreate)(size_t), void * (*dataCop
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSLinkedListReset(eaDSLinkedList linkedList);
 
@@ -57,7 +56,7 @@ void eaDSLinkedListReset(eaDSLinkedList linkedList);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSLinkedListClear(eaDSLinkedList linkedList);
 
@@ -100,7 +99,7 @@ int eaDSLinkedListIsEmpty(const eaDSLinkedList linkedList);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses createandcopy functions passed to init func.
 ********************************************************************************/
 int eaDSLinkedListAdd(eaDSLinkedList linkedList, const void * data);
 
@@ -115,7 +114,7 @@ int eaDSLinkedListAdd(eaDSLinkedList linkedList, const void * data);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses free function given in info struct.
+* NOTES       : This function uses free function passed to init func.
 ********************************************************************************/
 void eaDSLinkedListRemove(eaDSLinkedList linkedList, const void * data);
 
@@ -130,7 +129,7 @@ void eaDSLinkedListRemove(eaDSLinkedList linkedList, const void * data);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses free function given in info struct.
+* NOTES       : This function uses free function passed to init func.
 ********************************************************************************/
 void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index);
 
@@ -146,7 +145,7 @@ void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses createandcopy functions passed to init func.
 ********************************************************************************/
 int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const size_t index);
 
@@ -155,17 +154,17 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 * INPUTS      :
 *               PARAMETERS :
 *                            linkedList -> Address of a linked list.
-*                            data -> Address to copy from the linked list.
 *                            index -> Index in the linked list.
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS :
 *                            data -> It is Data in index of the linked list.
 *               GLOBALS    : None
-*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses copy function given in info struct.
+*               RETURN     : Address of data or NULL
+* NOTES       : This function uses createandcopy function passed to init func.
+* 				You have to free the value returned from the function.
 ********************************************************************************/
-int eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, void * data, const size_t index);
+void * eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, const size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Address of data in linked list is return.

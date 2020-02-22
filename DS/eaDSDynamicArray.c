@@ -9,22 +9,21 @@ struct _eaDSDynamicArray{
 	void ** Data;
 	size_t Count, Capacity;
 	unsigned short ExpFactor, StartingCapacity;
-	void * (*dataCreate)(size_t);
-	void * (*dataCopy)(void *, const void *);
+	void * (*dataCreateAndCopy)(const void *);
 	int (*dataCompare)(const void *, const void *);
 	void (*dataClear)(void *);
 };
 
-eaDSDynamicArray eaDSDynamicArrayInit(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
+eaDSDynamicArray eaDSDynamicArrayInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
-	return eaDSDynamicArrayInitWithDetails(dataCreate, dataCopy, dataCompare, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
+	return eaDSDynamicArrayInitWithDetails(dataCreateAndCopy, dataCompare, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
 }
 
-eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
+eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
 {
 	eaDSDynamicArray dynamicArray = NULL;
 
-	if (dataCreate && dataCopy && dataCompare && dataClear)
+	if (dataCreateAndCopy && dataCompare && dataClear)
 	{
 		dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
 
@@ -48,8 +47,7 @@ eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreate)(size_t), v
 				dynamicArray->Count = 0;
 				dynamicArray->Capacity = dynamicArray->StartingCapacity;
 				dynamicArray->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-				dynamicArray->dataCreate = dataCreate;
-				dynamicArray->dataCopy = dataCopy;
+				dynamicArray->dataCreateAndCopy = dataCreateAndCopy;
 				dynamicArray->dataCompare = dataCompare;
 				dynamicArray->dataClear = dataClear;
 			}
@@ -143,6 +141,15 @@ size_t eaDSDynamicArrayGetCapacity(const eaDSDynamicArray dynamicArray)
 
 int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 {
+	void * item;
+
+	if (NULL == (item = dynamicArray->dataCreateAndCopy(data)))
+	{
+		perror(NULL);
+
+		return EXIT_FAILURE;
+	}
+
 	if (dynamicArray->Count == dynamicArray->Capacity)
 	{
 		size_t i;
@@ -168,16 +175,7 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 		dynamicArray->Data = tmp;
 	}
 
-	dynamicArray->Data[dynamicArray->Count] = dynamicArray->dataCreate(1);
-
-	if (NULL == dynamicArray->Data[dynamicArray->Count])
-	{
-		perror(NULL);
-
-		return EXIT_FAILURE;
-	}
-
-	dynamicArray->dataCopy(dynamicArray->Data[dynamicArray->Count], data);
+	dynamicArray->Data[dynamicArray->Count] = item;
 	dynamicArray->Count++;
 
 	return EXIT_SUCCESS;
@@ -191,7 +189,14 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 
 	if(index <= cnt)
 	{
-		void * add;
+		void * item;
+
+		if (NULL == (item = dynamicArray->dataCreateAndCopy(data)))
+		{
+			perror(NULL);
+
+			return EXIT_FAILURE;
+		}
 
 		if(dynamicArray->Count == dynamicArray->Capacity)
 		{
@@ -217,13 +222,6 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 			dynamicArray->Data = tmp;
 		}
 
-		if (NULL == (add = dynamicArray->dataCreate(1)))
-		{
-			perror(NULL);
-
-			return EXIT_FAILURE;
-		}
-
 		if (cnt)
 		{
 			for (j = cnt - 1; j >= index; j--)
@@ -237,8 +235,7 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 			}
 		}
 
-		dynamicArray->Data[index] = add;
-		dynamicArray->dataCopy(dynamicArray->Data[index], data);
+		dynamicArray->Data[index] = item;
 		dynamicArray->Count++;
 
 		return EXIT_SUCCESS;
@@ -332,16 +329,21 @@ void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const s
 	}
 }
 
-int eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, void * data, const size_t index)
+void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, const size_t index)
 {
+	void * data;
+
+	data = NULL;
+
 	if(index < dynamicArray->Count)
 	{
-		dynamicArray->dataCopy(data, dynamicArray->Data[index]);
-
-		return EXIT_SUCCESS;
+		if (NULL == (data = dynamicArray->dataCreateAndCopy(dynamicArray->Data[index])))
+		{
+			perror(NULL);
+		}
 	}
 
-	return EXIT_FAILURE;
+	return data;
 }
 
 void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, const size_t index)
