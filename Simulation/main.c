@@ -94,14 +94,10 @@ const int DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE = LENGTH_OF_CONVEYOR 
 void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
 void debugFreeExit(const char * msg, eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
 
-void * boxCreate(size_t size)
+void * boxCreateAndCopy(const void * data)
 {
-	return malloc(sizeof(Box) * size);
-}
-
-void * boxCopy(void * a1, const void * a2)
-{
-	return memcpy(a1, a2, sizeof(Box));
+	void * a = malloc(sizeof(Box));
+	return memcpy(a, data, sizeof(Box));
 }
 
 int boxCompare(const void * p1, const void * p2)
@@ -124,14 +120,14 @@ int main()
 	eaDSDynamicArray dynamicArray1;
 	eaDSDynamicArray dynamicArray2[COUNT_LOCATIONS];
 
-	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreate, boxCopy, boxCompare, boxClear)))
+	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, boxClear)))
 	{
 		control_mem = 0;
 	}
 
 	for (i = 0; i < COUNT_LOCATIONS; i++)
 	{
-		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreate, boxCopy, boxCompare, boxClear)))
+		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, boxClear)))
 		{
 			control_mem = 0;
 			break;
