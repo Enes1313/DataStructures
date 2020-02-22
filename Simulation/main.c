@@ -116,7 +116,7 @@ void boxClear(void * a)
 
 int main()
 {
-	int i, j, control_mem = 1;
+	size_t i, j, control_mem = 1;
 	eaDSDynamicArray dynamicArray1;
 	eaDSDynamicArray dynamicArray2[COUNT_LOCATIONS];
 
@@ -151,7 +151,7 @@ int main()
 			}
 
 			while((SPEED_OF_BOX_ON_CONVEYOR * 1000) % i) i++;
-			interval = (SPEED_OF_BOX_ON_CONVEYOR * 1000) / i++;
+			interval = (SPEED_OF_BOX_ON_CONVEYOR * 1000) / (int)i++;
 		}
 
 		printf("Hourly log\t\t\t\t\t: %6.1f hour!\n", (float) HOURLY_LOG);
