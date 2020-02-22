@@ -32,7 +32,7 @@ typedef struct _eaDSStack * eaDSStack;
 * NOTES       : All parameters except "dataCompare" are used in library.
 * 				"dataCompare" can be used in the future.
 ********************************************************************************/
-eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *));
+eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *));
 
 /********************************************************************************
 * DESCRIPTION : Initialize the stack with the given structure.
@@ -51,7 +51,7 @@ eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), int (*dataCom
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/
-eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
+eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity);
 
 /********************************************************************************
 * DESCRIPTION : Reset the stack. Context of stack is deleted.
