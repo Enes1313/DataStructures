@@ -26,23 +26,65 @@ int main(void)
 {
 	srand((unsigned int)time(NULL));
 
+	testCircularBuffer();
 	testDynamicArray();
 	testLinkedList();
 	testQueue();
 	testStack();
-	testCircularBuffer();
 
 	return EXIT_SUCCESS;
 }
 
-void * intCreate(size_t size)
+void testCircularBuffer()
 {
-	return malloc(sizeof(int) * size);
+	size_t index = 0;
+	char data[50] = {0};
+	eaDSCircularBuffer circularBuffer;
+
+	puts("********************************************");
+	puts("Circular Buffer");
+	puts("********************************************");
+
+	if (NULL == (circularBuffer = eaDSCircularBufferInit(sizeof(char), malloc, memcpy, memcmp, free)))
+	{
+		puts("circularBuffer olusmadi!");
+		return;
+	}
+
+	if (EXIT_SUCCESS != eaDSCircularBufferAdd(circularBuffer, "Enes Aydin", strlen("Enes Aydin")))
+	{
+		puts("circularBuffer'a veri eklenemedi!");
+	}
+
+	if (EXIT_SUCCESS != eaDSCircularBufferAdd(circularBuffer, " araba aldi.", strlen(" araba aldi.")))
+	{
+		puts("circularBuffer'a veri eklenemedi!");
+	}
+
+	if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, 2))
+	{
+		printf("circularBuffer'dan cekilen veri : %s\n", data);
+	}
+
+	memset(data, 0, 2);
+
+	if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, 3))
+	{
+		printf("circularBuffer'dan cekilen veri : %s\n", data);
+	}
+
+	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "in", 2, &index))
+	{
+		printf("circularBuffer'daki sonraki i : %d\n", (int) index);
+	}
+
+	eaDSCircularBufferClear(circularBuffer);
 }
 
-void * intCopy(void * a1, const void * a2)
+void * intCreateAndCopy(const void * data)
 {
-	return memcpy(a1, a2, sizeof(int));
+	void * a = malloc(sizeof(int));
+	return memcpy(a, data, sizeof(int));
 }
 
 int intCompare(const void * a1, const void * a2)
@@ -55,11 +97,6 @@ void intClear(void * a)
 	free(a);
 }
 
-void testCircularBuffer()
-{
-
-}
-
 void testDynamicArray()
 {
 	size_t i, x;
@@ -69,7 +106,7 @@ void testDynamicArray()
 	puts("Dinamik Array");
 	puts("********************************************");
 
-	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreate, intCopy, intCompare, intClear)))
+	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreateAndCopy, intCompare, intClear)))
 	{
 		puts("dynamicArray olusmadi!");
 		return;
@@ -120,9 +157,12 @@ void testDynamicArray()
 
 	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
 	{
-		if(EXIT_SUCCESS == eaDSDynamicArrayGetFrom(dynamicArray, &x, i))
+		void * data = eaDSDynamicArrayGetFrom(dynamicArray, i);
+
+		if(NULL != data)
 		{
-			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
+			intClear(data);
 		}
 		else
 		{
@@ -135,9 +175,11 @@ void testDynamicArray()
 
 	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
 	{
-		if(EXIT_SUCCESS == eaDSDynamicArrayGetFrom(dynamicArray, &x, i))
+		void * data = eaDSDynamicArrayGetAddressFrom(dynamicArray, i);
+
+		if(NULL != data)
 		{
-			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
 		}
 		else
 		{
@@ -182,7 +224,7 @@ void testLinkedList()
 	puts("Linked List");
 	puts("********************************************");
 
-	if (NULL == (linkedList = eaDSLinkedListInit(intCreate, intCopy, intCompare, intClear)))
+	if (NULL == (linkedList = eaDSLinkedListInit(intCreateAndCopy, intCompare, intClear)))
 	{
 		puts("linkedList olusmadi!");
 		return;
@@ -210,9 +252,19 @@ void testLinkedList()
 	printf("LinkedList'den 12. eleman atiliyor!\n");
 	eaDSLinkedListRemoveAt(linkedList, 11);
 
-	for(i = 0; EXIT_SUCCESS == eaDSLinkedListGetFrom(linkedList, &x, i); i++)
+	for(i = 0; ; i++)
 	{
-		printf("LinkedList'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+		void * data = eaDSLinkedListGetFrom(linkedList, i);
+
+		if (NULL != data)
+		{
+			printf("LinkedList'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
+			intClear(data);
+		}
+		else
+		{
+			break;
+		}
 	}
 	/*
 	printf("LinkedList siralaniyor...\n");
@@ -255,7 +307,7 @@ void testStack()
 	puts("Stack");
 	puts("********************************************");
 
-	if (NULL == (stack = eaDSStackInit(intCreate, intCopy, intCompare, intClear)))
+	if (NULL == (stack = eaDSStackInit(intCreateAndCopy, intClear)))
 	{
 		puts("stack olusmadi!");
 		return;
@@ -279,9 +331,11 @@ void testStack()
 
 	for(i = 0; eaDSStackGetCount(stack); i++)
 	{
-		if(EXIT_SUCCESS == eaDSStackPop(stack, &x))
+		void * data = eaDSStackPop(stack);
+		if(NULL != data)
 		{
-			printf("Stack'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+			printf("Stack'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
+			intClear(data);
 		}
 		else
 		{
@@ -322,7 +376,7 @@ void testQueue()
 	size_t i, x;
 	eaDSQueue queue = NULL;
 
-	if (NULL == (queue = eaDSQueueInit(intCreate, intCopy, intCompare, intClear)))
+	if (NULL == (queue = eaDSQueueInit(intCreateAndCopy, intClear)))
 	{
 		puts("queue olusmadi!");
 		return;
@@ -344,9 +398,11 @@ void testQueue()
 
 	for(i = 0; !eaDSQueueIsEmpty(queue); i++)
 	{
-		if(EXIT_SUCCESS == eaDSQueueDequeue(queue, &x))
+		void * data = eaDSQueueDequeue(queue);
+		if(NULL != data)
 		{
-			printf("Queue'den %d. eleman alindi : %d\n", (int)i + 1, (int)x);
+			printf("Queue'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
+			intClear(data);
 		}
 		else
 		{
@@ -361,3 +417,4 @@ void testQueue()
 	puts("Queue");
 	puts("********************************************");
 }
+
