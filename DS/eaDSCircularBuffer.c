@@ -169,7 +169,7 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 	return EXIT_SUCCESS;
 }
 
-int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len)
+int eaDSCircularBufferGetWhereIsIt(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len)
 {
 	size_t i;
 

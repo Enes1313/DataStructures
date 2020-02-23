@@ -58,11 +58,11 @@ void testCircularBuffer()
 
 	memset(data, 0, sizeof(data));
 
-	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
+	if (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "{", 1, &len))
 	{
 		eaDSCircularBufferMoveHead(circularBuffer, len);
 
-		if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+		if (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "}", 1, &len))
 		{
 			if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
 			{
@@ -92,11 +92,11 @@ void testCircularBuffer()
 
 	memset(data, 0, sizeof(data));
 
-	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
+	if (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "{", 1, &len))
 	{
 		eaDSCircularBufferMoveHead(circularBuffer, len);
 
-		if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+		if (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "}", 1, &len))
 		{
 			if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
 			{
@@ -118,11 +118,11 @@ void testCircularBuffer()
 			memset(data, 0, 1);
 		}
 
-		while (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
+		while (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "{", 1, &len))
 		{
 			eaDSCircularBufferMoveHead(circularBuffer, len);
 
-			if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+			if (EXIT_SUCCESS == eaDSCircularBufferGetWhereIsIt(circularBuffer, "}", 1, &len))
 			{
 				if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
 				{

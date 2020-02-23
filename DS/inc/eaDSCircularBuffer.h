@@ -47,9 +47,7 @@ eaDSCircularBuffer eaDSCircularBufferInit(size_t sizeOfData, void * (*dataCreate
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : Address from eaDSCircularBuffer type or NULL.
-* NOTES       : If "info" will be NULL, It will use default settings.
-*               {sizeof(int), free, malloc, memcpy, memcmp}
-*               This function uses clear function given in info struct.
+* NOTES       : All parameters are used in library.
 ********************************************************************************/
 eaDSCircularBuffer eaDSCircularBufferInitWithDetails(size_t sizeOfData, void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *, size_t), int (*dataCompare)(const void *, const void *, size_t), void (*dataClear)(void *), size_t capacity);
 
@@ -77,7 +75,7 @@ void eaDSCircularBufferReset(eaDSCircularBuffer circularBuffer);
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : None
-* NOTES       : This function uses clear function given in info struct.
+* NOTES       : This function uses clear function passed to init func.
 ********************************************************************************/
 void eaDSCircularBufferClear(eaDSCircularBuffer circularBuffer);
 
@@ -87,13 +85,13 @@ void eaDSCircularBufferClear(eaDSCircularBuffer circularBuffer);
 *               PARAMETERS :
 *                            circularBuffer -> Address of a circular buffer.
 *                            data -> Data address to add to the circular buffer.
-*                            s -> size of data (sizeof(...))
+*                            len -> size of data (sizeof(...))
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses copy functions passed to init func.
 ********************************************************************************/
 int eaDSCircularBufferAdd(eaDSCircularBuffer circularBuffer, const void * data, size_t len);
 
@@ -109,7 +107,7 @@ int eaDSCircularBufferAdd(eaDSCircularBuffer circularBuffer, const void * data, 
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses copy functions passed to init func.
 ********************************************************************************/
 int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t len);
 
@@ -119,15 +117,16 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 *               PARAMETERS :
 *                            circularBuffer -> Address of a circular buffer.
 *                            data -> Data address to add to the circular buffer.
-*                            len -> size of data (sizeof(...))
+*                            numberOfData -> Data length
+*                            len -> how many elements later
 *               GLOBALS    : None
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
-* NOTES       : This function uses creat and copy functions given in info struct.
+* NOTES       : This function uses compare functions passed to init func.
 ********************************************************************************/
-int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * index);
+int eaDSCircularBufferGetWhereIsIt(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len);
 
 /********************************************************************************
 * DESCRIPTION : Data is added to circular buffer.
