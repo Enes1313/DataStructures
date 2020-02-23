@@ -113,7 +113,6 @@ int eaDSCircularBufferAdd(eaDSCircularBuffer circularBuffer, const void * data, 
 ********************************************************************************/
 int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t len);
 
-
 /********************************************************************************
 * DESCRIPTION : Data is added to circular buffer.
 * INPUTS      :
@@ -129,6 +128,20 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 * NOTES       : This function uses creat and copy functions given in info struct.
 ********************************************************************************/
 int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * index);
+
+/********************************************************************************
+* DESCRIPTION : Data is added to circular buffer.
+* INPUTS      :
+*               PARAMETERS :
+*                            len -> how much
+*               GLOBALS    : None
+* OUTPUTS     :
+*               PARAMETERS : None
+*               GLOBALS    : None
+*               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
+* NOTES       : None
+********************************************************************************/
+int eaDSCircularBufferMoveHead(eaDSCircularBuffer circularBuffer, size_t len);
 
 #endif /* EADSCIRCULARBUFFER_H_ */
 

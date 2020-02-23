@@ -27,19 +27,19 @@ int main(void)
 	srand((unsigned int)time(NULL));
 
 	testCircularBuffer();
-	testDynamicArray();
+	/*testDynamicArray();
 	testLinkedList();
 	testQueue();
-	testStack();
+	testStack();*/
 
 	return EXIT_SUCCESS;
 }
 
 void testCircularBuffer()
 {
-	size_t index = 0;
-	char data[50] = {0};
+	size_t len = 0;
 	eaDSCircularBuffer circularBuffer;
+	char data[] = {"{ \"Who\" : \"Enes\",{ \"Who\" : \"Enes\", \"Birth\" : 1994 }drgtfhyjg{ \"Who\" : \"Reis\", \"Birth\" : 8888 }"};
 
 	puts("********************************************");
 	puts("Circular Buffer");
@@ -51,34 +51,98 @@ void testCircularBuffer()
 		return;
 	}
 
-	if (EXIT_SUCCESS != eaDSCircularBufferAdd(circularBuffer, "Enes Aydin", strlen("Enes Aydin")))
+	while (EXIT_SUCCESS == eaDSCircularBufferAdd(circularBuffer, data, strlen(data)))
 	{
-		puts("circularBuffer'a veri eklenemedi!");
+		puts("circularBuffer'a veri eklendi!");
 	}
 
-	if (EXIT_SUCCESS != eaDSCircularBufferAdd(circularBuffer, " araba aldi.", strlen(" araba aldi.")))
+	memset(data, 0, sizeof(data));
+
+	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
 	{
-		puts("circularBuffer'a veri eklenemedi!");
+		eaDSCircularBufferMoveHead(circularBuffer, len);
+
+		if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+		{
+			if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
+			{
+				printf("circularBuffer'dan cekilen veri : %s\n", data);
+			}
+		}
+		else
+		{
+			puts("Bo");
+		}
 	}
 
-	if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, 2))
+	if (EXIT_SUCCESS == eaDSCircularBufferAdd(circularBuffer, data, strlen(data)))
 	{
-		printf("circularBuffer'dan cekilen veri : %s\n", data);
+		puts("circularBuffer'a veri eklendi!");
 	}
 
-	memset(data, 0, 2);
-
-	if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, 3))
+	if (EXIT_SUCCESS == eaDSCircularBufferAdd(circularBuffer, data, strlen(data)))
 	{
-		printf("circularBuffer'dan cekilen veri : %s\n", data);
+		puts("circularBuffer'a veri eklendi!");
 	}
 
-	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "in", 2, &index))
+	if (EXIT_SUCCESS == eaDSCircularBufferAdd(circularBuffer, data, strlen(data)))
 	{
-		printf("circularBuffer'daki sonraki i : %d\n", (int) index);
+		puts("circularBuffer'a veri eklendi!");
+	}
+
+	memset(data, 0, sizeof(data));
+
+	if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
+	{
+		eaDSCircularBufferMoveHead(circularBuffer, len);
+
+		if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+		{
+			if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
+			{
+				printf("circularBuffer'dan cekilen veri : %s\n", data);
+			}
+		}
+		else
+		{
+			puts("Bo");
+		}
+	}
+
+	{
+		memset(data, 0, sizeof(data));
+
+		if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, 1))
+		{
+			printf("circularBuffer'dan cekilen veri : %s\n", data);
+			memset(data, 0, 1);
+		}
+
+		while (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "{", 1, &len))
+		{
+			eaDSCircularBufferMoveHead(circularBuffer, len);
+
+			if (EXIT_SUCCESS == eaDSCircularBufferGetIndex(circularBuffer, "}", 1, &len))
+			{
+				if (EXIT_SUCCESS == eaDSCircularBufferGet(circularBuffer, data, len + 1))
+				{
+					printf("circularBuffer'dan cekilen veri : %s\n", data);
+					memset(data, 0, sizeof(data));
+				}
+			}
+			else
+			{
+				puts("Bo");
+				break;
+			}
+		}
 	}
 
 	eaDSCircularBufferClear(circularBuffer);
+
+	puts("********************************************");
+	puts("Circular Buffer");
+	puts("********************************************");
 }
 
 void * intCreateAndCopy(const void * data)

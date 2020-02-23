@@ -101,7 +101,7 @@ int eaDSCircularBufferAdd(eaDSCircularBuffer circularBuffer, const void * data, 
 	}
 	else
 	{
-		if (len > (circularBuffer->Tail - circularBuffer->Head))
+		if (len > (circularBuffer->Head - circularBuffer->Tail))
 		{
 			return EXIT_FAILURE;
 		}
@@ -169,17 +169,17 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 	return EXIT_SUCCESS;
 }
 
-int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * index)
+int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len)
 {
 	size_t i;
 
-	if (circularBuffer->Head < circularBuffer->Tail)
+	if (circularBuffer->Head <= circularBuffer->Tail)
 	{
 		for (i = circularBuffer->Head; i < circularBuffer->Tail; ++i)
 		{
 			if (circularBuffer->dataCompare((char *)circularBuffer->Data + i, data, circularBuffer->SizeOfData * numberOfData) == 0)
 			{
-				*index = i;
+				*len = i - circularBuffer->Head;
 
 				return EXIT_SUCCESS;
 			}
@@ -191,7 +191,7 @@ int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * d
 		{
 			if (circularBuffer->dataCompare((char *)circularBuffer->Data + i, data, circularBuffer->SizeOfData * numberOfData) == 0)
 			{
-				*index = i;
+				*len = i - circularBuffer->Head;
 
 				return EXIT_SUCCESS;
 			}
@@ -201,11 +201,35 @@ int eaDSCircularBufferGetIndex(eaDSCircularBuffer circularBuffer, const void * d
 		{
 			if (circularBuffer->dataCompare((char *)circularBuffer->Data + i, data, circularBuffer->SizeOfData * numberOfData) == 0)
 			{
-				*index = i;
+				*len = i + circularBuffer->Capacity - circularBuffer->Head;
 
 				return EXIT_SUCCESS;
 			}
 		}
+	}
+
+	return EXIT_FAILURE;
+}
+
+int eaDSCircularBufferMoveHead(eaDSCircularBuffer circularBuffer, size_t len)
+{
+	if (circularBuffer->Head + len <= circularBuffer->Tail)
+	{
+		circularBuffer->Head += len;
+
+		return EXIT_SUCCESS;
+	}
+	else if ((circularBuffer->Head + len) < circularBuffer->Capacity)
+	{
+		circularBuffer->Head += len;
+
+		return EXIT_SUCCESS;
+	}
+	else if(((circularBuffer->Head + len) % circularBuffer->Capacity) < circularBuffer->Tail)
+	{
+		circularBuffer->Head = (circularBuffer->Head + len) % circularBuffer->Capacity;
+
+		return EXIT_SUCCESS;
 	}
 
 	return EXIT_FAILURE;
