@@ -2,17 +2,22 @@ CC=gcc
 CFLAGS= -std=c99 -O0 -Wall -pedantic
 
 IDIR:= DS/inc/
-SDIR:= DS/*.c \
+S1DIR:= DS/*.c \
 	Test/*.c
+
+S2DIR:= DS/*.c \
+	Simulation/*.c
 
 EX=main
 
 all: $(EX)
 
 $(EX):
-	$(CC) $(CFLAGS) -I$(IDIR) $(SDIR) -o $(EX)
+	$(CC) $(CFLAGS) -I$(IDIR) $(S1DIR) -o test
+	$(CC) $(CFLAGS) -I$(IDIR) $(S2DIR) -o simulation
 
 clean:
-	rm $(EX)
+	rm test
+	rm simulation
 
 
