@@ -9,9 +9,11 @@
 * [Visual Studio](#visual-studio)
 * [Makefile](#makefile)
 
-## İndirme
+## Indirme
 
+```sh
 $ git clone https://github.com/Enes1313/DataStructures.git
+```
 
 ## Dizinler
 

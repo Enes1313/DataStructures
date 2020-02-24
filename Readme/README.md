@@ -11,7 +11,9 @@
 
 ## Download
 
+```sh
 $ git clone https://github.com/Enes1313/DataStructures.git
+```
 
 ## Folders
 
