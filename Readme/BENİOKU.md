@@ -10,7 +10,7 @@
 ## Contents
 *   [İndirme](#indirme)
 *   [Dizinler](#dizinler)
-*   [Eclipse C/C++](#eclipse-c/c++)
+*   [Eclipse C Cpp](#eclipse-c-cpp)
 *   [Visual Studio](#visual-studio)
 *   [Makefile](#makefile)
 
@@ -28,7 +28,7 @@ $ git clone https://github.com/Enes1313/DataStructures.git
 *   "Projects" klasörü "Test" ve "Simulation" projeleri için IDE'lerin dosyalarını içerir.
 *   "Readme" klasörü "benioku" dosyalarını içerir.
 
-## Eclipse C/C++
+## Eclipse C Cpp
 
 *   "Project Explorer" alanında sağ tıklayıp "Import" yazısına tıklayın.
 *   "General" yapısının altındaki "Existing Projects into Workspace" yazısına sonra "Next" yazısına tıklayın.
