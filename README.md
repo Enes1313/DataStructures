@@ -10,7 +10,7 @@
 ## Contents
 *   [Download](#download)
 *   [Folders](#folders)
-*   [Eclipse C/C++](#eclipse-c/c++)
+*   [Eclipse C Cpp](#eclipse-c-cpp)
 *   [Visual Studio](#visual-studio)
 *   [Makefile](#makefile)
 
@@ -28,7 +28,7 @@ $ git clone https://github.com/Enes1313/DataStructures.git
 *   The "Projects" folder contains files of IDE's for "Test" and "Simulation" projects.
 *   The "Readme" folder contains "readme" files.
 
-## Eclipse C/C++
+## Eclipse C Cpp
 
 *   Right click on the "Project Explorer" area and click the "Import".
 *   Click the "Existing Projects into Workspace" under the "General" tab and click the "Next" button.
