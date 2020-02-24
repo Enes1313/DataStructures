@@ -4,5 +4,5 @@
 
 ## Beni Oku - Read Me
 
-[![Türkçe](Türkçe)](Readme/BENİOKU.md) -
-[![English](English)](Readme/README.md)
+[![Türkçe]](Readme/BENİOKU.md) -
+[![English]](Readme/README.md)
