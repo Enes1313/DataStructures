@@ -27,10 +27,10 @@ int main(void)
 	srand((unsigned int)time(NULL));
 
 	testCircularBuffer();
-	/*testDynamicArray();
+	testDynamicArray();
 	testLinkedList();
 	testQueue();
-	testStack();*/
+	testStack();
 
 	return EXIT_SUCCESS;
 }
@@ -109,6 +109,10 @@ void testCircularBuffer()
 		}
 	}
 
+	if (EXIT_SUCCESS != eaDSCircularBufferAdd(circularBuffer, "dff", 3))
+	{
+		puts("circularBuffer'a veri eklenemedi!");
+	}
 	{
 		memset(data, 0, sizeof(data));
 
