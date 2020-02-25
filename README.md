@@ -12,6 +12,7 @@
 *   [Folders](#folders)
 *   [Eclipse C Cpp](#eclipse-c-cpp)
 *   [Visual Studio](#visual-studio)
+*   [DevCpp](#devcpp)
 *   [Makefile](#makefile)
 
 ## Download
@@ -42,6 +43,13 @@ $ git clone https://github.com/Enes1313/DataStructures.git
 *   Click "File", "Open" and "Project/Solution...".
 *   Go to the repo's main folder.
 *   Select "Projects/VS/dsTest" folder path under the "DataStructures" folder.
+*   Do the same for the "Projects/VS/dsSimulation" directory.
+
+## DevCpp
+
+*   Click "File" -> "Open".
+*   Go to the repo's main folder.
+*   Open the file "Projects/DevCpp/dsTest/dsTest.dev" folder path under the "DataStructures" folder.
 *   Do the same for the "Projects/VS/dsSimulation" directory.
 
 ## Makefile

@@ -12,6 +12,7 @@
 *   [Dizinler](#dizinler)
 *   [Eclipse C Cpp](#eclipse-c-cpp)
 *   [Visual Studio](#visual-studio)
+*   [DevCpp](#devcpp)
 *   [Makefile](#makefile)
 
 ## Indirme
@@ -42,6 +43,13 @@ $ git clone https://github.com/Enes1313/DataStructures.git
 *   Sırasıyla "File", "Open" ve "Project/Solution..." yazılarına tıklayın.
 *   Açılan pencereden repoyu indirdiğiniz yere gelin.
 *   "DataStructures" klasörünün altından "Projects/VS/dsTest" dizinini seçin.
+*   Aynı adımları "Projects/VS/dsSimulation" dizini için yapın.
+
+## DevCpp
+
+*   Sırasıyla "File" ve "Open" yazılarına tıklayın.
+*   Açılan pencereden repoyu indirdiğiniz yere gelin.
+*   "DataStructures" klasörünün altından "Projects/DevCpp/dsTest/dsTest.dev" dosyasını seçin.
 *   Aynı adımları "Projects/VS/dsSimulation" dizini için yapın.
 
 ## Makefile
