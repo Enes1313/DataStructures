@@ -65,7 +65,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <windows.h>
 
 #include "eaDSDynamicArray.h"
 
