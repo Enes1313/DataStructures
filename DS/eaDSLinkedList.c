@@ -16,6 +16,16 @@ struct _eaDSLinkedList{
 	void (*dataClear)(void *);
 };
 
+static void * copyAddress(const void * a)
+{
+	return (void *) a;
+}
+
+static int compareAddress(const void * a1, const void * a2)
+{
+	return !(a1 == a2);
+}
+
 eaDSLinkedList eaDSLinkedListInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
 	eaDSLinkedList linkedList;
@@ -30,9 +40,9 @@ eaDSLinkedList eaDSLinkedListInit(void * (*dataCreateAndCopy)(const void *), int
 	{
 		linkedList->Head = NULL;
 		linkedList->Tail = NULL;
-		linkedList->dataCreateAndCopy = dataCreateAndCopy;
-		linkedList->dataCompare = dataCompare;
-		linkedList->dataClear = dataClear;
+		linkedList->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
+		linkedList->dataCompare = (dataCompare == NULL) ? compareAddress : dataCompare;
+		linkedList->dataClear = (dataClear == NULL) ? free : dataClear;
 	}
 
 	return linkedList;

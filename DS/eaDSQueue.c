@@ -15,6 +15,11 @@ struct _eaDSQueue {
 	void (*dataClear)(void *);
 };
 
+static void * copyAddress(const void * a)
+{
+	return (void *) a;
+}
+
 eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *))
 {
 	eaDSQueue queue;
@@ -29,8 +34,8 @@ eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataCl
 	{
 		queue->Front = NULL;
 		queue->Rear = NULL;
-		queue->dataCreateAndCopy = dataCreateAndCopy;
-		queue->dataClear = dataClear;
+		queue->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
+		queue->dataClear = (dataClear == NULL) ? free : dataClear;
 	}
 
 	return queue;

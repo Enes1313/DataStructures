@@ -15,6 +15,11 @@ struct _eaDSStack {
 	void (*dataClear)(void *);
 };
 
+static void * copyAddress(const void * a)
+{
+	return (void *) a;
+}
+
 eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *))
 {
 	return eaDSStackInitWithDetails(dataCreateAndCopy, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
@@ -46,8 +51,8 @@ eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), vo
 			stack->Count = 0;
 			stack->Capacity = stack->StartingCapacity;
 			stack->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-			stack->dataCreateAndCopy = dataCreateAndCopy;
-			stack->dataClear = dataClear;
+			stack->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
+			stack->dataClear = (dataClear == NULL) ? free : dataClear;
 		}
 	}
 

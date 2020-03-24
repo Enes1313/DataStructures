@@ -15,6 +15,16 @@ struct _eaDSDynamicArray{
 	void (*dataClear)(void *);
 };
 
+static void * copyAddress(const void * a)
+{
+	return (void *) a;
+}
+
+static int compareAddress(const void * a1, const void * a2)
+{
+	return !(a1 == a2);
+}
+
 eaDSDynamicArray eaDSDynamicArrayInit(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *))
 {
 	return eaDSDynamicArrayInitWithDetails(dataCreateAndCopy, dataCompare, dataClear, DEFAULT_EXP_FACTOR, DEFAULT_STARTING_CAPACITY);
@@ -24,34 +34,31 @@ eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreateAndCopy)(con
 {
 	eaDSDynamicArray dynamicArray = NULL;
 
-	if (dataCreateAndCopy && dataCompare && dataClear)
-	{
-		dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
+	dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
 
-		if (NULL == dynamicArray)
+	if (NULL == dynamicArray)
+	{
+		perror(NULL);
+	}
+	else
+	{
+		dynamicArray->StartingCapacity = startingCapacity ? startingCapacity : DEFAULT_STARTING_CAPACITY;
+		dynamicArray->Data = (void **) malloc(dynamicArray->StartingCapacity * sizeof(void *));
+
+		if (NULL == dynamicArray->Data)
 		{
 			perror(NULL);
+			free(dynamicArray);
+			dynamicArray = NULL;
 		}
 		else
 		{
-			dynamicArray->StartingCapacity = startingCapacity ? startingCapacity : DEFAULT_STARTING_CAPACITY;
-			dynamicArray->Data = (void **) malloc(dynamicArray->StartingCapacity * sizeof(void *));
-
-			if (NULL == dynamicArray->Data)
-			{
-				perror(NULL);
-				free(dynamicArray);
-				dynamicArray = NULL;
-			}
-			else
-			{
-				dynamicArray->Count = 0;
-				dynamicArray->Capacity = dynamicArray->StartingCapacity;
-				dynamicArray->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-				dynamicArray->dataCreateAndCopy = dataCreateAndCopy;
-				dynamicArray->dataCompare = dataCompare;
-				dynamicArray->dataClear = dataClear;
-			}
+			dynamicArray->Count = 0;
+			dynamicArray->Capacity = dynamicArray->StartingCapacity;
+			dynamicArray->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
+			dynamicArray->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
+			dynamicArray->dataCompare = (dataCompare == NULL) ? compareAddress : dataCompare;
+			dynamicArray->dataClear = (dataClear == NULL) ? free : dataClear;
 		}
 	}
 
