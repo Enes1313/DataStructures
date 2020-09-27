@@ -27,9 +27,7 @@ eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), void (*dataCl
 
 eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
 {
-	eaDSStack stack;
-
-	stack = (eaDSStack) malloc(sizeof(struct _eaDSStack));
+	eaDSStack stack = (eaDSStack) malloc(sizeof(struct _eaDSStack));
 
 	if (NULL == stack)
 	{
@@ -51,8 +49,8 @@ eaDSStack eaDSStackInitWithDetails(void * (*dataCreateAndCopy)(const void *), vo
 			stack->Count = 0;
 			stack->Capacity = stack->StartingCapacity;
 			stack->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-			stack->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
-			stack->dataClear = (dataClear == NULL) ? free : dataClear;
+			stack->dataCreateAndCopy = (NULL == dataCreateAndCopy) ? copyAddress : dataCreateAndCopy;
+			stack->dataClear = (NULL == dataClear) ? free : dataClear;
 		}
 	}
 
@@ -125,15 +123,30 @@ size_t eaDSStackGetCapacity(const eaDSStack stack)
 
 void * eaDSStackPop(eaDSStack stack)
 {
-	void * data;
-
-	data = NULL;
+	void * data = NULL;
 
 	if (stack->Count)
 	{
+		if ((DEFAULT_STARTING_CAPACITY < stack->Capacity) && (stack->Count < stack->Capacity / stack->ExpFactor))
+		{
+			void ** tmp;
+
+			stack->Capacity /= stack->ExpFactor;
+			tmp = (void **) realloc(stack->Data, stack->Capacity * sizeof(void *));
+
+			if (NULL != tmp)
+			{
+				stack->Data = tmp;
+			}
+			else 
+			{
+				stack->Capacity *= stack->ExpFactor;
+			}
+		}
+
 		data = stack->dataCreateAndCopy(stack->Data[stack->Count - 1]);
 
-		if (data != NULL)
+		if (NULL != data)
 		{
 			stack->dataClear(stack->Data[--stack->Count]);
 		}
@@ -148,9 +161,9 @@ void * eaDSStackPop(eaDSStack stack)
 
 int eaDSStackPush(eaDSStack stack, const void * data)
 {
-	void * item;
+	void * item = stack->dataCreateAndCopy(data);
 
-	if (NULL == (item = stack->dataCreateAndCopy(data)))
+	if (NULL == item)
 	{
 		perror(NULL);
 
@@ -159,11 +172,10 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 
 	if (stack->Count == stack->Capacity)
 	{
-		size_t i;
 		void ** tmp;
 
 		stack->Capacity *= stack->ExpFactor;
-		tmp = (void **) malloc(stack->Capacity * sizeof(void *));
+		tmp = (void **) realloc(stack->Data, stack->Capacity * sizeof(void *));
 
 		if (NULL == tmp)
 		{
@@ -173,12 +185,6 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 			return EXIT_FAILURE;
 		}
 
-		for (i = 0; i < stack->Count; i++)
-		{
-			tmp[i] = stack->Data[i];
-		}
-
-		free(stack->Data);
 		stack->Data = tmp;
 	}
 
@@ -190,9 +196,7 @@ int eaDSStackPush(eaDSStack stack, const void * data)
 
 void * eaDSStackPeekStack(const eaDSStack stack)
 {
-	void * data;
-
-	data = NULL;
+	void * data = NULL;
 
 	if (stack->Count)
 	{

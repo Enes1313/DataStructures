@@ -126,7 +126,7 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
 * NOTES       : This function uses compare functions passed to init func.
 ********************************************************************************/
-int eaDSCircularBufferGetWhereIsIt(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len);
+int eaDSCircularBufferGetWhereIsIt(const eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len);
 
 /********************************************************************************
 * DESCRIPTION : Data is added to circular buffer.

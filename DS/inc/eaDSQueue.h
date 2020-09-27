@@ -27,7 +27,7 @@ typedef struct _eaDSQueue * eaDSQueue;
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : Address from eaDSLinkedList type or NULL.
+*               RETURN     : Address from eaDSQueue type or NULL.
 * NOTES       : All parameters are used in library.
 ********************************************************************************/
 eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *));

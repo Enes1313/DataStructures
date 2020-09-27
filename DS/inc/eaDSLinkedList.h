@@ -1,6 +1,6 @@
 /********************************************************************************
 * DESCRIPTION : It is a handly/fastly/amazing implementation of Linked List.
-* NOTES       : None
+* NOTES       : ToDO: eaDSLinkedListSort
 * STANDARD    : C90 and up
 * Author      : Enes AYDIN
 ********************************************************************************/
@@ -61,7 +61,7 @@ void eaDSLinkedListReset(eaDSLinkedList linkedList);
 void eaDSLinkedListClear(eaDSLinkedList linkedList);
 
 /********************************************************************************
-* DESCRIPTION : Sorting operation of the dynamic array.
+* DESCRIPTION : Sorting operation of the linked list.
 * INPUTS      :
 *               PARAMETERS :
 *                            linkedList -> Address of a linked list.
@@ -131,7 +131,7 @@ void eaDSLinkedListRemove(eaDSLinkedList linkedList, const void * data);
 *               RETURN     : None
 * NOTES       : This function uses free function passed to init func.
 ********************************************************************************/
-void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index);
+void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : "data" param is inserted to index of linked list.
@@ -147,7 +147,7 @@ void eaDSLinkedListRemoveAt(eaDSLinkedList linkedList, const size_t index);
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
 * NOTES       : This function uses createandcopy functions passed to init func.
 ********************************************************************************/
-int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const size_t index);
+int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Data in linked list is taken to "data" param.
@@ -164,7 +164,7 @@ int eaDSLinkedListInsert(eaDSLinkedList linkedList, const void * data, const siz
 * NOTES       : This function uses createandcopy function passed to init func.
 * 				You have to free the value returned from the function.
 ********************************************************************************/
-void * eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, const size_t index);
+void * eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Address of data in linked list is return.
@@ -179,6 +179,6 @@ void * eaDSLinkedListGetFrom(const eaDSLinkedList linkedList, const size_t index
 *               RETURN     : Address of data or NULL
 * NOTES       : None
 ********************************************************************************/
-void * eaDSLinkedListGetAddressFrom(const eaDSLinkedList linkedList, const size_t index);
+void * eaDSLinkedListGetAddressFrom(const eaDSLinkedList linkedList, size_t index);
 
 #endif /* EADSLINKEDLIST_H_ */

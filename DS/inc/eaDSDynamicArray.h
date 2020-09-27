@@ -1,6 +1,7 @@
 /********************************************************************************
 * DESCRIPTION : It is a handly/fastly/amazing implementation of Dynamic Array.
 * NOTES       : Decrease of Capacity will add to eaDSDynamicArrayRemove* funcs.
+                define static function that its name is "daRealloc"
 * STANDARD    : C90 and up
 * Author      : Enes AYDIN
 ********************************************************************************/
@@ -149,7 +150,7 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data);
 *               RETURN     : EXIT_SUCCESS or EXIT_FAILURE
 * NOTES       : This function uses creatandcopy functions passed to init func.
 ********************************************************************************/
-int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index);
+int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : "data" in DA is removed from dynamic array.
@@ -194,7 +195,7 @@ void eaDSDynamicArrayRemoveAll(eaDSDynamicArray dynamicArray, const void * data)
 *               RETURN     : None
 * NOTES       : This function uses free function passed to init func.
 ********************************************************************************/
-void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index);
+void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Data is removed from index of dynamic array.
@@ -210,7 +211,7 @@ void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
 *               RETURN     : None
 * NOTES       : As eaDSDynamicArrayRemoveAt funciton and last item is copied.
 ********************************************************************************/
-void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const size_t index);
+void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Data in dynamic array is taken to "data" param.
@@ -226,7 +227,7 @@ void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const s
 * NOTES       : This function uses createandcopy function passed to init func.
 * 				You have to free the value returned from the function.
 ********************************************************************************/
-void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, const size_t index);
+void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, size_t index);
 
 /********************************************************************************
 * DESCRIPTION : Address of data in dynamic array is return.
@@ -241,6 +242,6 @@ void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, const size_t
 *               RETURN     : Address of data or NULL
 * NOTES       : None
 ********************************************************************************/
-void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, const size_t index);
+void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, size_t index);
 
 #endif /* EADSDYNAMICARRAY_H */

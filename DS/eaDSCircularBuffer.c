@@ -23,9 +23,7 @@ eaDSCircularBuffer eaDSCircularBufferInit(size_t sizeOfData, void * (*dataCreate
 
 eaDSCircularBuffer eaDSCircularBufferInitWithDetails(size_t sizeOfData, void * (*dataCreate)(size_t), void * (*dataCopy)(void *, const void *, size_t), int (*dataCompare)(const void *, const void *, size_t), void (*dataClear)(void *), size_t capacity)
 {
-	eaDSCircularBuffer circularBuffer;
-
-	circularBuffer = (eaDSCircularBuffer) calloc(1, sizeof(struct _eaDSCircularBuffer));
+	eaDSCircularBuffer circularBuffer = (eaDSCircularBuffer) calloc(1, sizeof(struct _eaDSCircularBuffer));
 
 	if (NULL == circularBuffer)
 	{
@@ -170,7 +168,7 @@ int eaDSCircularBufferGet(eaDSCircularBuffer circularBuffer, void * data, size_t
 	return EXIT_SUCCESS;
 }
 
-int eaDSCircularBufferGetWhereIsIt(eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len)
+int eaDSCircularBufferGetWhereIsIt(const eaDSCircularBuffer circularBuffer, const void * data, size_t numberOfData, size_t * len)
 {
 	size_t i;
 

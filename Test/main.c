@@ -160,11 +160,6 @@ int intCompare(const void * a1, const void * a2)
 	return memcmp(a1, a2, sizeof(int));
 }
 
-void intClear(void * a)
-{
-	free(a);
-}
-
 void testDynamicArray()
 {
 	size_t i, x;
@@ -174,7 +169,7 @@ void testDynamicArray()
 	puts("Dinamik Array");
 	puts("********************************************");
 
-	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreateAndCopy, intCompare, intClear)))
+	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreateAndCopy, intCompare, free)))
 	{
 		puts("dynamicArray olusmadi!");
 		return;
@@ -231,7 +226,7 @@ void testDynamicArray()
 		if(NULL != data)
 		{
 			printf("DynamicArray'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
-			intClear(data);
+			free(data);
 		}
 		else
 		{
@@ -293,7 +288,7 @@ void testLinkedList()
 	puts("Linked List");
 	puts("********************************************");
 
-	if (NULL == (linkedList = eaDSLinkedListInit(intCreateAndCopy, intCompare, intClear)))
+	if (NULL == (linkedList = eaDSLinkedListInit(intCreateAndCopy, intCompare, free)))
 	{
 		puts("linkedList olusmadi!");
 		return;
@@ -328,7 +323,7 @@ void testLinkedList()
 		if (NULL != data)
 		{
 			printf("LinkedList'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
-			intClear(data);
+			free(data);
 		}
 		else
 		{
@@ -376,7 +371,7 @@ void testStack()
 	puts("Stack");
 	puts("********************************************");
 
-	if (NULL == (stack = eaDSStackInit(intCreateAndCopy, intClear)))
+	if (NULL == (stack = eaDSStackInit(intCreateAndCopy, free)))
 	{
 		puts("stack olusmadi!");
 		return;
@@ -404,7 +399,7 @@ void testStack()
 		if(NULL != data)
 		{
 			printf("Stack'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
-			intClear(data);
+			free(data);
 		}
 		else
 		{
@@ -445,7 +440,7 @@ void testQueue()
 	size_t i, x;
 	eaDSQueue queue = NULL;
 
-	if (NULL == (queue = eaDSQueueInit(intCreateAndCopy, intClear)))
+	if (NULL == (queue = eaDSQueueInit(intCreateAndCopy, free)))
 	{
 		puts("queue olusmadi!");
 		return;
@@ -468,10 +463,11 @@ void testQueue()
 	for(i = 0; !eaDSQueueIsEmpty(queue); i++)
 	{
 		void * data = eaDSQueueDequeue(queue);
+
 		if(NULL != data)
 		{
 			printf("Queue'den %d. eleman alindi : %d\n", (int)i + 1, *(int *)data);
-			intClear(data);
+			free(data);
 		}
 		else
 		{
@@ -486,4 +482,3 @@ void testQueue()
 	puts("Queue");
 	puts("********************************************");
 }
-

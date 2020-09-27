@@ -22,9 +22,7 @@ static void * copyAddress(const void * a)
 
 eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataClear)(void *))
 {
-	eaDSQueue queue;
-
-	queue = (eaDSQueue) malloc(sizeof(struct _eaDSQueue));
+	eaDSQueue queue = (eaDSQueue) malloc(sizeof(struct _eaDSQueue));
 
 	if (NULL == queue)
 	{
@@ -34,8 +32,8 @@ eaDSQueue eaDSQueueInit(void * (*dataCreateAndCopy)(const void *), void (*dataCl
 	{
 		queue->Front = NULL;
 		queue->Rear = NULL;
-		queue->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
-		queue->dataClear = (dataClear == NULL) ? free : dataClear;
+		queue->dataCreateAndCopy = (NULL == dataCreateAndCopy) ? copyAddress : dataCreateAndCopy;
+		queue->dataClear = (NULL == dataClear) ? free : dataClear;
 	}
 
 	return queue;
@@ -45,9 +43,7 @@ void eaDSQueueReset(eaDSQueue queue)
 {
 	while (NULL != queue->Front)
 	{
-		ItemQue * tmp;
-
-		tmp = queue->Front;
+		ItemQue * tmp = queue->Front;
 		queue->Front = tmp->Next;
 		queue->dataClear(tmp->Data);
 
@@ -65,12 +61,7 @@ void eaDSQueueClear(eaDSQueue queue)
 
 int eaDSQueueIsEmpty(const eaDSQueue queue)
 {
-	if (NULL == queue->Front)
-	{
-		return 1;
-	}
-
-	return 0;
+	return NULL == queue->Front;
 }
 
 void * eaDSQueueDequeue(eaDSQueue queue)
@@ -95,7 +86,7 @@ void * eaDSQueueDequeue(eaDSQueue queue)
 	queue->Front = queue->Front->Next;
 	free(p);
 
-	if (queue->Front == NULL)
+	if (NULL == queue->Front)
 	{
 		queue->Rear = NULL;
 	}
@@ -105,9 +96,9 @@ void * eaDSQueueDequeue(eaDSQueue queue)
 
 int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 {
-	ItemQue * tmp;
+	ItemQue * tmp = (ItemQue *) malloc(sizeof(ItemQue));
 
-	if ((tmp = (ItemQue *)malloc(sizeof(ItemQue))) == NULL)
+	if (NULL == tmp)
 	{
 		perror(NULL);
 		return EXIT_FAILURE;
@@ -124,7 +115,7 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 		return EXIT_FAILURE;
 	}
 
-	if (queue->Front == NULL)
+	if (NULL == queue->Front)
 	{
 		queue->Front = tmp;
 	}
@@ -140,11 +131,9 @@ int eaDSQueueEnqueue(eaDSQueue queue, const void * data)
 
 void * eaDSQueuePeekValue(const eaDSQueue queue)
 {
-	void * data;
+	void * data = NULL;
 
-	data = NULL;
-
-	if (queue->Front == NULL)
+	if (NULL == queue->Front)
 	{
 		return NULL;
 	}
@@ -161,7 +150,7 @@ void * eaDSQueuePeekValue(const eaDSQueue queue)
 
 void * eaDSQueuePeekAddress(const eaDSQueue queue)
 {
-	if (queue->Front == NULL)
+	if (NULL == queue->Front)
 	{
 		return NULL;
 	}

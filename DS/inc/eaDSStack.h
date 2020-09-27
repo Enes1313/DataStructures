@@ -1,7 +1,6 @@
 /********************************************************************************
 * DESCRIPTION : It is a handly/fastly/amazing implementation of stack.
-* NOTES       : Increase or decrease in Capacity in eaDSStackPush
-*               functions can be changed.
+* NOTES       : None
 * STANDARD    : C90 and up
 * Author      : Enes AYDIN
 ********************************************************************************/
@@ -13,7 +12,7 @@
 
 /********************************************************************************
 * DESCRIPTION : The data type used for a stack.
-* NOTES       : Define "eaDSStack s;" or "eaDSLinkedList s = NULL;".
+* NOTES       : Define "eaDSStack s;" or "eaDSStack s = NULL;".
 ********************************************************************************/
 typedef struct _eaDSStack * eaDSStack;
 
@@ -28,7 +27,7 @@ typedef struct _eaDSStack * eaDSStack;
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : Address from eaDSDynamicArray type or NULL.
+*               RETURN     : Address from eaDSStack type or NULL.
 * NOTES       : All parameters except "dataCompare" are used in library.
 * 				"dataCompare" can be used in the future.
 ********************************************************************************/
@@ -47,7 +46,7 @@ eaDSStack eaDSStackInit(void * (*dataCreateAndCopy)(const void *), void (*dataCl
 * OUTPUTS     :
 *               PARAMETERS : None
 *               GLOBALS    : None
-*               RETURN     : Address from eaDSDynamicArray type or NULL.
+*               RETURN     : Address from eaDSStack type or NULL.
 * NOTES       : If "info" will be NULL, It will use default settings.
 *               {sizeof(int), free, malloc, memcpy, memcmp}
 ********************************************************************************/

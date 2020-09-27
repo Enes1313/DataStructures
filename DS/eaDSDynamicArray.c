@@ -32,9 +32,7 @@ eaDSDynamicArray eaDSDynamicArrayInit(void * (*dataCreateAndCopy)(const void *),
 
 eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreateAndCopy)(const void *), int (*dataCompare)(const void *, const void *), void (*dataClear)(void *), unsigned short expFactor, unsigned short startingCapacity)
 {
-	eaDSDynamicArray dynamicArray = NULL;
-
-	dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
+	eaDSDynamicArray dynamicArray = (eaDSDynamicArray) malloc(sizeof(struct _eaDSDynamicArray));
 
 	if (NULL == dynamicArray)
 	{
@@ -56,9 +54,9 @@ eaDSDynamicArray eaDSDynamicArrayInitWithDetails(void * (*dataCreateAndCopy)(con
 			dynamicArray->Count = 0;
 			dynamicArray->Capacity = dynamicArray->StartingCapacity;
 			dynamicArray->ExpFactor = (expFactor < 2) ? DEFAULT_EXP_FACTOR : expFactor;
-			dynamicArray->dataCreateAndCopy = (dataCreateAndCopy == NULL) ? copyAddress : dataCreateAndCopy;
-			dynamicArray->dataCompare = (dataCompare == NULL) ? compareAddress : dataCompare;
-			dynamicArray->dataClear = (dataClear == NULL) ? free : dataClear;
+			dynamicArray->dataCreateAndCopy = (NULL == dataCreateAndCopy) ? copyAddress : dataCreateAndCopy;
+			dynamicArray->dataCompare = (NULL == dataCompare) ? compareAddress : dataCompare;
+			dynamicArray->dataClear = (NULL == dataClear) ? free : dataClear;
 		}
 	}
 
@@ -122,9 +120,7 @@ void eaDSDynamicArrayClear(eaDSDynamicArray dynamicArray)
 void eaDSDynamicArraySort(eaDSDynamicArray dynamicArray)
 {
 	void * buf;
-	size_t i, j, N;
-
-	N = dynamicArray->Count;
+	size_t i, j, N = dynamicArray->Count;
 
 	for(i = 1; i < N; i++)
 	{
@@ -149,9 +145,9 @@ size_t eaDSDynamicArrayGetCapacity(const eaDSDynamicArray dynamicArray)
 
 int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 {
-	void * item;
+	void * item = dynamicArray->dataCreateAndCopy(data);
 
-	if (NULL == (item = dynamicArray->dataCreateAndCopy(data)))
+	if (NULL == item)
 	{
 		perror(NULL);
 
@@ -160,11 +156,10 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 
 	if (dynamicArray->Count == dynamicArray->Capacity)
 	{
-		size_t i;
 		void ** tmp;
 
 		dynamicArray->Capacity *= dynamicArray->ExpFactor;
-		tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+		tmp = (void **) realloc(dynamicArray->Data, dynamicArray->Capacity * sizeof(void *));
 
 		if (NULL == tmp)
 		{
@@ -174,12 +169,6 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 			return EXIT_FAILURE;
 		}
 
-		for (i = 0; i < dynamicArray->Count; i++)
-		{
-			tmp[i] = dynamicArray->Data[i];
-		}
-
-		free(dynamicArray->Data);
 		dynamicArray->Data = tmp;
 	}
 
@@ -189,11 +178,9 @@ int eaDSDynamicArrayAdd(eaDSDynamicArray dynamicArray, const void * data)
 	return EXIT_SUCCESS;
 }
 
-int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, const size_t index)
+int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, size_t index)
 {
-	size_t j, cnt;
-
-	cnt = dynamicArray->Count;
+	size_t j, cnt = dynamicArray->Count;
 
 	if(index <= cnt)
 	{
@@ -211,7 +198,7 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 			void ** tmp;
 
 			dynamicArray->Capacity *= dynamicArray->ExpFactor;
-			tmp = (void **) malloc(dynamicArray->Capacity * sizeof(void *));
+			tmp = (void **) realloc(dynamicArray->Data, dynamicArray->Capacity * sizeof(void *));
 
 			if(NULL == tmp)
 			{
@@ -221,12 +208,6 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 				return EXIT_FAILURE;
 			}
 
-			for (j = 0; j < dynamicArray->Count; j++)
-			{
-				tmp[j] = dynamicArray->Data[j];
-			}
-
-			free(dynamicArray->Data);
 			dynamicArray->Data = tmp;
 		}
 
@@ -254,14 +235,30 @@ int eaDSDynamicArrayInsert(eaDSDynamicArray dynamicArray, const void * data, con
 
 void eaDSDynamicArrayRemove(eaDSDynamicArray dynamicArray, const void * data)
 {
-	size_t i, cnt;
-
-	cnt = dynamicArray->Count;
+	size_t i, cnt = dynamicArray->Count;
 
 	for (i = 0; i < cnt; i++)
 	{
 		if (!dynamicArray->dataCompare(data, dynamicArray->Data[i]))
 		{
+			if ((DEFAULT_STARTING_CAPACITY < dynamicArray->Capacity) && (dynamicArray->Count < dynamicArray->Capacity / dynamicArray->ExpFactor))
+			{
+				void ** tmp;
+
+				dynamicArray->Capacity /= dynamicArray->ExpFactor;
+				tmp = (void **) realloc(dynamicArray->Data, dynamicArray->Capacity * sizeof(void *));
+
+				if (NULL != tmp)
+				{
+					dynamicArray->Data = tmp;
+				}
+				else
+				{
+					dynamicArray->Capacity *= dynamicArray->ExpFactor;
+				}
+				
+			}
+
 			dynamicArray->Count--;
 			dynamicArray->dataClear(dynamicArray->Data[i]);
 
@@ -277,14 +274,29 @@ void eaDSDynamicArrayRemove(eaDSDynamicArray dynamicArray, const void * data)
 
 void eaDSDynamicArrayRemoveAll(eaDSDynamicArray dynamicArray, const void * data)
 {
-	size_t i, cnt;
-
-	cnt = dynamicArray->Count;
+	size_t i, cnt = dynamicArray->Count;
 
 	for (i = 0; i < cnt; i++)
 	{
 		if (!dynamicArray->dataCompare(data, dynamicArray->Data[i]))
 		{
+			if ((DEFAULT_STARTING_CAPACITY < dynamicArray->Capacity) && (dynamicArray->Count < dynamicArray->Capacity / dynamicArray->ExpFactor))
+			{
+				void ** tmp;
+
+				dynamicArray->Capacity /= dynamicArray->ExpFactor;
+				tmp = (void **) realloc(dynamicArray->Data, dynamicArray->Capacity * sizeof(void *));
+
+				if (NULL != tmp)
+				{
+					dynamicArray->Data = tmp;
+				}
+				else
+				{
+					dynamicArray->Capacity *= dynamicArray->ExpFactor;
+				}
+			}
+			
 			dynamicArray->Count--;
 			dynamicArray->dataClear(dynamicArray->Data[i]);
 
@@ -299,14 +311,13 @@ void eaDSDynamicArrayRemoveAll(eaDSDynamicArray dynamicArray, const void * data)
 	}
 }
 
-void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
+void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, size_t index)
 {
-	size_t j, cnt;
-
-	cnt = dynamicArray->Count;
+	size_t j, cnt = dynamicArray->Count;
 
 	if(cnt && (index < cnt))
 	{
+
 		dynamicArray->dataClear(dynamicArray->Data[index]);
 
 		for (j = index; j < cnt - 1; j++)
@@ -318,14 +329,29 @@ void eaDSDynamicArrayRemoveAt(eaDSDynamicArray dynamicArray, const size_t index)
 	}
 }
 
-void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const size_t index)
+void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, size_t index)
 {
-	size_t cnt;
-
-	cnt = dynamicArray->Count;
+	size_t cnt = dynamicArray->Count;
 
 	if(cnt && (index < cnt))
 	{
+		if ((DEFAULT_STARTING_CAPACITY < dynamicArray->Capacity) && (dynamicArray->Count < dynamicArray->Capacity / dynamicArray->ExpFactor))
+		{
+			void ** tmp;
+
+			dynamicArray->Capacity /= dynamicArray->ExpFactor;
+			tmp = (void **) realloc(dynamicArray->Data, dynamicArray->Capacity * sizeof(void *));
+
+			if (NULL != tmp)
+			{
+				dynamicArray->Data = tmp;
+			}
+			else
+			{
+				dynamicArray->Capacity *= dynamicArray->ExpFactor;
+			}
+		}
+		
 		dynamicArray->dataClear(dynamicArray->Data[index]);
 
 		if (cnt - 1)
@@ -337,11 +363,9 @@ void eaDSDynamicArrayRemoveAtCopyLastItem(eaDSDynamicArray dynamicArray, const s
 	}
 }
 
-void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, const size_t index)
+void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, size_t index)
 {
-	void * data;
-
-	data = NULL;
+	void * data = NULL;
 
 	if(index < dynamicArray->Count)
 	{
@@ -354,7 +378,7 @@ void * eaDSDynamicArrayGetFrom(const eaDSDynamicArray dynamicArray, const size_t
 	return data;
 }
 
-void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, const size_t index)
+void * eaDSDynamicArrayGetAddressFrom(const eaDSDynamicArray dynamicArray, size_t index)
 {
 	if(index < dynamicArray->Count)
 	{

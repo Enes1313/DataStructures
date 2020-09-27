@@ -108,25 +108,20 @@ int boxCompare(const void * p1, const void * p2)
 	return (((Box *)p1)->id > ((Box *)p2)->id) * 2 - 1;
 }
 
-void boxClear(void * a)
-{
-	free(a);
-}
-
 int main()
 {
 	size_t i, j, control_mem = 1;
 	eaDSDynamicArray dynamicArray1;
 	eaDSDynamicArray dynamicArray2[COUNT_LOCATIONS];
 
-	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, boxClear)))
+	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, free)))
 	{
 		control_mem = 0;
 	}
 
 	for (i = 0; i < COUNT_LOCATIONS; i++)
 	{
-		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, boxClear)))
+		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, free)))
 		{
 			control_mem = 0;
 			break;
