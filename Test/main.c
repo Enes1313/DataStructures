@@ -204,6 +204,7 @@ void testDynamicArray()
 	{
 		puts("DynamicArray'in 3. sirasina eleman eklenemedi!");
 	}
+	
 	x = 51;
 /*
 	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(dynamicArray, &x, 6))

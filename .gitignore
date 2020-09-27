@@ -2,9 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Projects/VS/dsTest/.vs/dsTest/v15
+/Projects/VS/dsTest/.vs
 /Projects/VS/dsTest/x64/Debug
-/Projects/VS/dsSimulation/.vs/dsSimulation/v15
+/Projects/VS/dsSimulation/.vs
 /Projects/VS/dsSimulation/x64/Debug
 /Projects/Eclipse/dsTest/Debug
 /Projects/Eclipse/dsSimulation/Debug

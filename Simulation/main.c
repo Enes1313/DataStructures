@@ -70,12 +70,12 @@
 
 #define HOURLY_LOG										1		/* hours */
 #define SIMULATION_DAYS									7		/* days */
-#define COUNT_LOCATIONS 								36
-#define COUNT_LOCATIONS_SAME_LINE 						2		/* 1 or 2 */
+#define COUNT_LOCATIONS									36
+#define COUNT_LOCATIONS_SAME_LINE						2		/* 1 or 2 */
 #define WORKERS_PER_SAME_LOCATIONS						3		/* >= 2 */
 #define LENGTH_OF_CONVEYOR								150		/* meters */
-#define HOURLY_PERFORMENCE 								1500	/* boxes entry per hour */
-#define WAITING_BOX_TO_FINISH 							25000	/* ms */
+#define HOURLY_PERFORMENCE								1500	/* boxes entry per hour */
+#define WAITING_BOX_TO_FINISH							25000	/* ms */
 #define SPEED_OF_BOX_ON_CONVEYOR						1		/* m/sn */
 
 typedef struct _Box {

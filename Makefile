@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -std=c99 -O0 -Wall -pedantic
+CFLAGS= -std=c90 -Wall -Wextra -Wconversion -pedantic
 
 IDIR:= DS/inc/
 S1DIR:= DS/*.c \
