@@ -22,6 +22,41 @@ void testLinkedList();
 void testStack();
 void testQueue();
 
+/*
+int number_of_objects;
+int objects_pool[100];
+char objects_ctrl[100];
+
+void * intPoolCreateAndCopy(const void * data)
+{
+	static int x = 0;
+
+	if (number_of_objects == 100)
+		return NULL;
+
+	while (objects_ctrl[x])
+		if (++x == 100)
+			x = 0;
+
+	number_of_objects++;
+	objects_ctrl[x] = 1;
+	objects_pool[x] = *(const int *) data;
+
+	return objects_pool + x;
+}
+
+int intPoolCompare(const void * a1, const void * a2)
+{
+	return memcmp(a1, a2, sizeof(int));
+}
+
+void intPoolFree(const void * a)
+{
+	number_of_objects--;
+	objects_ctrl[(size_t)a - (size_t)objects_pool] = 0;
+}
+*/
+
 int main(void)
 {
 	srand((unsigned int)time(NULL));
