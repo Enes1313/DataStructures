@@ -1,0 +1,328 @@
+ADDITION OF  TWO  POLYNOMIAL  using  linked list
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+  int coef ;
+  int pow ;
+  struct node *next ;
+};
+struct node *h1=NULL,*h2=NULL,*h3 = NULL ;
+void create();
+void display();
+void addition();
+main()
+{
+int choice ;
+while(1)
+{
+    printf("1:create polynomial 1\n");
+    printf("2:create polynomial 2\n");
+    printf("3: addition of polynomials\n");
+    printf("4: display\n") ;
+    printf("5:quit\n") ;
+    printf("enter your choice =");
+    scanf("%d",&choice);
+    switch (choice)
+    {
+    case 1 : create();
+             break;
+    case 2 : create();
+             break ;
+    case 3 : addition();
+             break ;
+    case 4 : display();
+             break ;
+    case 5 : exit(1) ;
+    
+    default: printf("enter valid choice\n");
+        break ;
+    }
+}
+}
+void create()
+{
+    struct node *head = NULL ,*temp =NULL ,*newnode =NULL ;
+    while(1)
+    {
+        newnode = (struct node *)malloc (sizeof(struct node)) ;
+        if(head == NULL)
+        {
+            head = temp = newnode ;
+        }
+        printf("\ncoef =") ;
+        scanf("%d",&newnode->coef);
+       printf("power = ") ;
+       scanf("%d",&newnode->pow);
+       newnode->next = NULL ;
+       if(head == NULL)
+          {
+            head = temp = newnode ;
+          }
+        else
+         {
+        temp->next =newnode ;
+        temp =newnode ;
+         }
+       int n ;
+       printf("\n '1'for continue else '0' =");
+      scanf("%d",&n);
+       if(n==0 || n>1)
+      {
+         break ;
+      }
+    }
+    if(h1 == NULL)
+    {
+        h1 = head ;
+    }
+    else
+    {
+       h2 = head ;
+    }
+    
+}
+void display()
+{   
+    struct node *head = NULL ,*temp =NULL ;
+    int choice=0 ;
+    printf("\n 1:display polynomial 1");
+    printf("\n 2:display polynomial 2");
+    printf("\n 3:display addition of 1 and 2") ;
+    printf("\n enter your choice =") ;
+    scanf("%d",&choice);
+    switch (choice)
+    {
+    case 1 :  if(h1==NULL)
+              {
+                printf("\nfirst polynomial is empty") ;
+              }
+              else 
+              {
+                  head = h1 ;
+              }
+                break;
+    case 2 :if(h2==NULL)
+              {
+                printf("\nsecond polynomial is empty") ;
+              }
+              else 
+              {
+                  head = h2 ;
+              }
+                break;
+    case 3 :if(h3==NULL)
+              {
+                printf("\naddition polynomial is empty") ;
+              }
+              else 
+              {
+                  head = h3 ;
+              }
+                break;
+    
+    default: printf("invalid choice") ;
+        break;
+    }
+    temp = head ;
+    printf("\npolynomial =");
+    while(temp != NULL)
+    {
+        printf("+%dx^%d ",temp ->coef ,temp->pow);
+        temp = temp->next ;
+    }
+    printf("\n") ;
+
+}
+void addition()
+{
+    struct node *temp1=NULL ,*temp2= NULL ,*temp3 = NULL ,*newnode =NULL ; 
+    if(h1==NULL || h2 == NULL)
+    {
+        if(h1==NULL)
+        {
+            printf("\nfirst polynomial is empty\n") ;
+        }
+        else
+        {
+            printf("\nsecond polynomial is empty\n");
+        }
+        
+    }
+    else
+    {
+         temp1 = h1;
+        temp2 = h2;
+        while(temp1 != NULL)
+        {
+             newnode = (struct node*)malloc(sizeof(struct node)) ;
+           newnode ->next =NULL ;
+             if(h3==NULL)
+            {
+               temp3 = h3 = newnode ;
+             }
+            else
+             {
+               temp3 ->next = newnode ;
+             }
+             if(temp2 == NULL)
+                     {
+                          newnode ->coef =temp1 ->coef ;
+                         newnode ->pow = temp1 ->pow ;
+                         temp1 = temp1->next ;
+                         temp3 = newnode ;
+                     }
+             else
+             {
+                if(temp1->pow > temp2 ->pow)
+               {
+                   newnode ->coef = temp1 ->coef ;
+                   newnode ->pow =temp1 ->pow ;
+                   temp1 = temp1->next ;
+                   temp3 =newnode ;
+               }
+               else
+               {
+                   if(temp1 -> pow == temp2 -> pow)
+                   {
+                       newnode ->coef = (temp1 ->coef ) +(temp2->coef);
+                       newnode ->pow = temp1 ->pow ;
+                       temp1 =temp1 ->next;
+                       temp2 =temp2 ->next;
+                       temp3 =newnode ;
+                   }
+                   else
+                   {
+                     if(temp1->pow < temp2 ->pow)
+                     {
+                         newnode ->coef =temp2 ->coef ;
+                         newnode ->pow = temp2 ->pow ;
+                         temp2 = temp2 ->next ;
+                         temp3 = newnode ;
+                     }
+                     
+                    }
+                   
+                }
+               
+              }
+          }
+      }
+        while (temp2 != NULL)
+        {
+            newnode = (struct node*)malloc(sizeof(struct node)) ;
+            if (temp3 != newnode)
+             {
+               temp3 ->next = newnode ;
+             }
+            newnode ->coef =temp2 ->coef ;
+            newnode ->pow = temp2 ->pow ;
+            temp2 = temp2 ->next ;
+            temp3 = newnode ;
+       }
+  
+    
+    printf("\nsuccessful\n");
+}
+
+PS C:\Users\user\vik.c> cd "c:\Users\user\vik.c"
+PS C:\Users\user\vik.c> cmd /c .\"poly.exe"
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =1
+
+coef =5
+power = 5
+
+ '1'for continue else '0' =1
+
+coef =2
+power = 3
+
+ '1'for continue else '0' =1
+
+coef =2
+power = 2
+
+ '1'for continue else '0' =1
+
+coef =4
+power = 1
+
+ '1'for continue else '0' =1
+
+coef =1
+power = 0
+
+ '1'for continue else '0' =0
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =2
+
+coef =3
+power = 3
+
+ '1'for continue else '0' =1
+
+coef =5
+power = 2
+
+ '1'for continue else '0' =1
+
+coef =4
+power = 0
+
+ '1'for continue else '0' =0
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =3
+
+successful
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =4
+
+ 1:display polynomial 1
+ 2:display polynomial 2
+ 3:display addition of 1 and 2
+ enter your choice =1
+
+polynomial =+5x^5 +2x^3 +2x^2 +4x^1 +1x^0
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =4
+
+ 1:display polynomial 1
+ 2:display polynomial 2
+ 3:display addition of 1 and 2
+ enter your choice =2
+
+polynomial =+3x^3 +5x^2 +4x^0
+1:create polynomial 1
+2:create polynomial 2
+3: addition of polynomials
+4: display
+5:quit
+enter your choice =4
+
+ 1:display polynomial 1
+ 2:display polynomial 2
+ 3:display addition of 1 and 2
+ enter your choice =3
+
+polynomial =+5x^5 +5x^3 +7x^2 +4x^1 +5x^0
