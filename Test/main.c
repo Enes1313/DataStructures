@@ -204,7 +204,7 @@ void testDynamicArray()
 	puts("Dinamik Array");
 	puts("********************************************");
 
-	if (NULL == (dynamicArray = eaDSDynamicArrayInit(intCreateAndCopy, intCompare, free)))
+	if (EXIT_FAILURE == eaDSDynamicArrayInit(&dynamicArray, intCreateAndCopy, intCompare, free))
 	{
 		puts("dynamicArray olusmadi!");
 		return;
@@ -214,7 +214,7 @@ void testDynamicArray()
 	{
 		x = (unsigned int) rand() % 50;
 
-		if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
+		if(EXIT_SUCCESS == eaDSDynamicArrayAdd(&dynamicArray, &x))
 		{
 			printf("DynamicArray'e eleman eklendi : %d \n", (int)x);
 		}
@@ -226,7 +226,7 @@ void testDynamicArray()
 
 	x = 50;
 
-	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(dynamicArray, &x, 2))
+	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(&dynamicArray, &x, 2))
 	{
 		printf("DynamicArray'in 3. sirasina eleman eklendi : %d\n", (int)x);
 	}
@@ -237,7 +237,7 @@ void testDynamicArray()
 	
 	x = 51;
 /*
-	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(dynamicArray, &x, 6))
+	if(EXIT_SUCCESS == eaDSDynamicArrayInsert(&dynamicArray, &x, 6))
 	{
 		printf("DynamicArray'in 6. sirasina eleman eklendi : %d\n", (int)x);
 	}
@@ -249,14 +249,14 @@ void testDynamicArray()
 	x = 10;
 
 	printf("DynamicArray'den siliniyor : %d\n", (int)x);
-	eaDSDynamicArrayRemove(dynamicArray, &x);
+	eaDSDynamicArrayRemove(&dynamicArray, &x);
 
 	printf("DynamicArray'den 2. eleman atiliyor!\n");
-	eaDSDynamicArrayRemoveAt(dynamicArray, 1);
+	eaDSDynamicArrayRemoveAt(&dynamicArray, 1);
 
-	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
+	for(i = 0; i < eaDSDynamicArrayGetCount(&dynamicArray); i++)
 	{
-		void * data = eaDSDynamicArrayGetFrom(dynamicArray, i);
+		void * data = eaDSDynamicArrayGetFrom(&dynamicArray, i);
 
 		if(NULL != data)
 		{
@@ -270,11 +270,11 @@ void testDynamicArray()
 	}
 
 	printf("DynamicArray siralaniyor...\n");
-	eaDSDynamicArraySort(dynamicArray);
+	eaDSDynamicArraySort(&dynamicArray);
 
-	for(i = 0; i < eaDSDynamicArrayGetCount(dynamicArray); i++)
+	for(i = 0; i < eaDSDynamicArrayGetCount(&dynamicArray); i++)
 	{
-		void * data = eaDSDynamicArrayGetAddressFrom(dynamicArray, i);
+		void * data = eaDSDynamicArrayGetAddressFrom(&dynamicArray, i);
 
 		if(NULL != data)
 		{
@@ -286,16 +286,16 @@ void testDynamicArray()
 		}
 	}
 
-	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(&dynamicArray));
 
 	printf("DynamicArray resetleniyor.\n");
-	eaDSDynamicArrayReset(dynamicArray);
+	eaDSDynamicArrayReset(&dynamicArray);
 
-	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(&dynamicArray));
 
 	x = (unsigned int) rand() % 50;
 
-	if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray, &x))
+	if(EXIT_SUCCESS == eaDSDynamicArrayAdd(&dynamicArray, &x))
 	{
 		printf("DynamicArray'e eleman eklendi : %d\n", (int)x);
 	}
@@ -304,10 +304,10 @@ void testDynamicArray()
 		puts("DynamicArray'e eleman eklenemedi!");
 	}
 
-	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(dynamicArray));
+	printf("DynamicArray eleman sayisi : %d.\n", (int)eaDSDynamicArrayGetCount(&dynamicArray));
 
 	printf("DynamicArray siliniyor.\n");
-	eaDSDynamicArrayClear(dynamicArray);
+	eaDSDynamicArrayClear(&dynamicArray);
 
 	puts("********************************************");
 	puts("Dinamik Array");
