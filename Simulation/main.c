@@ -90,8 +90,8 @@ const int NEW_BOX = 60 * 60 * 1000 / HOURLY_PERFORMENCE;
 const int TOTAL_SIMULATION_TIME = SIMULATION_DAYS * 24 * 60 * 60 * 1000;
 const int DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE = LENGTH_OF_CONVEYOR / (COUNT_LOCATIONS / COUNT_LOCATIONS_SAME_LINE);
 
-void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
-void debugFreeExit(const char * msg, eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2);
+void freeMemory(eaDSDynamicArray * dynamicArray1, eaDSDynamicArray * dynamicArray2);
+void debugFreeExit(const char * msg, eaDSDynamicArray * dynamicArray1, eaDSDynamicArray * dynamicArray2);
 
 void * boxCreateAndCopy(const void * data)
 {
@@ -110,123 +110,108 @@ int boxCompare(const void * p1, const void * p2)
 
 int main()
 {
-	size_t i, j, control_mem = 1;
+	size_t i, j;
+	Box box, * pBox;
 	eaDSDynamicArray dynamicArray1;
 	eaDSDynamicArray dynamicArray2[COUNT_LOCATIONS];
+	int counter = 0, product_uniqe_id = 0, interval = SPEED_OF_BOX_ON_CONVEYOR * 1000;
 
-	if (NULL == (dynamicArray1 = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, free)))
-	{
-		control_mem = 0;
-	}
+	if (EXIT_FAILURE == eaDSDynamicArrayInit(&dynamicArray1, boxCreateAndCopy, boxCompare, free))
+		return EXIT_FAILURE;
 
 	for (i = 0; i < COUNT_LOCATIONS; i++)
+		if (EXIT_FAILURE == eaDSDynamicArrayInit(&dynamicArray2[i], boxCreateAndCopy, boxCompare, free))
+			return EXIT_FAILURE;
+
+	srand((unsigned int)time(NULL));
+
+	for (i = 2;;)
 	{
-		if (NULL == (dynamicArray2[i] = eaDSDynamicArrayInit(boxCreateAndCopy, boxCompare, free)))
-		{
-			control_mem = 0;
+		if ((NEW_BOX % interval == 0) && (LOG_TIME % interval == 0) && (WAITING_BOX_TO_FINISH % interval == 0))
 			break;
-		}
+
+		while((SPEED_OF_BOX_ON_CONVEYOR * 1000) % i) i++;
+		interval = (SPEED_OF_BOX_ON_CONVEYOR * 1000) / (int)i++;
 	}
 
-	if (control_mem)
+	printf("Hourly log\t\t\t\t\t: %6.1f hour!\n", (float) HOURLY_LOG);
+	printf("Simulation days\t\t\t\t\t: %6d days!\n", SIMULATION_DAYS);
+	printf("Count locations\t\t\t\t\t: %6d targets!\n", COUNT_LOCATIONS);
+	printf("Count locations on same line\t\t\t: %6d targets!\n", COUNT_LOCATIONS_SAME_LINE);
+	printf("Workers per same locations\t\t\t: %6d workers!\n", WORKERS_PER_SAME_LOCATIONS);
+	printf("Length of conveyor\t\t\t\t: %6d meters!\n", LENGTH_OF_CONVEYOR);
+	printf("Hourly performence\t\t\t\t: %6d boxes/hour!\n", HOURLY_PERFORMENCE);
+	printf("Last waiting box to finish on location\t\t: %6d ms!\n", WAITING_BOX_TO_FINISH);
+	printf("Speed of box on conveyor\t\t\t: %6d meter!\n\n", SPEED_OF_BOX_ON_CONVEYOR);
+
+	printf("New box\t\t\t\t\t\t: %6d per ms!\n", NEW_BOX);
+	printf("Distance between two locations\t\t\t: %6d m!\n", DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE);
+	printf("Interval value\t\t\t\t\t: %6d ms!\n\n", interval);
+
+	printf("Press enter to start!\n\n\n");
+	getchar();
+
+	for (counter = 0; counter <= TOTAL_SIMULATION_TIME; counter += interval)
 	{
-		Box box, * pBox;
-		int counter = 0;
-		int product_uniqe_id = 0;
-		int interval = SPEED_OF_BOX_ON_CONVEYOR * 1000;
-
-		srand((unsigned int)time(NULL));
-
-		for (i = 2;;)
+		/* logging */
+		if (counter % LOG_TIME == 0)
 		{
-			if ((NEW_BOX % interval == 0) && (LOG_TIME % interval == 0) && (WAITING_BOX_TO_FINISH % interval == 0))
-			{
-				break;
-			}
+			printf("Passed time\t\t: %15d hour!\n", counter / 1000 / 3600);
+			printf("All boxes\t\t: %15d boxes!\n", product_uniqe_id);
+			printf("Total boxes in conveyor\t: %15d boxes!\n", (int) eaDSDynamicArrayGetCount(&dynamicArray1));
+			printf("Total boxes on locations\t:\n");
 
-			while((SPEED_OF_BOX_ON_CONVEYOR * 1000) % i) i++;
-			interval = (SPEED_OF_BOX_ON_CONVEYOR * 1000) / (int)i++;
+			for (i = 0; i < COUNT_LOCATIONS; ++i)
+				printf("%4d ", (int) eaDSDynamicArrayGetCount(&dynamicArray2[i]));
+
+			printf("boxes!\n\n");
 		}
 
-		printf("Hourly log\t\t\t\t\t: %6.1f hour!\n", (float) HOURLY_LOG);
-		printf("Simulation days\t\t\t\t\t: %6d days!\n", SIMULATION_DAYS);
-		printf("Count locations\t\t\t\t\t: %6d targets!\n", COUNT_LOCATIONS);
-		printf("Count locations on same line\t\t\t: %6d targets!\n", COUNT_LOCATIONS_SAME_LINE);
-		printf("Workers per same locations\t\t\t: %6d workers!\n", WORKERS_PER_SAME_LOCATIONS);
-		printf("Length of conveyor\t\t\t\t: %6d meters!\n", LENGTH_OF_CONVEYOR);
-		printf("Hourly performence\t\t\t\t: %6d boxes/hour!\n", HOURLY_PERFORMENCE);
-		printf("Last waiting box to finish on location\t\t: %6d ms!\n", WAITING_BOX_TO_FINISH);
-		printf("Speed of box on conveyor\t\t\t: %6d meter!\n\n", SPEED_OF_BOX_ON_CONVEYOR);
-
-		printf("New box\t\t\t\t\t\t: %6d per ms!\n", NEW_BOX);
-		printf("Distance between two locations\t\t\t: %6d m!\n", DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE);
-		printf("Interval value\t\t\t\t\t: %6d ms!\n\n", interval);
-
-		printf("Press enter to start!\n\n\n");
-		getchar();
-
-		for (counter = 0; counter <= TOTAL_SIMULATION_TIME; counter += interval)
+		/* new box */
+		if (counter % NEW_BOX == 0)
 		{
-			/* logging */
-			if (counter % LOG_TIME == 0)
-			{
-				printf("Passed time\t\t: %15d hour!\n", counter / 1000 / 3600);
-				printf("All boxes\t\t: %15d boxes!\n", product_uniqe_id);
-				printf("Total boxes in conveyor\t: %15d boxes!\n", (int) eaDSDynamicArrayGetCount(dynamicArray1));
-				printf("Total boxes on locations\t:\n");
+			box.id = product_uniqe_id++;
+			box.location = rand() % COUNT_LOCATIONS + 1;
+			box.waitingOnLocation = WAITING_BOX_TO_FINISH;
+			box.way = ((box.location + COUNT_LOCATIONS_SAME_LINE - 1) / COUNT_LOCATIONS_SAME_LINE) * DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE * 1000; /* mm */
 
-				for (i = 0; i < COUNT_LOCATIONS; ++i) {
-					printf("%4d ", (int) eaDSDynamicArrayGetCount(dynamicArray2[i]));
-				}
-				printf("boxes!\n\n");
+			if (EXIT_FAILURE == eaDSDynamicArrayAdd(&dynamicArray1, &box))
+			{
+				debugFreeExit("Dinamik dizi'ye eleman eklenemedi!", &dynamicArray1, dynamicArray2);
 			}
+		}
 
-			/* new box */
-			if (counter % NEW_BOX == 0)
+		/* moving */
+		for(i = 0; NULL != (pBox = (Box *) eaDSDynamicArrayGetAddressFrom(&dynamicArray1, i)); i++)
+		{
+			if ((pBox->way -= SPEED_OF_BOX_ON_CONVEYOR * interval) <= 0) /* ... / 1000 * 1000  = ... / 1 */
 			{
-				box.id = product_uniqe_id++;
-				box.location = rand() % COUNT_LOCATIONS + 1;
-				box.waitingOnLocation = WAITING_BOX_TO_FINISH;
-				box.way = ((box.location + COUNT_LOCATIONS_SAME_LINE - 1) / COUNT_LOCATIONS_SAME_LINE) * DISTANCE_BETWEEN_TWO_LOCATIONS_IN_DIFFERENT_LINE * 1000; /* mm */
-
-				if (EXIT_FAILURE == eaDSDynamicArrayAdd(dynamicArray1, &box))
+				if(EXIT_SUCCESS == eaDSDynamicArrayAdd(&dynamicArray2[pBox->location - 1], pBox))
 				{
-					debugFreeExit("Dinamik dizi'ye eleman eklenemedi!", dynamicArray1, dynamicArray2);
+					eaDSDynamicArrayRemoveAtCopyLastItem(&dynamicArray1, i--);
+				}
+				else
+				{
+					debugFreeExit("Dinamik dizi'ye eleman eklenemedi!", &dynamicArray1, dynamicArray2);
 				}
 			}
+		}
 
-			/* moving */
-			for(i = 0; NULL != (pBox = (Box *) eaDSDynamicArrayGetAddressFrom(dynamicArray1, i)); i++)
+		/* controlling */
+		for (i = 0; i < COUNT_LOCATIONS; i++)
+		{
+			for(j = 0; (NULL != (pBox = (Box *) eaDSDynamicArrayGetAddressFrom(&dynamicArray2[i], j))) && (j < WORKERS_PER_SAME_LOCATIONS); j++)
 			{
-				if ((pBox->way -= SPEED_OF_BOX_ON_CONVEYOR * interval) <= 0) /* ... / 1000 * 1000  = ... / 1 */
+				if ((pBox->waitingOnLocation -= interval) <= 0)
 				{
-					if(EXIT_SUCCESS == eaDSDynamicArrayAdd(dynamicArray2[pBox->location - 1], pBox))
-					{
-						eaDSDynamicArrayRemoveAtCopyLastItem(dynamicArray1, i--);
-					}
-					else
-					{
-						debugFreeExit("Dinamik dizi'ye eleman eklenemedi!", dynamicArray1, dynamicArray2);
-					}
-				}
-			}
-
-			/* controlling */
-			for (i = 0; i < COUNT_LOCATIONS; i++)
-			{
-				for(j = 0; (NULL != (pBox = (Box *) eaDSDynamicArrayGetAddressFrom(dynamicArray2[i], j))) && (j < WORKERS_PER_SAME_LOCATIONS); j++)
-				{
-					if ((pBox->waitingOnLocation -= interval) <= 0)
-					{
-						eaDSDynamicArrayRemoveAtCopyLastItem(dynamicArray2[i], j--);
-					}
+					eaDSDynamicArrayRemoveAtCopyLastItem(&dynamicArray2[i], j--);
 				}
 			}
 		}
 	}
 
 	/* free memory */
-	freeMemory(dynamicArray1, dynamicArray2);
+	freeMemory(&dynamicArray1, dynamicArray2);
 
 	/* wait for enter to be pressed */
 	getchar();
@@ -234,7 +219,7 @@ int main()
 	return EXIT_SUCCESS;
 }
 
-void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2)
+void freeMemory(eaDSDynamicArray * dynamicArray1, eaDSDynamicArray * dynamicArray2)
 {
 	int i;
 
@@ -242,11 +227,11 @@ void freeMemory(eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2
 
 	for (i = 0; i < COUNT_LOCATIONS; i++)
 	{
-		eaDSDynamicArrayClear(dynamicArray2[i]);
+		eaDSDynamicArrayClear(&dynamicArray2[i]);
 	}
 }
 
-void debugFreeExit(const char * msg, eaDSDynamicArray dynamicArray1, eaDSDynamicArray * dynamicArray2)
+void debugFreeExit(const char * msg, eaDSDynamicArray * dynamicArray1, eaDSDynamicArray * dynamicArray2)
 {
 	puts(msg);
 	freeMemory(dynamicArray1, dynamicArray2);
